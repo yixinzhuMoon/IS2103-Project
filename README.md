@@ -1,2 +1,3 @@
 # IS2103-Project
-Pair Project for Hotel Reservation System in our Enterprise Systems Server-Side Design and Development module using Java EE
+AY2018/2019 Sem 1 - IS2103 Project CLI Hotel Reservation System
+
