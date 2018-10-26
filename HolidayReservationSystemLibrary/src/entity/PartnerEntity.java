@@ -31,6 +31,9 @@ public class PartnerEntity implements Serializable {
     @Column(nullable = false)
     private String password;
 
+    public PartnerEntity() {
+    }
+
     public String getEmail() {
         return email;
     }

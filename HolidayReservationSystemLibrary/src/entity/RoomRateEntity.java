@@ -36,6 +36,9 @@ public class RoomRateEntity implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date validity;
 
+    public RoomRateEntity() {
+    }
+
     public Long getRoomRateId() {
         return roomRateId;
     }

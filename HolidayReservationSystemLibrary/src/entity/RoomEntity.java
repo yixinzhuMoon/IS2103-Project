@@ -34,7 +34,9 @@ public class RoomEntity implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date checkOutDate;
     
-    
+
+    public RoomEntity() {
+    }
 
     public Integer getRoomNumber() {
         return roomNumber;

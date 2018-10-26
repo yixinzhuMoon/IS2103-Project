@@ -31,6 +31,9 @@ public class GuestEntity implements Serializable {
     @Column(nullable = false)
     private String password;
 
+    public GuestEntity() {
+    }
+
     public String getName() {
         return name;
     }

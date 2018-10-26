@@ -36,6 +36,9 @@ public class EmployeeEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private EmployeeRole role;
 
+    public EmployeeEntity() {
+    }
+
     public String getEmail() {
         return email;
     }

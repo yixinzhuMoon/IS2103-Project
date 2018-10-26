@@ -33,8 +33,10 @@ public class RoomTypeEntity implements Serializable {
     @Column(nullable = false)
     private Integer capacity;
     private String amenities;
-    
 
+    public RoomTypeEntity() {
+    }
+    
     public Long getRoomTypeId() {
         return roomTypeId;
     }
