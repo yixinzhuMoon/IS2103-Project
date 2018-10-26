@@ -23,7 +23,7 @@ public class GuestEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(length = 6)
-    private Long guestID;
+    private Long guestId;
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)
@@ -55,29 +55,29 @@ public class GuestEntity implements Serializable {
         this.email = email;
     }
 
-    public Long getGuestID() {
-        return guestID;
+    public Long getGuestId() {
+        return guestId;
     }
 
-    public void setGuestID(Long guestID) {
-        this.guestID = guestID;
+    public void setGuestId(Long guestId) {
+        this.guestId = guestId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (guestID != null ? guestID.hashCode() : 0);
+        hash += (guestId != null ? guestId.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the guestID fields are not set
+        // TODO: Warning - this method won't work in the case the guestId fields are not set
         if (!(object instanceof GuestEntity)) {
             return false;
         }
         GuestEntity other = (GuestEntity) object;
-        if ((this.guestID == null && other.guestID != null) || (this.guestID != null && !this.guestID.equals(other.guestID))) {
+        if ((this.guestId == null && other.guestId != null) || (this.guestId != null && !this.guestId.equals(other.guestId))) {
             return false;
         }
         return true;
@@ -85,7 +85,7 @@ public class GuestEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.GuestEntity[ id=" + guestID + " ]";
+        return "entity.GuestEntity[ id=" + guestId + " ]";
     }
     
 }
