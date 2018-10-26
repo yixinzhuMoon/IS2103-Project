@@ -6,3 +6,5 @@ After cloning the project, remember to change the password in glassfish-resource
 Note: RoomRateEntity is not finalised yet, thus no session bean (RoomRateEntityController) has been created for it.
 
 For more details on the Entity Classes read: https://docs.google.com/document/d/1CfG7vxPf-VdctGYkhksuhqS-pTHbFUxoMETmR5lmP4I/edit
+
+Gentle Reminder: Create a new branch before making commits to the project to avoid conflicts. Thanks.
