@@ -770,10 +770,10 @@ exists or setup the property manually. For example like this:
         </fail>
     </target>
     <target depends="init" if="no.dist.ear.dir" name="-deps-module-jar" unless="no.deps">
-        <ant antfile="${project.HolidayReservationSystemLibrary}/build.xml" inheritall="false" target="jar"/>
+        <ant antfile="${project.HotelReservationSystemLibrary}/build.xml" inheritall="false" target="jar"/>
     </target>
     <target depends="init" if="dist.ear.dir" name="-deps-ear-jar" unless="no.deps">
-        <ant antfile="${project.HolidayReservationSystemLibrary}/build.xml" inheritall="false" target="jar"/>
+        <ant antfile="${project.HotelReservationSystemLibrary}/build.xml" inheritall="false" target="jar"/>
     </target>
     <target depends="init, -check-main-class, -deps-module-jar, -deps-ear-jar" name="deps-jar"/>
     <target depends="init,deps-jar" name="-pre-pre-compile">
@@ -784,16 +784,16 @@ exists or setup the property manually. For example like this:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" if="is.server.weblogic" name="library-inclusion-in-archive">
-        <basename file="${reference.HolidayReservationSystemLibrary.jar}" property="manifest.reference.HolidayReservationSystemLibrary.jar"/>
+        <basename file="${reference.HotelReservationSystemLibrary.jar}" property="manifest.reference.HotelReservationSystemLibrary.jar"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
             <attribute name="Extension-List" value="jar-1 "/>
-            <attribute name="jar-1-Extension-Name" value="${manifest.reference.HolidayReservationSystemLibrary.jar}"/>
+            <attribute name="jar-1-Extension-Name" value="${manifest.reference.HotelReservationSystemLibrary.jar}"/>
         </manifest>
     </target>
     <target depends="compile" if="dist.ear.dir" name="library-inclusion-in-manifest">
-        <copyfiles files="${reference.HolidayReservationSystemLibrary.jar}" manifestproperty="manifest.reference.HolidayReservationSystemLibrary.jar" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${reference.HotelReservationSystemLibrary.jar}" manifestproperty="manifest.reference.HotelReservationSystemLibrary.jar" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.reference.HolidayReservationSystemLibrary.jar} lib/${manifest.reference.HolidayReservationSystemLibrary.jar} "/>
+            <attribute name="Class-Path" value="${manifest.reference.HotelReservationSystemLibrary.jar} lib/${manifest.reference.HotelReservationSystemLibrary.jar} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">
@@ -1297,7 +1297,7 @@ exists or setup the property manually. For example like this:
                 ===============
             -->
     <target depends="init" name="deps-clean" unless="no.deps">
-        <ant antfile="${project.HolidayReservationSystemLibrary}/build.xml" inheritall="false" target="clean"/>
+        <ant antfile="${project.HotelReservationSystemLibrary}/build.xml" inheritall="false" target="clean"/>
     </target>
     <target depends="init" name="-do-clean">
         <delete dir="${build.dir}"/>
