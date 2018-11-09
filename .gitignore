@@ -15,3 +15,9 @@
 /HotelReservationSystem/HoRSReservationClient/nbproject/private/
 /HotelReservationSystem/HotelReservationSystemLibrary/nbproject/private/
 HotelReservationSystem/HotelReservationSystem-ejb/setup/glassfish-resources.xml
+/HotelReservationSystem/HotelReservationSystemLibrary/build/
+/HotelReservationSystem/HoRSReservationClient/build/
+/HotelReservationSystem/HoRSReservationClient/dist/
+/HotelReservationSystem/HotelReservationSystemLibrary/dist/
+/HotelReservationSystem/HoRSManagementClient/build/
+/HotelReservationSystem/HoRSManagementClient/dist/

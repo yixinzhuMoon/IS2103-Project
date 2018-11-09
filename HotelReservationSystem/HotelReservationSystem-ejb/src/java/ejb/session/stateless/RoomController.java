@@ -5,6 +5,8 @@
  */
 package ejb.session.stateless;
 
+import javax.ejb.Local;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 
 /**
