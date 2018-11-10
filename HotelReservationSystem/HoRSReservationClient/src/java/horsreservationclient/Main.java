@@ -9,7 +9,7 @@ import ejb.session.stateless.GuestControllerRemote;
 import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
-import exception.GuestNotFoundException;
+import util.exception.GuestNotFoundException;
 import javax.ejb.EJB;
 
 /**

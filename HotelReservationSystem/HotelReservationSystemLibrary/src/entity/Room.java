@@ -31,16 +31,18 @@ public class Room implements Serializable {
     private Integer roomNumber; // room floor + room number
     @Column(nullable = false)
     private String roomStatus;
-    @Temporal(TemporalType.DATE)
-    private Date checkInDate;
-    @Temporal(TemporalType.DATE)
-    private Date checkOutDate;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Guest guest;
 
     public Room() {
+    }
+
+    public Room(Integer roomNumber, String roomStatus, Guest guest) {
+        this.roomNumber = roomNumber;
+        this.roomStatus = roomStatus;
+        this.guest = guest;
     }
 
     public Guest getGuest() {
@@ -61,26 +63,6 @@ public class Room implements Serializable {
 
     public String getRoomStatus() {
         return roomStatus;
-    }
-
-    public void setRoomStatus(String roomStatus) {
-        this.roomStatus = roomStatus;
-    }
-
-    public Date getCheckInDate() {
-        return checkInDate;
-    }
-
-    public void setCheckInDate(Date checkInDate) {
-        this.checkInDate = checkInDate;
-    }
-
-    public Date getCheckOutDate() {
-        return checkOutDate;
-    }
-
-    public void setCheckOutDate(Date checkOutDate) {
-        this.checkOutDate = checkOutDate;
     }
 
     @Override

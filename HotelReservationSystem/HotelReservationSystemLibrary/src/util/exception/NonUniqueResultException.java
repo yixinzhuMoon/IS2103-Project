@@ -3,18 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exception;
+package util.exception;
 
 /**
  *
- * @author Zhu Yixin
+ * @author haiyan
  */
-public class GuestAlreadyRegisteredException extends Exception{
+public class NonUniqueResultException extends Exception{
 
-    public GuestAlreadyRegisteredException() {
+    public NonUniqueResultException() {
     }
 
-    public GuestAlreadyRegisteredException(String message) {
+    public NonUniqueResultException(String message) {
         super(message);
     }
     

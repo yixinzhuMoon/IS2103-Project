@@ -6,8 +6,8 @@
 package ejb.session.stateless;
 
 import entity.Guest;
-import exception.GuestNotFoundException;
-import exception.InvalidLoginCredentialException;
+import util.exception.GuestNotFoundException;
+import util.exception.InvalidLoginCredentialException;
 
 public interface GuestControllerRemote {
 

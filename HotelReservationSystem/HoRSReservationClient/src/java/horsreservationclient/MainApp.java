@@ -10,9 +10,9 @@ import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
 import entity.Guest;
-import exception.GuestAlreadyRegisteredException;
-import exception.GuestNotFoundException;
-import exception.InvalidLoginCredentialException;
+import util.exception.GuestAlreadyRegisteredException;
+import util.exception.GuestNotFoundException;
+import util.exception.InvalidLoginCredentialException;
 import java.util.Scanner;
 
 /**
@@ -173,10 +173,6 @@ class MainApp {
         newGuest.setName(scanner.nextLine().trim());
         System.out.print("Enter email > ");
         newGuest.setEmail(scanner.nextLine().trim());
-        System.out.print("Enter mobile phone number >");
-        newGuest.setMobilePhoneNumber(scanner.nextLong());
-        System.out.print("Enter passport > ");
-        newGuest.setPassword(scanner.nextLine().trim());
         System.out.print("Enter password > ");
         newGuest.setPassword(scanner.nextLine().trim());
         
