@@ -14,5 +14,7 @@ public interface GuestControllerRemote {
     public Guest guestLogin(String email, String password) throws InvalidLoginCredentialException, GuestNotFoundException;
 
     public Guest retrieveGuestByEmail(String email) throws GuestNotFoundException;
+
+    public Long createGuest(Guest newGuest);
     
 }

@@ -9,6 +9,7 @@ import ejb.session.stateless.GuestControllerRemote;
 import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
+import exception.GuestNotFoundException;
 import javax.ejb.EJB;
 
 /**
@@ -30,7 +31,7 @@ public class Main {
     private static GuestControllerRemote guestControllerRemote;
 
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws GuestNotFoundException {
         MainApp mainApp=new MainApp(guestControllerRemote,roomControllerRemote,roomRateControllerRemote,roomTypeControllerRemote);
         mainApp.runApp();
     }

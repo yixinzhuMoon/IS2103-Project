@@ -166,24 +166,22 @@ class MainApp {
     private void registerAsGuest() 
     {
         Scanner scanner=new Scanner(System.in);
+        Guest newGuest=new Guest();
         
         System.out.println("\n*** HoRS System :: Register As Guest ***\n");
+        System.out.print("Enter name > ");
+        newGuest.setName(scanner.nextLine().trim());
         System.out.print("Enter email > ");
-        String email=scanner.nextLine().trim();
+        newGuest.setEmail(scanner.nextLine().trim());
         System.out.print("Enter mobile phone number >");
-        Long mobilePhoneNumber=scanner.nextLong();
+        newGuest.setMobilePhoneNumber(scanner.nextLong());
         System.out.print("Enter passport > ");
-        String passport=scanner.nextLine().trim();
+        newGuest.setPassword(scanner.nextLine().trim());
+        System.out.print("Enter password > ");
+        newGuest.setPassword(scanner.nextLine().trim());
         
-        try
-        {
-            guestControllerRemote.registerAsGuest(email,mobilePhoneNumber,passport);
-            System.out.println("Visitor registered as guest successfully! ");
-        }
-        catch(GuestAlreadyRegisteredException ex)
-        {
-            System.out.println("An error has occured while registering as guest: "+ex.getMessage()+"!\n");
-        }
+        Long guestId=guestControllerRemote.createGuest(newGuest);
+        System.out.println("Visitor registered as guest "+guestId+" successfully! ");
     }
 
     private void searchHotelRoom() {

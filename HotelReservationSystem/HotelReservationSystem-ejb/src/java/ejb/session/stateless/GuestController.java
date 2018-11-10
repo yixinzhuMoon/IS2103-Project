@@ -68,5 +68,13 @@ public class GuestController implements GuestControllerRemote, GuestControllerLo
         }
     }
 
+    @Override
+    public Long createGuest(Guest newGuest)
+    {
+        em.persist(newGuest);
+        em.flush();
+        
+        return newGuest.getGuestId();
+    }
     
 }
