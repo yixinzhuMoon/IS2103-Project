@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -24,7 +26,7 @@ public class Room implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 4)
     private Integer roomNumber; // room floor + room number
     @Column(nullable = false)
@@ -34,8 +36,19 @@ public class Room implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date checkOutDate;
     
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
+    private Guest guest;
 
     public Room() {
+    }
+
+    public Guest getGuest() {
+        return guest;
+    }
+
+    public void setGuest(Guest guest) {
+        this.guest = guest;
     }
 
     public Integer getRoomNumber() {

@@ -10,6 +10,7 @@ import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
 import entity.Guest;
+import exception.GuestNotFoundException;
 import exception.InvalidLoginCredentialException;
 import java.util.Scanner;
 
@@ -35,7 +36,7 @@ class MainApp {
         this.roomTypeControllerRemote = roomTypeControllerRemote;
     }
     
-    public void runApp()
+    public void runApp() throws GuestNotFoundException
     {
         Scanner scanner=new Scanner(System.in);
         Integer response=0;
@@ -77,7 +78,7 @@ class MainApp {
         }
     }
     
-    private void doLogin() throws InvalidLoginCredentialException
+    private void doLogin() throws InvalidLoginCredentialException, GuestNotFoundException
     {
         Scanner scanner=new Scanner(System.in);
         String email="";

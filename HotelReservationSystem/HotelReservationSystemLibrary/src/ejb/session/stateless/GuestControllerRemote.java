@@ -5,6 +5,14 @@
  */
 package ejb.session.stateless;
 
+import entity.Guest;
+import exception.GuestNotFoundException;
+import exception.InvalidLoginCredentialException;
+
 public interface GuestControllerRemote {
+
+    public Guest guestLogin(String email, String password) throws InvalidLoginCredentialException, GuestNotFoundException;
+
+    public Guest retrieveGuestByEmail(String email) throws GuestNotFoundException;
     
 }

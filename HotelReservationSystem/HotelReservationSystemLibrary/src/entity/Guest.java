@@ -6,11 +6,13 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -30,8 +32,19 @@ public class Guest implements Serializable {
     private String name;
     @Column(nullable = false)
     private String password;
+    
+    @OneToMany(mappedBy = "Guest")
+    private List<Room> rooms;
 
     public Guest() {
+    }
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
     }
 
     public String getName() {
