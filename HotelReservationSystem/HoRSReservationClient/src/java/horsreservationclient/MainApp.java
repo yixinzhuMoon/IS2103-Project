@@ -44,8 +44,8 @@ class MainApp {
         while(true)
         {
             System.out.println("\n*** Welcome to HoRS Reservatoion System ***\n");
-            System.out.println("1.Gust Login");
-            System.out.println("2.Exit\n");
+            System.out.println("1: Gust Login");
+            System.out.println("2: Exit\n");
             response=0;
             
             while(response<1 ||response>2)
@@ -70,7 +70,12 @@ class MainApp {
                 {
                     break;
                 }
+                else
+                {
+                     System.out.println("Invalid option, please try again! ");
+                }
             }
+            
             if(response==2)
             {
                 break;
@@ -97,8 +102,84 @@ class MainApp {
         else 
         {
             throw new InvalidLoginCredentialException("Missing login credential !");
-        }
+        }      
+    }
+    
+    private void menuMain()
+    {
+        Scanner scanner=new Scanner(System.in);
+        Integer response=0;
+        
+        while(true)
+        {
+            System.out.println("\n*** HoRS System ***\n");
+            System.out.println("1: Register As Guest");
+            System.out.println("2: Search Hotel Room");
+            System.out.println("3: Reserve Hotel Room");
+            System.out.println("4: View My Reservation Details");
+            System.out.println("5: View All My Reservations");
+            System.out.println("6: Exit\n");
             
+            while(response<1 || response>6)
+            {
+                System.out.print("> ");
+                response=scanner.nextInt();
+                
+                if(response==1)
+                {
+                    registerAsGuest();
+                }
+                else if(response==2)
+                {
+                    searchHotelRoom();
+                }
+                else if(response==3)
+                {
+                    reserveHotelRoom();
+                }
+                else if(response==4)
+                {
+                    viewMyReservationDetails();
+                }
+                else if(response==5)
+                {
+                    viewAllMyReservations();
+                }
+                else if(response==6)
+                {
+                    break;
+                }
+                else
+                {
+                    System.out.println("Invalid option, please try again! ");
+                } 
+            }
+            
+            if(response==6)
+            {
+                break;
+            }
+        }
+    }
+
+    private void registerAsGuest() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void searchHotelRoom() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void reserveHotelRoom() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void viewMyReservationDetails() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void viewAllMyReservations() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
