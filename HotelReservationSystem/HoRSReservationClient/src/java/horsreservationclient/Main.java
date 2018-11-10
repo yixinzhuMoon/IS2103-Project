@@ -5,17 +5,34 @@
  */
 package horsreservationclient;
 
+import ejb.session.stateless.GuestControllerRemote;
+import ejb.session.stateless.RoomControllerRemote;
+import ejb.session.stateless.RoomRateControllerRemote;
+import ejb.session.stateless.RoomTypeControllerRemote;
+import javax.ejb.EJB;
+
 /**
  *
- * @author casseylow
+ * @author zhu yixin
  */
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
+    @EJB
+    private static RoomTypeControllerRemote roomTypeControllerRemote;
+
+    @EJB
+    private static RoomRateControllerRemote roomRateControllerRemote;
+
+    @EJB
+    private static RoomControllerRemote roomControllerRemote;
+
+    @EJB
+    private static GuestControllerRemote guestControllerRemote;
+
+    
     public static void main(String[] args) {
-        // TODO code application logic here
+        MainApp mainApp=new MainApp(guestControllerRemote,roomControllerRemote,roomRateControllerRemote,roomTypeControllerRemote);
+        mainApp.runApp();
     }
     
 }
