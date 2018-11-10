@@ -10,6 +10,7 @@ import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
 import entity.Guest;
+import exception.GuestAlreadyRegisteredException;
 import exception.GuestNotFoundException;
 import exception.InvalidLoginCredentialException;
 import java.util.Scanner;
@@ -162,8 +163,27 @@ class MainApp {
         }
     }
 
-    private void registerAsGuest() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void registerAsGuest() 
+    {
+        Scanner scanner=new Scanner(System.in);
+        
+        System.out.println("\n*** HoRS System :: Register As Guest ***\n");
+        System.out.print("Enter email > ");
+        String email=scanner.nextLine().trim();
+        System.out.print("Enter mobile phone number >");
+        Long mobilePhoneNumber=scanner.nextLong();
+        System.out.print("Enter passport > ");
+        String passport=scanner.nextLine().trim();
+        
+        try
+        {
+            guestControllerRemote.registerAsGuest(email,mobilePhoneNumber,passport);
+            System.out.println("Visitor registered as guest successfully! ");
+        }
+        catch(GuestAlreadyRegisteredException ex)
+        {
+            System.out.println("An error has occured while registering as guest: "+ex.getMessage()+"!\n");
+        }
     }
 
     private void searchHotelRoom() {
