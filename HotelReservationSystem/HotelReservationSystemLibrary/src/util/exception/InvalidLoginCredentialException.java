@@ -3,19 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exception;
+package util.exception;
 
 /**
  *
- * @author haiyan
+ * @author Zhu Yixin
  */
-public class NoResultException extends Exception{
+public class InvalidLoginCredentialException extends Exception{
 
-    public NoResultException() {
+    public InvalidLoginCredentialException() {
     }
 
-    public NoResultException(String message) {
+    public InvalidLoginCredentialException(String message) {
         super(message);
     }
+    
     
 }

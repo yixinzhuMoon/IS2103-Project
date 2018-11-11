@@ -3,20 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exception;
+package util.exception;
 
 /**
  *
  * @author Zhu Yixin
  */
-public class InvalidLoginCredentialException extends Exception{
+public class GuestAlreadyRegisteredException extends Exception{
 
-    public InvalidLoginCredentialException() {
+    public GuestAlreadyRegisteredException() {
     }
 
-    public InvalidLoginCredentialException(String message) {
+    public GuestAlreadyRegisteredException(String message) {
         super(message);
     }
-    
     
 }

@@ -3,20 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exception;
+package util.exception;
 
 /**
  *
- * @author Zhu Yixin
+ * @author haiyan
  */
-public class GuestNotFoundException extends Exception{
+public class NoResultException extends Exception{
 
-    public GuestNotFoundException() {
+    public NoResultException() {
     }
 
-    public GuestNotFoundException(String message) {
+    public NoResultException(String message) {
         super(message);
     }
-    
     
 }
