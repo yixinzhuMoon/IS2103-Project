@@ -30,8 +30,8 @@ public class PartnerReservation extends Reservation implements Serializable {
         super();
     }
 
-    public PartnerReservation(Long reservationId, Partner partner, Date reservationDate) {
-        super(reservationId, reservationDate);
+    public PartnerReservation(Partner partner, Date reservationDate) {
+        super(reservationDate);
         this.partner = partner;
     }
 

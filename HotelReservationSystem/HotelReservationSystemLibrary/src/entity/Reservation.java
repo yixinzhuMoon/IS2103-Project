@@ -43,8 +43,7 @@ public abstract class Reservation implements Serializable {
         reservationLineItems = new ArrayList<>();
     }
     
-    public Reservation(Long reservationId, Date reservationDate) {
-        this.reservationId = reservationId;
+    public Reservation(Date reservationDate) {
         this.reservationDate = reservationDate;
     }
 

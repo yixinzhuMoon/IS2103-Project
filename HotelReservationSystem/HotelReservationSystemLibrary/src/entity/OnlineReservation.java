@@ -30,8 +30,8 @@ public class OnlineReservation extends Reservation implements Serializable {
         super();
     }
 
-    public OnlineReservation(Long reservationId, Guest guest, Date reservationDate) {
-        super(reservationId, reservationDate);
+    public OnlineReservation(Guest guest, Date reservationDate) {
+        super(reservationDate);
         this.guest = guest;
     }
 

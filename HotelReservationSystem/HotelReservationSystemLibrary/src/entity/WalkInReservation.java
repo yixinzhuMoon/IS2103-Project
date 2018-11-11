@@ -30,8 +30,8 @@ public class WalkInReservation extends Reservation implements Serializable {
         super();
     }
 
-    public WalkInReservation(Long reservationId, Employee employee, Date reservationDate) {
-        super(reservationId, reservationDate);
+    public WalkInReservation(Employee employee, Date reservationDate) {
+        super(reservationDate);
         this.employee = employee;
     }
 

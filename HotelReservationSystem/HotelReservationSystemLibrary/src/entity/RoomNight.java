@@ -35,8 +35,7 @@ public class RoomNight implements Serializable {
         roomRates = new ArrayList<>();
     }
 
-    public RoomNight(Long roomNightId, String day) {
-        this.roomNightId = roomNightId;
+    public RoomNight(String day) {
         this.effectiveDay = day;
     }
 

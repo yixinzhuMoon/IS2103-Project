@@ -43,9 +43,8 @@ public class Guest implements Serializable {
         onlineReservations = new ArrayList<>();
     }
 
-    public Guest(Long guestId, String email, String name, String password) {
+    public Guest(String email, String name, String password) {
         this();
-        this.guestId = guestId;
         this.email = email;
         this.name = name;
         this.password = password;

@@ -5,9 +5,12 @@
  */
 package ejb.session.stateless;
 
+import entity.Employee;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  *
@@ -18,6 +21,18 @@ import javax.ejb.Stateless;
 @Remote(EmployeeControllerRemote.class)
 public class EmployeeController implements EmployeeControllerRemote, EmployeeControllerLocal {
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
+    private EntityManager em;
+
+    public EmployeeController() {
+    }
+    
+    @Override
+    public Long createEmployee(Employee newEmployee){
+        em.persist(newEmployee);
+        em.flush();
+        
+        return newEmployee.getEmployeeId();
+    }
+    
 }

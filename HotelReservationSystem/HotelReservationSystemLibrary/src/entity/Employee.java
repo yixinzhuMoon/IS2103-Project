@@ -48,9 +48,8 @@ public class Employee implements Serializable {
         walkInReservations = new ArrayList<>();
     }
 
-    public Employee(Long employeeId, String email, String name, String password, EmployeeRole role) {
+    public Employee(String email, String name, String password, EmployeeRole role) {
         this();
-        this.employeeId = employeeId;
         this.email = email;
         this.name = name;
         this.password = password;

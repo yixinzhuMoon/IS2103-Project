@@ -32,8 +32,8 @@ public class PeakRate extends RoomRate implements Serializable {
         super();
     }
 
-    public PeakRate(Long roomRateId, String name, BigDecimal ratePerNight, RoomType roomType, Date startDate, Date endDate) {
-        super(roomRateId, name, ratePerNight, roomType);
+    public PeakRate(String name, BigDecimal ratePerNight, RoomType roomType, Date startDate, Date endDate) {
+        super(name, ratePerNight, roomType);
         this.startDate = startDate;
         this.endDate = endDate;
     }
