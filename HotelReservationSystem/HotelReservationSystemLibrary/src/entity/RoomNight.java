@@ -24,7 +24,7 @@ public class RoomNight implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomNightId;
     @Column(nullable=false)
     private String effectiveDay; //monday or tuesday or wednesday,etc.

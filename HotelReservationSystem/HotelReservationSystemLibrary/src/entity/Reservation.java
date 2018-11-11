@@ -31,7 +31,7 @@ public abstract class Reservation implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long reservationId;
     @Temporal(TemporalType.DATE)
     @Column(nullable=false)
