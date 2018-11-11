@@ -6,13 +6,18 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import util.enumeration.EmployeeRole;
 
 /**
@@ -35,8 +40,29 @@ public class Employee implements Serializable {
     private String password;
     @Enumerated(EnumType.STRING)
     private EmployeeRole role;
+    
+    @OneToMany(mappedBy="employee", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<WalkInReservation> walkInReservations;
 
     public Employee() {
+        walkInReservations = new ArrayList<>();
+    }
+
+    public Employee(Long employeeId, String email, String name, String password, EmployeeRole role) {
+        this();
+        this.employeeId = employeeId;
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.role = role;
+    }
+
+    public List<WalkInReservation> getWalkInReservations() {
+        return walkInReservations;
+    }
+
+    public void setWalkInReservations(List<WalkInReservation> walkInReservations) {
+        this.walkInReservations = walkInReservations;
     }
 
     public String getEmail() {

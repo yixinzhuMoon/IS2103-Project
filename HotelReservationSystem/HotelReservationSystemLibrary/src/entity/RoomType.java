@@ -25,7 +25,7 @@ public class RoomType implements Serializable {
     @Column(length = 5)
     private Long roomTypeId;
     @Column(unique = true, nullable = false)
-    private String name;
+    private String name; //Deluxe Room, Premier Room, Family Room, Junior Suite, Grand Suite, etc. new types can be defined
     private String description;
     @Column(nullable = false)
     private Integer roomSize;
@@ -35,6 +35,17 @@ public class RoomType implements Serializable {
     private String amenities;
 
     public RoomType() {
+    }
+
+    public RoomType(Long roomTypeId, String name, String description, Integer roomSize, String bed, Integer capacity, String amenities) {
+        this();
+        this.roomTypeId = roomTypeId;
+        this.name = name;
+        this.description = description;
+        this.roomSize = roomSize;
+        this.bed = bed;
+        this.capacity = capacity;
+        this.amenities = amenities;
     }
     
     public Long getRoomTypeId() {

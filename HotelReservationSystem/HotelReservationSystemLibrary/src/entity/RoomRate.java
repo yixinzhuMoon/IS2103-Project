@@ -8,10 +8,15 @@ package entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -20,19 +25,39 @@ import javax.persistence.TemporalType;
  * @author casseylow
  */
 @Entity
-public class RoomRate implements Serializable {
+@Inheritance(strategy=InheritanceType.JOINED)
+
+public abstract class RoomRate implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long roomRateId;
-    private String name;
-    private String rateType;
-    private BigDecimal ratePerNight;
-    @Temporal(TemporalType.DATE)
-    private Date validity;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    protected Long roomRateId;
+    @Column(nullable=false)
+    protected String name;
+//    private String rateType; //removed since we already have inheritance classes
+    @Column(nullable=false)
+    protected BigDecimal ratePerNight;
+    @ManyToOne
+    protected RoomType roomType;
 
     public RoomRate() {
+    }
+
+    public RoomRate(Long roomRateId, String name, BigDecimal ratePerNight, RoomType roomType) {
+        this();
+        this.roomRateId = roomRateId;
+        this.name = name;
+        this.ratePerNight = ratePerNight;
+        this.roomType = roomType;
+    }
+
+    public RoomType getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(RoomType roomType) {
+        this.roomType = roomType;
     }
 
     public Long getRoomRateId() {
@@ -51,28 +76,12 @@ public class RoomRate implements Serializable {
         this.name = name;
     }
 
-    public String getRateType() {
-        return rateType;
-    }
-
-    public void setRateType(String rateType) {
-        this.rateType = rateType;
-    }
-
     public BigDecimal getRatePerNight() {
         return ratePerNight;
     }
 
     public void setRatePerNight(BigDecimal ratePerNight) {
         this.ratePerNight = ratePerNight;
-    }
-
-    public Date getValidity() {
-        return validity;
-    }
-
-    public void setValidity(Date validity) {
-        this.validity = validity;
     }
 
     @Override

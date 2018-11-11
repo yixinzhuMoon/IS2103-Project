@@ -6,11 +6,16 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -30,8 +35,28 @@ public class Partner implements Serializable {
     private String name;
     @Column(nullable = false)
     private String password;
+    
+    @OneToMany(mappedBy="partner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<PartnerReservation> partnerReservations;
 
     public Partner() {
+        partnerReservations = new ArrayList<>();
+    }
+
+    public Partner(Long partnerId, String email, String name, String password) {
+        this();
+        this.partnerId = partnerId;
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
+
+    public List<PartnerReservation> getPartnerReservations() {
+        return partnerReservations;
+    }
+
+    public void setPartnerReservations(List<PartnerReservation> partnerReservations) {
+        this.partnerReservations = partnerReservations;
     }
 
     public String getEmail() {
