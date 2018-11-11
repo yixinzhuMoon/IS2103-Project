@@ -26,7 +26,7 @@ public class Guest implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 6)
     private Long guestId;
     @Column(unique = true, nullable = false)
