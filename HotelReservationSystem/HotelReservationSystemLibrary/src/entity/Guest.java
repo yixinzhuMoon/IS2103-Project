@@ -8,8 +8,10 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,25 +36,27 @@ public class Guest implements Serializable {
     @Column(nullable = false,unique = true)
     private String password;
     
-    @OneToMany(mappedBy = "Guest")
-    private List<Room> rooms;
+    @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<OnlineReservation> onlineReservations;
 
     public Guest() {
-        rooms = new ArrayList<>();
+        onlineReservations = new ArrayList<>();
     }
 
-    public Guest(String email, String name, String password) {
+    public Guest(Long guestId, String email, String name, String password) {
+        this();
+        this.guestId = guestId;
         this.email = email;
         this.name = name;
         this.password = password;
     }
 
-    public List<Room> getRooms() {
-        return rooms;
+    public List<OnlineReservation> getOnlineReservations() {
+        return onlineReservations;
     }
 
-    public void setRooms(List<Room> rooms) {
-        this.rooms = rooms;
+    public void setOnlineReservations(List<OnlineReservation> onlineReservations) {
+        this.onlineReservations = onlineReservations;
     }
 
     public String getName() {

@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -31,26 +32,36 @@ public class Room implements Serializable {
     private Integer roomNumber; // room floor + room number
     @Column(nullable = false)
     private String roomStatus;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
-    private Guest guest;
+    @ManyToOne
+    private RoomType roomType;
+    @ManyToOne(optional=true)
+    @JoinColumn(nullable=true)
+    private ReservationLineItem reservation;
 
     public Room() {
     }
 
-    public Room(Integer roomNumber, String roomStatus, Guest guest) {
+    public Room(Integer roomNumber, String roomStatus, RoomType roomType) {
+        this();
         this.roomNumber = roomNumber;
         this.roomStatus = roomStatus;
-        this.guest = guest;
+        this.roomType = roomType;
     }
 
-    public Guest getGuest() {
-        return guest;
+    public RoomType getRoomType() {
+        return roomType;
     }
 
-    public void setGuest(Guest guest) {
-        this.guest = guest;
+    public void setRoomType(RoomType roomType) {
+        this.roomType = roomType;
+    }
+
+    public ReservationLineItem getReservation() {
+        return reservation;
+    }
+
+    public void setReservation(ReservationLineItem reservation) {
+        this.reservation = reservation;
     }
 
     public Integer getRoomNumber() {
