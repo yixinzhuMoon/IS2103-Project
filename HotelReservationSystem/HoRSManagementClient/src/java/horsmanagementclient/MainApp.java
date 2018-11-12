@@ -258,7 +258,7 @@ class MainApp {
         System.out.print("Enter Password> ");
         newPartner.setPassword(scanner.nextLine().trim());
         newPartner = partnerControllerRemote.createPartner(newPartner);
-        System.out.println("New employee created successfully!: " + newPartner.getPartnerId()+ "\n");
+        System.out.println("New partner created successfully!: " + newPartner.getPartnerId()+ "\n");
 
     }
     

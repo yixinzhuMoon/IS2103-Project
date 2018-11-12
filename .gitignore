@@ -21,5 +21,9 @@ HotelReservationSystem/HotelReservationSystem-ejb/setup/glassfish-resources.xml
 /HotelReservationSystem/HotelReservationSystemLibrary/dist/
 /HotelReservationSystem/HoRSManagementClient/build/
 /HotelReservationSystem/HoRSManagementClient/dist/
+<<<<<<< HEAD
 /HotelReservationSystem/HolidayReservationSystem/nbproject/private/
 /HotelReservationSystem/HolidayReservationClient/nbproject/private/
+=======
+/HotelReservationSystem/HotelReservationSystemLibrary/build
+>>>>>>> bab0272aba42639a1ddc02ba1e7498346db02616
