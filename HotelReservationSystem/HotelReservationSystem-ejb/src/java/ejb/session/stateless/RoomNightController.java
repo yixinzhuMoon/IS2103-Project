@@ -5,9 +5,12 @@
  */
 package ejb.session.stateless;
 
+import entity.RoomNight;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  *
@@ -18,6 +21,12 @@ import javax.ejb.Stateless;
 @Remote(RoomNightControllerRemote.class)
 public class RoomNightController implements RoomNightControllerRemote, RoomNightControllerLocal {
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
+    private EntityManager em;
+
+    public RoomNightController() {
+    }
+
+    public void createRoomNight(){
+    }
 }
