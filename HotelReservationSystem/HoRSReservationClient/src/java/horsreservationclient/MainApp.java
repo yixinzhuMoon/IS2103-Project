@@ -44,7 +44,7 @@ class MainApp {
         
         while(true)
         {
-            System.out.println("\n*** Welcome to HoRS Reservatoion System ***\n");
+            System.out.println("\n*** Welcome to HoRS Hotel Reservation System ***\n");
             System.out.println("1: Gust Login");
             System.out.println("2: Exit\n");
             response=0;
@@ -90,7 +90,7 @@ class MainApp {
         String email="";
         String password="";
         
-        System.out.println("\n*** HoRS System :: Gust Login ***\n");
+        System.out.println("\n*** HoRS System :: Guest Login ***\n");
         System.out.print("Enter email> ");
         email=scanner.nextLine().trim();
         System.out.print("Enter password> ");

@@ -11,8 +11,11 @@ import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.EmployeeNotFoundException;
 import util.exception.InvalidLoginCredentialException;
 
 /**
@@ -31,27 +34,75 @@ public class EmployeeController implements EmployeeControllerRemote, EmployeeCon
     }
     
     @Override
-    public Long createEmployee(Employee newEmployee){
+    public Employee createEmployee(Employee newEmployee)
+    {
         em.persist(newEmployee);
         em.flush();
         
-        return newEmployee.getEmployeeId();
+        return newEmployee;
     }
     
-    public Employee employeeLogin(String email, String password) throws InvalidLoginCredentialException{
+    @Override
+    public List<Employee> retrieveAllEmployees()
+    {
+        Query query = em.createQuery("SELECT e FROM Employee e");
+        return query.getResultList();
+    }
+    
+    @Override
+    public Employee retrieveEmployeeByEmployeeId(Long employeeId) throws EmployeeNotFoundException
+    {
+        Employee employee = em.find(Employee.class, employeeId);
         
-        Query query = em.createQuery("SELECT e FROM Employee e WHERE e.email = :inEmail AND e.password = :inPassword");
-        query.setParameter("inEmail", email);
-        query.setParameter("inPassword", password);
-        
-        try{
-            
-            Employee employee = (Employee)query.getSingleResult();
+        if(employee != null)
+        {
             return employee;
+        }
+        else
+        {
+            throw new EmployeeNotFoundException("Employee ID " + employeeId + " does not exist!");
+        }
+    }
+    
+    
+    
+    @Override
+    public Employee retrieveEmployeeByEmail(String email) throws EmployeeNotFoundException
+    {
+        Query query = em.createQuery("SELECT e FROM Employee e WHERE e.email = :inEmail");
+        query.setParameter("inEmail", email);
         
-        }catch(Exception ex){
+        try
+        {
+            return (Employee)query.getSingleResult();
+        }
+        catch(NoResultException | NonUniqueResultException ex)
+        {
+            throw new EmployeeNotFoundException("Employee Email " + email + " does not exist!");
+        }
+    }
+    
+    @Override
+    public Employee employeeLogin(String email, String password) throws InvalidLoginCredentialException
+    {
+        try
+        {
+            Employee employee = retrieveEmployeeByEmail(email);
             
-            throw new InvalidLoginCredentialException("Username does not exist or invalid password");
+            if(employee.getPassword().equals(password))
+            {
+                employee.getWalkInReservations().size();                
+                return employee;
+            }
+            else
+            {
+                throw new InvalidLoginCredentialException("Email does not exist or invalid password!");
+            }
+        }
+        catch(EmployeeNotFoundException ex)
+        {
+            throw new InvalidLoginCredentialException("Email does not exist or invalid password!");
         }
     }
 }
+

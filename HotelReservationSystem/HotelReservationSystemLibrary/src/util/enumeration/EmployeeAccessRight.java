@@ -9,9 +9,9 @@ package util.enumeration;
  *
  * @author casseylow
  */
-public enum EmployeeRole {
+public enum EmployeeAccessRight {
     SYSTEM_ADMIN,
-    OPERATION_AMANGER,
+    OPERATION_MANAGER,
     SALES_MANAGER,
     GUEST_RELATION_OFFICER
 }
