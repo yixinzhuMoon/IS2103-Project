@@ -72,6 +72,10 @@ public class Room implements Serializable {
         this.roomNumber = roomNumber;
     }
 
+    public void setRoomStatus(String roomStatus) {
+        this.roomStatus = roomStatus;
+    }
+
     public String getRoomStatus() {
         return roomStatus;
     }

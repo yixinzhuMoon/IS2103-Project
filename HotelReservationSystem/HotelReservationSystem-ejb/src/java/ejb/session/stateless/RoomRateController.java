@@ -5,9 +5,21 @@
  */
 package ejb.session.stateless;
 
+import entity.ExceptionReport;
+import entity.Room;
+import entity.RoomType;
+import java.util.ArrayList;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import util.exception.DeleteRoomException;
+import util.exception.RoomNotFoundException;
+import util.exception.RoomTypeNotFoundException;
 
 /**
  *
@@ -18,6 +30,10 @@ import javax.ejb.Stateless;
 @Remote(RoomRateControllerRemote.class)
 public class RoomRateController implements RoomRateControllerRemote, RoomRateControllerLocal {
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
+    private EntityManager em;
+
+    @EJB
+    private RoomTypeControllerLocal roomTypeControllerLocal;
+    
 }
