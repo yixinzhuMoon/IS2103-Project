@@ -29,7 +29,7 @@ public class Employee implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 6)
     private Long employeeId;
     @Column(unique = true, nullable = false)
@@ -48,9 +48,8 @@ public class Employee implements Serializable {
         walkInReservations = new ArrayList<>();
     }
 
-    public Employee(Long employeeId, String email, String name, String password, EmployeeRole role) {
+    public Employee(String email, String name, String password, EmployeeRole role) {
         this();
-        this.employeeId = employeeId;
         this.email = email;
         this.name = name;
         this.password = password;

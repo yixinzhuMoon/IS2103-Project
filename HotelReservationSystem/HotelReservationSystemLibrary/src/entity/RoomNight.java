@@ -7,12 +7,15 @@ package entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 /**
@@ -24,37 +27,36 @@ public class RoomNight implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomNightId;
     @Column(nullable=false)
-    private String effectiveDay; //monday or tuesday or wednesday,etc.
-    @OneToMany
-    private List<RoomRate> roomRates;
+    private Date effectiveDay; 
+    @ManyToOne
+    private RoomRate roomRate;
 
     public RoomNight() {
-        roomRates = new ArrayList<>();
     }
 
-    public RoomNight(Long roomNightId, String day) {
-        this.roomNightId = roomNightId;
-        this.effectiveDay = day;
-    }
-
-    public String getEffectiveDay() {
-        return effectiveDay;
-    }
-
-    public void setEffectiveDay(String effectiveDay) {
+    public RoomNight(Date effectiveDay) {
         this.effectiveDay = effectiveDay;
     }
 
-    public List<RoomRate> getRoomRates() {
-        return roomRates;
+    public Date getEffectiveDay() {
+        return effectiveDay;
     }
 
-    public void setRoomRates(List<RoomRate> roomRates) {
-        this.roomRates = roomRates;
+    public void setEffectiveDay(Date effectiveDay) {
+        this.effectiveDay = effectiveDay;
     }
+
+    public RoomRate getRoomRate() {
+        return roomRate;
+    }
+
+    public void setRoomRate(RoomRate roomRate) {
+        this.roomRate = roomRate;
+    }
+
 
     public Long getRoomNightId() {
         return roomNightId;

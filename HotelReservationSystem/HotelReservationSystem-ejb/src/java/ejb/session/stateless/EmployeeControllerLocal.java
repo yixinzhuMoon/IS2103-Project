@@ -5,6 +5,9 @@
  */
 package ejb.session.stateless;
 
+import entity.Employee;
+
 public interface EmployeeControllerLocal {
     
+    public Long createEmployee(Employee newEmployee);
 }

@@ -44,9 +44,8 @@ public abstract class RoomRate implements Serializable {
     public RoomRate() {
     }
 
-    public RoomRate(Long roomRateId, String name, BigDecimal ratePerNight, RoomType roomType) {
+    public RoomRate(String name, BigDecimal ratePerNight, RoomType roomType) {
         this();
-        this.roomRateId = roomRateId;
         this.name = name;
         this.ratePerNight = ratePerNight;
         this.roomType = roomType;

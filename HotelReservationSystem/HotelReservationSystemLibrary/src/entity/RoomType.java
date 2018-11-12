@@ -21,7 +21,7 @@ public class RoomType implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 5)
     private Long roomTypeId;
     @Column(unique = true, nullable = false)
@@ -37,9 +37,8 @@ public class RoomType implements Serializable {
     public RoomType() {
     }
 
-    public RoomType(Long roomTypeId, String name, String description, Integer roomSize, String bed, Integer capacity, String amenities) {
+    public RoomType(String name, String description, Integer roomSize, String bed, Integer capacity, String amenities) {
         this();
-        this.roomTypeId = roomTypeId;
         this.name = name;
         this.description = description;
         this.roomSize = roomSize;

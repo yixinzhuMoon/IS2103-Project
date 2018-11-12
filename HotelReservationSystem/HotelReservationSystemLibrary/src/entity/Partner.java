@@ -26,7 +26,7 @@ public class Partner implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 6)
     private Long partnerId;
     @Column(unique = true, nullable = false)
@@ -43,9 +43,8 @@ public class Partner implements Serializable {
         partnerReservations = new ArrayList<>();
     }
 
-    public Partner(Long partnerId, String email, String name, String password) {
+    public Partner(String email, String name, String password) {
         this();
-        this.partnerId = partnerId;
         this.email = email;
         this.name = name;
         this.password = password;
