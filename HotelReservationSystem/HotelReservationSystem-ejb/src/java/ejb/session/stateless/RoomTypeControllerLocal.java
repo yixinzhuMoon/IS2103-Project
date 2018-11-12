@@ -5,6 +5,22 @@
  */
 package ejb.session.stateless;
 
+import entity.RoomType;
+import java.util.List;
+import util.exception.DeleteRoomTypeException;
+import util.exception.RoomTypeNotFoundException;
+
 public interface RoomTypeControllerLocal {
-    
+
+    public RoomType createRoomType(RoomType newRoomType);
+
+    public List<RoomType> retrieveAllRoomTypes();
+
+    public RoomType retrieveRoomTypeById(Long roomTypeId) throws RoomTypeNotFoundException;
+
+    public RoomType retrieveRoomTypeByName(String name) throws RoomTypeNotFoundException;
+
+    public void updateRoomType(RoomType roomType) throws RoomTypeNotFoundException;
+
+    public void deleteRoomType(Long roomTypeId) throws RoomTypeNotFoundException, DeleteRoomTypeException;
 }
