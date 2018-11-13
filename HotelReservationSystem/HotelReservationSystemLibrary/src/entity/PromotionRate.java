@@ -24,7 +24,7 @@ public class PromotionRate extends RoomRate implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Temporal(TemporalType.DATE)
-    private Date startDate; ;
+    private Date startDate;
     @Temporal(TemporalType.DATE)
     private Date endDate; 
 

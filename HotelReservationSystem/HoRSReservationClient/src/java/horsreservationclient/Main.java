@@ -37,7 +37,7 @@ public class Main {
 
     
     public static void main(String[] args) throws GuestNotFoundException {
-        MainApp mainApp=new MainApp(guestControllerRemote,roomControllerRemote,roomRateControllerRemote,roomTypeControllerRemote, roomReservationSessionBeanRemote);
+        MainApp mainApp=new MainApp(guestControllerRemote,roomControllerRemote,roomRateControllerRemote,roomTypeControllerRemote,roomReservationSessionBeanRemote);
         mainApp.runApp();
     }
     

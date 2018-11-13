@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.RoomType;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -27,6 +28,8 @@ import util.exception.RoomTypeNotFoundException;
 @Remote(RoomTypeControllerRemote.class)
 
 public class RoomTypeController implements RoomTypeControllerRemote, RoomTypeControllerLocal {
+    
+    
 
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;

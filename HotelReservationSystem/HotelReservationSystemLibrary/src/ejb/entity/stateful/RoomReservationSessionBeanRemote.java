@@ -5,6 +5,23 @@
  */
 package ejb.entity.stateful;
 
+import entity.OnlineReservation;
+import entity.ReservationLineItem;
+import java.util.Date;
+import java.util.List;
+import util.exception.GuestNotFoundException;
+
 public interface RoomReservationSessionBeanRemote {
-    
+
+    public void remove();
+
+    public void preDestroy();
+
+    public List<ReservationLineItem> searchHotelRoom(Date checkInDate, Date checkOutDate);
+
+    public Long getTotalAmount();
+
+    public OnlineReservation reserveRoom(String email, ReservationLineItem reservationRoom) throws GuestNotFoundException;
+
+
 }
