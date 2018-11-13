@@ -7,6 +7,7 @@ package horsreservationclient;
 
 import ejb.entity.stateful.RoomReservationSessionBeanRemote;
 import ejb.session.stateless.GuestControllerRemote;
+import ejb.session.stateless.ReservationControllerRemote;
 import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
@@ -18,6 +19,9 @@ import javax.ejb.EJB;
  * @author zhu yixin
  */
 public class Main {
+
+    @EJB
+    private static ReservationControllerRemote reservationControllerRemote;
 
     @EJB
     private static RoomReservationSessionBeanRemote roomReservationSessionBeanRemote;
@@ -34,10 +38,11 @@ public class Main {
     @EJB
     private static GuestControllerRemote guestControllerRemote;
     
+    
 
     
     public static void main(String[] args) throws GuestNotFoundException {
-        MainApp mainApp=new MainApp(guestControllerRemote,roomControllerRemote,roomRateControllerRemote,roomTypeControllerRemote,roomReservationSessionBeanRemote);
+        MainApp mainApp=new MainApp(guestControllerRemote,roomControllerRemote,roomRateControllerRemote,roomTypeControllerRemote,roomReservationSessionBeanRemote,reservationControllerRemote);
         mainApp.runApp();
     }
     

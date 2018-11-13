@@ -7,6 +7,7 @@ package horsreservationclient;
 
 import ejb.entity.stateful.RoomReservationSessionBeanRemote;
 import ejb.session.stateless.GuestControllerRemote;
+import ejb.session.stateless.ReservationControllerRemote;
 import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
@@ -32,6 +33,7 @@ class MainApp {
     private RoomControllerRemote roomControllerRemote;
     private RoomRateControllerRemote roomRateControllerRemote;
     private RoomTypeControllerRemote roomTypeControllerRemote;
+    private ReservationControllerRemote reservationControllerRemote;
     
     private RoomReservationSessionBeanRemote roomReservationSessionBeanRemote;
     
@@ -43,7 +45,7 @@ class MainApp {
         totalAmount=new ArrayList<>();
     }
 
-    public MainApp(GuestControllerRemote guestControllerRemote, RoomControllerRemote roomControllerRemote, RoomRateControllerRemote roomRateControllerRemote, RoomTypeControllerRemote roomTypeControllerRemote,RoomReservationSessionBeanRemote roomReservationSessionBeanRemote) {
+    public MainApp(GuestControllerRemote guestControllerRemote, RoomControllerRemote roomControllerRemote, RoomRateControllerRemote roomRateControllerRemote, RoomTypeControllerRemote roomTypeControllerRemote,RoomReservationSessionBeanRemote roomReservationSessionBeanRemote,ReservationControllerRemote reservationControllerRemote) {
         this();
         
         this.guestControllerRemote = guestControllerRemote;
@@ -51,6 +53,7 @@ class MainApp {
         this.roomRateControllerRemote = roomRateControllerRemote;
         this.roomTypeControllerRemote = roomTypeControllerRemote;
         this.roomReservationSessionBeanRemote = roomReservationSessionBeanRemote;
+        this.reservationControllerRemote=reservationControllerRemote;
     }
     
     public void runApp() throws GuestNotFoundException
@@ -75,6 +78,7 @@ class MainApp {
                     try
                     {
                         doLogin();
+                        menuMain();
                     }
                     catch(InvalidLoginCredentialException ex)
                     {
@@ -114,7 +118,6 @@ class MainApp {
         {
             currentGuest= guestControllerRemote.guestLogin(email,password);
             System.out.println("Gust Login successful !\n");
-            menuMain();
         }
         else 
         {
@@ -268,11 +271,33 @@ class MainApp {
     }
 
     private void viewMyReservationDetails() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Scanner scanner=new Scanner(System.in);
+        
+        System.out.println("\n *** HoRS System :: View My Reservation Details ***\n");
+        System.out.print("Enter reservation id> ");
+        Long reservationId=scanner.nextLong();
+        
+        OnlineReservation onlineReservation=reservationControllerRemote.retrieveOnlineReservationById(reservationId);
+        System.out.printf("%8s%22s%\n", "Reservation Id","Reservation Date");
+        System.out.printf("%8s%22s%\n", onlineReservation.getReservationId(),onlineReservation.getReservationDate());
+        
     }
 
     private void viewAllMyReservations() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Scanner scanner=new Scanner(System.in);
+        
+        System.out.println("\n*** HoRS System :: View All My Reservations ***\n");
+        
+        List<OnlineReservation> onlineReservations = reservationControllerRemote.retrieveAllOnlineReservations();
+        System.out.printf("%8s%20s%\n", "Reservation Id", "Reservation Date");
+
+        for(OnlineReservation onlineReservation: onlineReservations)
+        {
+            System.out.printf("%8s%20s%\n",onlineReservation.getReservationId(),onlineReservation.getReservationDate());
+        }
+        
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
     }
     
 }
