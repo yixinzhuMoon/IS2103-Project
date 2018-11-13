@@ -47,7 +47,7 @@ public class GuestController implements GuestControllerRemote, GuestControllerLo
        }
        catch(GuestNotFoundException ex)
        {
-            throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
+            throw new InvalidLoginCredentialException("Email does not exist or invalid password!");
        }
         
     }

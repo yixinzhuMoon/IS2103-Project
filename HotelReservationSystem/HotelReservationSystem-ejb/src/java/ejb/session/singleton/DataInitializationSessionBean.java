@@ -14,7 +14,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import util.enumeration.EmployeeRole;
+import util.enumeration.EmployeeAccessRight;
 
 /**
  *
@@ -45,7 +45,7 @@ public class DataInitializationSessionBean {
     public void initializeData(){
         try{
             
-            employeeController.createEmployee(new Employee("sys_admin@gmail.com", "Default System Administrator", "password", EmployeeRole.SYSTEM_ADMIN));
+            employeeController.createEmployee(new Employee("sys_admin@gmail.com", "Default System Administrator", "password", EmployeeAccessRight.SYSTEM_ADMIN));
         
         }catch(Exception ex){
             

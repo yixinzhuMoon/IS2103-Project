@@ -18,7 +18,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import util.enumeration.EmployeeRole;
+import util.enumeration.EmployeeAccessRight;
 
 /**
  *
@@ -30,7 +30,6 @@ public class Employee implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(length = 6)
     private Long employeeId;
     @Column(unique = true, nullable = false)
     private String email;
@@ -39,7 +38,7 @@ public class Employee implements Serializable {
     @Column(nullable = false)
     private String password;
     @Enumerated(EnumType.STRING)
-    private EmployeeRole role;
+    private EmployeeAccessRight accessRight;
     
     @OneToMany(mappedBy="employee", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<WalkInReservation> walkInReservations;
@@ -48,12 +47,12 @@ public class Employee implements Serializable {
         walkInReservations = new ArrayList<>();
     }
 
-    public Employee(String email, String name, String password, EmployeeRole role) {
+    public Employee(String email, String name, String password, EmployeeAccessRight role) {
         this();
         this.email = email;
         this.name = name;
         this.password = password;
-        this.role = role;
+        this.accessRight = role;
     }
 
     public List<WalkInReservation> getWalkInReservations() {
@@ -88,12 +87,12 @@ public class Employee implements Serializable {
         this.password = password;
     }
 
-    public EmployeeRole getRole() {
-        return role;
+    public EmployeeAccessRight getAccessRight() {
+        return accessRight;
     }
 
-    public void setRole(EmployeeRole role) {
-        this.role = role;
+    public void setAccessRight(EmployeeAccessRight accessRight) {
+        this.accessRight = accessRight;
     }
 
     public Long getEmployeeId() {

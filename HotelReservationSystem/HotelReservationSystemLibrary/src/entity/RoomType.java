@@ -22,7 +22,6 @@ public class RoomType implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(length = 5)
     private Long roomTypeId;
     @Column(unique = true, nullable = false)
     private String name; //Deluxe Room, Premier Room, Family Room, Junior Suite, Grand Suite, etc. new types can be defined
@@ -33,11 +32,12 @@ public class RoomType implements Serializable {
     @Column(nullable = false)
     private Integer capacity;
     private String amenities;
+    private String status;
 
     public RoomType() {
     }
 
-    public RoomType(String name, String description, Integer roomSize, String bed, Integer capacity, String amenities) {
+    public RoomType(String name, String description, Integer roomSize, String bed, Integer capacity, String amenities, String status) {
         this();
         this.name = name;
         this.description = description;
@@ -45,6 +45,7 @@ public class RoomType implements Serializable {
         this.bed = bed;
         this.capacity = capacity;
         this.amenities = amenities;
+        this.status = status;
     }
     
     public Long getRoomTypeId() {
@@ -101,6 +102,14 @@ public class RoomType implements Serializable {
 
     public void setAmenities(String amenities) {
         this.amenities = amenities;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

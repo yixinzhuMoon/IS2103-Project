@@ -33,6 +33,7 @@ public class Main {
 
     @EJB
     private static GuestControllerRemote guestControllerRemote;
+    
 
     
     public static void main(String[] args) throws GuestNotFoundException {
