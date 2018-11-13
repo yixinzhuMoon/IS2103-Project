@@ -48,7 +48,7 @@ class MainApp {
         this.roomControllerRemote = roomControllerRemote;
         this.roomRateControllerRemote = roomRateControllerRemote;
         this.roomTypeControllerRemote = roomTypeControllerRemote;
-        this.roomReservationSessionBeanRemote=this.roomReservationSessionBeanRemote;
+        this.roomReservationSessionBeanRemote=roomReservationSessionBeanRemote;
     }
     
     public void runApp() throws GuestNotFoundException
@@ -120,7 +120,7 @@ class MainApp {
         }      
     }
     
-    private void menuMain()
+    private void menuMain() throws GuestNotFoundException
     {
         Scanner scanner=new Scanner(System.in);
         Integer response=0;
@@ -150,17 +150,13 @@ class MainApp {
                 }
                 else if(response==3)
                 {
-                    reserveHotelRoom();
+                    viewMyReservationDetails();
                 }
                 else if(response==4)
                 {
-                    viewMyReservationDetails();
-                }
-                else if(response==5)
-                {
                     viewAllMyReservations();
                 }
-                else if(response==6)
+                else if(response==5)
                 {
                     break;
                 }
@@ -170,7 +166,7 @@ class MainApp {
                 } 
             }
             
-            if(response==6)
+            if(response==5)
             {
                 break;
             }
@@ -194,7 +190,7 @@ class MainApp {
         System.out.println("Visitor registered as guest "+guestId+" successfully! ");
     }
 
-     private void searchHotelRoom()
+     private void searchHotelRoom() throws GuestNotFoundException
     {
         try
         {
@@ -220,8 +216,8 @@ class MainApp {
             for(ReservationLineItem reservationLineItem:reservationLineItems)
             {
                 number++;
-                BigDecimal totalAmount=roomReservationSessionBeanRemote.getTotalAmount(reservationLineItem);
-                System.out.printf("%8s%22s   %s\n",number, reservationLineItem.getRoomType(), outputDateFormat.format(checkInDate), outputDateFormat.format(checkOutDate),totalAmount);
+                Long totalAmount=roomReservationSessionBeanRemote.getTotalAmount();
+                System.out.printf("%8s%22s   %s\n",number, reservationLineItem.getRoomType().getName(), outputDateFormat.format(checkInDate), outputDateFormat.format(checkOutDate),totalAmount);
             }
             
             System.out.println("------------------------");
@@ -242,8 +238,8 @@ class MainApp {
                         
                         if(roomNumber>=1&&roomNumber<=number)
                         {
-                            System.out.println("\nTotal Amount is " + BigDecimalHelper.formatCurrency(roomReservationSessionBeanRemote.getTotalAmount(reservationLineItems.get(roomNumber-1))));
-                            OnlineReservation onlineReservation = roomReservationSessionBeanRemote.reserveHoliday(currentGuest.getGuestId());
+                            System.out.println("\nTotal Amount is " + roomReservationSessionBeanRemote.getTotalAmount());
+                            OnlineReservation onlineReservation = roomReservationSessionBeanRemote.reserveRoom(currentGuest.getEmail(),reservationLineItems.get(roomNumber));
                             System.out.println("Reservation of room completed successfully!: " + onlineReservation.getReservationId() + "\n");
                         }
                         else if(roomNumber==0)
@@ -268,9 +264,6 @@ class MainApp {
         }
     }
 
-    private void reserveHotelRoom() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     private void viewMyReservationDetails() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

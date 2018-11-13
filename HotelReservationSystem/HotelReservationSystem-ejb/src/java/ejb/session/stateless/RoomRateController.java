@@ -5,6 +5,9 @@
  */
 package ejb.session.stateless;
 
+import entity.RoomRate;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -18,6 +21,4 @@ import javax.ejb.Stateless;
 @Remote(RoomRateControllerRemote.class)
 public class RoomRateController implements RoomRateControllerRemote, RoomRateControllerLocal {
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
 }

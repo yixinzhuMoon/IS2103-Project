@@ -5,6 +5,10 @@
  */
 package ejb.session.stateless;
 
+import entity.RoomType;
+import java.util.Date;
+import java.util.List;
+
 public interface RoomTypeControllerLocal {
     
 }
