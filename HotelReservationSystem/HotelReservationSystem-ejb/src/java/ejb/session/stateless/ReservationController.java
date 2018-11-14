@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.ReservationLineItem;
 import entity.RoomType;
 import java.util.List;
+import java.util.Date;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -57,5 +58,43 @@ public class ReservationController implements ReservationControllerRemote, Reser
             throw new ReservationLineItemNotFoundException("Reservation Line Item " + resLineItem + " does not exist!");
         }
     }
-
+    @Override
+    public ReservationLineItem createReservationLineItem(Date checkInDate,Date checkOutDate,int roomType)
+    {
+        ReservationLineItem reservationLineItem=new ReservationLineItem();
+        reservationLineItem.setCheckInDate(checkInDate);
+        reservationLineItem.setCheckOutDate(checkOutDate);
+        
+        RoomType roomTypeItem=new RoomType();
+        if(roomType==1)
+        {
+            roomTypeItem.setName("Deluxe Room");
+            reservationLineItem.setRoomType(roomTypeItem);
+        }
+        else if(roomType==2)
+        {
+            roomTypeItem.setName("Permier Room");
+            reservationLineItem.setRoomType(roomTypeItem);
+        }
+        else if(roomType==3)
+        {
+            roomTypeItem.setName("Family Room");
+            reservationLineItem.setRoomType(roomTypeItem);
+        }
+        else if(roomType==4)
+        {
+            roomTypeItem.setName("Junior Suite");
+            reservationLineItem.setRoomType(roomTypeItem);
+        }
+        else if(roomType==5)
+        {
+            roomTypeItem.setName("Grand Suite");
+            reservationLineItem.setRoomType(roomTypeItem);
+        }
+                
+        em.persist(reservationLineItem);
+        em.flush();
+        
+        return reservationLineItem;
+    }
 }

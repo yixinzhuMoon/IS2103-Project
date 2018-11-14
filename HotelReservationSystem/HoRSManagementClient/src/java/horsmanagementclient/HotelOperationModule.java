@@ -8,7 +8,6 @@ package horsmanagementclient;
 import ejb.session.stateless.EmployeeControllerRemote;
 import ejb.session.stateless.PartnerControllerRemote;
 import ejb.session.stateless.RoomControllerRemote;
-import ejb.session.stateless.RoomNightControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
 import entity.Employee;
@@ -19,7 +18,6 @@ import entity.PeakRate;
 import entity.PromotionRate;
 import entity.PublishedRate;
 import entity.Room;
-import entity.RoomNight;
 import entity.RoomRate;
 import entity.RoomType;
 import java.math.BigDecimal;
@@ -51,8 +49,6 @@ public class HotelOperationModule {
     private RoomControllerRemote roomControllerRemote;
     private RoomTypeControllerRemote roomTypeControllerRemote;
     private RoomRateControllerRemote roomRateControllerRemote;
-    private RoomNightControllerRemote roomNightControllerRemote;
-    
     private Employee currentEmployee;
     
     public HotelOperationModule(){
@@ -61,7 +57,7 @@ public class HotelOperationModule {
     
     public HotelOperationModule(EmployeeControllerRemote employeeControllerRemote, PartnerControllerRemote partnerControllerRemote, 
             RoomControllerRemote roomControllerRemote, RoomTypeControllerRemote roomTypeControllerRemote, 
-            RoomRateControllerRemote roomRateControllerRemote, RoomNightControllerRemote roomNightControllerRemote, Employee currentEmployee)
+            RoomRateControllerRemote roomRateControllerRemote, Employee currentEmployee)
     {
         this();
         this.employeeControllerRemote = employeeControllerRemote;
@@ -69,7 +65,6 @@ public class HotelOperationModule {
         this.roomControllerRemote = roomControllerRemote;
         this.roomTypeControllerRemote = roomTypeControllerRemote;
         this.roomRateControllerRemote = roomRateControllerRemote;
-        this.roomNightControllerRemote = roomNightControllerRemote;
         
         this.currentEmployee = currentEmployee;
     }
@@ -649,9 +644,12 @@ public class HotelOperationModule {
                 ((PeakRate) newRoomRate).setEndDate(date);
             }
             else if(newRoomRate instanceof NormalRate){
-                System.out.print("Enter Normal Rate validity date (yyyy-MM-dd)> ");
+                System.out.print("Enter Normal Rate start date (yyyy-MM-dd)> ");
                 date = sdf.parse(scanner.nextLine());
-                ((NormalRate) newRoomRate).setValidity(date);
+                ((NormalRate) newRoomRate).setStartDate(date);
+                System.out.print("Enter Normal Rate end date (yyyy-MM-dd)> ");
+                date = sdf.parse(scanner.nextLine());
+                ((NormalRate) newRoomRate).setEndDate(date);
             }
             else if(newRoomRate instanceof PublishedRate){
                 System.out.print("Enter Published Rate validity date (yyyy-MM-dd)> ");
@@ -695,7 +693,8 @@ public class HotelOperationModule {
             System.out.println("Room rate type : " + roomRate.getRoomType().getName());
             System.out.println("Room rate status: " + roomRate.getRoomRateStatus());
             if(roomRate instanceof NormalRate){
-                System.out.println("Room rate validity date: " + ((NormalRate) roomRate).getValidity().toString());
+                System.out.println("Room rate start date: " + ((NormalRate) roomRate).getStartDate().toString());
+                System.out.println("Room rate end date: " + ((NormalRate) roomRate).getEndDate().toString());
             }
             else if(roomRate instanceof PublishedRate){
                 System.out.println("Room rate validity date: " + ((PublishedRate) roomRate).getValidity().toString());
@@ -761,11 +760,17 @@ public class HotelOperationModule {
             }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             if(roomRate instanceof NormalRate){
-                System.out.print("Enter Rate Validity date (blank if no change)> ");
+                System.out.print("Enter Rate Start date (blank if no change)> ");
                 input = scanner.nextLine().trim();
                 if(input.length() > 0)
                 {
-                    ((NormalRate) roomRate).setValidity(sdf.parse(input));
+                    ((NormalRate) roomRate).setStartDate(sdf.parse(input));
+                }
+                System.out.print("Enter Rate End date (blank if no change)> ");
+                input = scanner.nextLine().trim();
+                if(input.length() > 0)
+                {
+                    ((NormalRate) roomRate).setEndDate(sdf.parse(input));
                 }
             }
             else if(roomRate instanceof PublishedRate)
@@ -878,7 +883,7 @@ public class HotelOperationModule {
             {
                 System.out.printf("%12s%40s%16s%10s%15s%12s%12s%30s\n", roomRate.getRoomRateId().toString(), roomRate.getName(),
                         roomRate.getRatePerNight().toString(), roomRate.getRoomRateStatus(), roomRate.getRoomType().getName(),
-                        "NA", "NA", ((NormalRate) roomRate).getValidity().toString());
+                        ((NormalRate) roomRate).getStartDate().toString(), ((NormalRate) roomRate).getEndDate().toString(), "NA");
             }
             else if(roomRate instanceof PublishedRate)
             {
@@ -896,8 +901,4 @@ public class HotelOperationModule {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public boolean isWithinRange(Date dateToCheck, Date startDate, Date endDate) 
-    {
-       return !(dateToCheck.before(startDate) || dateToCheck.after(endDate));
-    }
 }

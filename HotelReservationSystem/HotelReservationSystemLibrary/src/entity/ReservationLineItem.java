@@ -38,16 +38,16 @@ public class ReservationLineItem implements Serializable {
     @ManyToOne
     private RoomType roomType;
     @OneToMany
-    private List<RoomNight> roomNights;
+    private List<RoomRate> roomRate;
 
     public ReservationLineItem() {
         roomList = new ArrayList<>();
-        roomNights = new ArrayList<>();
+        roomRate = new ArrayList<>();
     }
 
-    public ReservationLineItem(RoomType roomType, List<RoomNight> roomNights) {
+    public ReservationLineItem(RoomType roomType, List<RoomRate> roomNights) {
         this.roomType = roomType;
-        this.roomNights = roomNights;
+        this.roomRate = roomNights;
     }
 
     public List<Room> getRoomList() {
@@ -66,12 +66,12 @@ public class ReservationLineItem implements Serializable {
         this.roomType = roomType;
     }
 
-    public List<RoomNight> getRoomNights() {
-        return roomNights;
+    public List<RoomRate> getRoomNights() {
+        return roomRate;
     }
 
-    public void setRoomNights(List<RoomNight> roomNights) {
-        this.roomNights = roomNights;
+    public void setRoomNights(List<RoomRate> roomRates) {
+        this.roomRate = roomRates;
     }
 
     public Date getCheckInDate() {

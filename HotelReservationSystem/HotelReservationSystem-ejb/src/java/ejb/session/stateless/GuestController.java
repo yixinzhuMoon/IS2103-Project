@@ -41,8 +41,8 @@ public class GuestController implements GuestControllerRemote, GuestControllerLo
            Guest newGuest=retrieveGuestByEmail(email);
            if(newGuest.getPassword().equals(password))
            {
-//               newGuest.getRooms().size();
-               return newGuest;
+              newGuest.getOnlineReservations().size();
+              return newGuest;
            }
            else 
            {

@@ -6,5 +6,6 @@
 package ejb.entity.stateful;
 
 public interface RoomReservationSessionBeanLocal {
+
     
 }

@@ -120,7 +120,7 @@ class MainApp {
         }      
     }
     
-    private void menuMain()
+    private void menuMain() throws GuestNotFoundException
     {
         Scanner scanner=new Scanner(System.in);
         Integer response=0;
@@ -150,17 +150,13 @@ class MainApp {
                 }
                 else if(response==3)
                 {
-                    reserveHotelRoom();
+                    viewMyReservationDetails();
                 }
                 else if(response==4)
                 {
-                    viewMyReservationDetails();
-                }
-                else if(response==5)
-                {
                     viewAllMyReservations();
                 }
-                else if(response==6)
+                else if(response==5)
                 {
                     break;
                 }
@@ -170,7 +166,7 @@ class MainApp {
                 } 
             }
             
-            if(response==6)
+            if(response==5)
             {
                 break;
             }
@@ -193,6 +189,7 @@ class MainApp {
         Long guestId=guestControllerRemote.createGuest(newGuest);
         System.out.println("Visitor registered as guest "+guestId+" successfully! ");
     }
+
 
 //     private void searchHotelRoom()
 //    {
@@ -267,10 +264,6 @@ class MainApp {
 //            System.out.println("Invalid date input!\n");
 //        }
 //    }
-
-    private void reserveHotelRoom() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     private void viewMyReservationDetails() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

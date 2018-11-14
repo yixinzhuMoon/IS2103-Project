@@ -17,6 +17,9 @@ import entity.RoomType;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import entity.RoomRate;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -40,9 +43,7 @@ import util.exception.RoomTypeNotFoundException;
 @Local(RoomRateControllerLocal.class)
 @Remote(RoomRateControllerRemote.class)
 public class RoomRateController implements RoomRateControllerRemote, RoomRateControllerLocal {
-
-    @EJB
-    private RoomNightControllerLocal roomNightControllerLocal;
+    
 
     @EJB
     private RoomTypeControllerLocal roomTypeControllerLocal;
@@ -161,7 +162,8 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
                         roomRateToUpdate.setRoomType(roomType); 
                     }
                     roomRateToUpdate.setRatePerNight(roomRate.getRatePerNight());
-                    roomRateToUpdate.setValidity(((NormalRate) roomRate).getValidity());
+                    roomRateToUpdate.setStartDate(((NormalRate) roomRate).getStartDate());
+                    roomRateToUpdate.setEndDate(((NormalRate) roomRate).getEndDate());
                 }
             }
             else if(roomRate instanceof PeakRate)
@@ -181,7 +183,7 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
             }
             else if(roomRate instanceof PublishedRate)
             {
-                NormalRate roomRateToUpdate = (NormalRate) retrieveRoomRateById(roomRate.getRoomRateId(), true);
+                PublishedRate roomRateToUpdate = (PublishedRate) retrieveRoomRateById(roomRate.getRoomRateId(), true);
                 if(roomRateToUpdate.getRoomRateId().equals(roomRate.getRoomRateId()))
                 {
                     roomRateToUpdate.setName(roomRate.getName());
@@ -190,7 +192,7 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
                         roomRateToUpdate.setRoomType(roomType); 
                     }
                     roomRateToUpdate.setRatePerNight(roomRate.getRatePerNight());
-                    roomRateToUpdate.setValidity(((NormalRate) roomRate).getValidity());
+                    roomRateToUpdate.setValidity(((PublishedRate) roomRate).getValidity());
                 }
             }
             else
@@ -209,11 +211,11 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
     {
         RoomRate roomRateToRemove = retrieveRoomRateById(roomRateId, false);
         
-        if(roomRateToRemove.getRoomRateStatus().equals("enabled") && roomNightControllerLocal.retrieveRoomNightByRoomRate(roomRateId).isEmpty()) 
+        if(roomRateToRemove.getRoomRateStatus().equals("enabled")) 
         {
             em.remove(roomRateToRemove); //enabled and not in use = delete
         }
-        else if(roomRateToRemove.getRoomRateStatus().equals("enabled") && !roomNightControllerLocal.retrieveRoomNightByRoomRate(roomRateId).isEmpty())
+        else if(roomRateToRemove.getRoomRateStatus().equals("enabled"))
         {
             roomRateToRemove.setRoomRateStatus("disabled"); //enabled and in use = disable
         }

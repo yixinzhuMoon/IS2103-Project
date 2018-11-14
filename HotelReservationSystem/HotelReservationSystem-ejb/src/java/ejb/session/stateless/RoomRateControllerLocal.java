@@ -15,6 +15,7 @@ import util.exception.RoomExistException;
 import util.exception.RoomNotFoundException;
 import util.exception.RoomRateNotFoundException;
 import util.exception.RoomTypeNotFoundException;
+import java.util.Date;
 
 public interface RoomRateControllerLocal {
     
