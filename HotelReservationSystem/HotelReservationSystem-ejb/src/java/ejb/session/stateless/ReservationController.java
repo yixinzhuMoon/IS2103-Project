@@ -5,10 +5,12 @@
  */
 package ejb.session.stateless;
 
+import entity.OnlineReservation;
 import entity.ReservationLineItem;
 import entity.RoomType;
 import java.util.List;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -96,5 +98,22 @@ public class ReservationController implements ReservationControllerRemote, Reser
         em.flush();
         
         return reservationLineItem;
+    }
+    
+    @Override
+    public OnlineReservation retrieveOnlineReservationById(Long reservationId)
+    {
+        Query query=em.createQuery("SELECT o FROM OnlineReservation o WHERE o.reservationId=:inReservationId");
+        query.setParameter("inReservationId", reservationId);
+        
+        return (OnlineReservation) query.getSingleResult();
+    }
+    
+    @Override
+    public List<OnlineReservation> retrieveAllOnlineReservations()
+    {
+        Query query=em.createNamedQuery("SELECT o FROM OnlineReservation o");
+        
+        return query.getResultList();
     }
 }
