@@ -105,6 +105,13 @@ public class RoomController implements RoomControllerRemote, RoomControllerLocal
     }
     
     @Override
+    public List<Room> retrieveAllAvailableRooms(){
+        Query query = em.createQuery("SELECT r FROM Room r WHERE r.roomStatus = :inRoomStatus");
+        query.setParameter("inRoomStatus", "available");
+        return query.getResultList();
+    }
+    
+    @Override
     public Room retrieveRoomById(Integer roomId, Boolean fetchRoomType, Boolean fetchReservation) throws RoomNotFoundException
     {
         Room room = em.find(Room.class, roomId);

@@ -224,4 +224,11 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
             throw new DeleteRoomRateException("Room Rate " + roomRateId + " is currently in use and cannot be deleted!");
         }
     }
+    
+    @Override
+    public List<PublishedRate> retrieveAllPublishedRate(){
+        Query query = em.createQuery("SELECT p FROM PublishedRate p WHERE p.roomRateStatus <> :inRoomRateStatus");
+        query.setParameter("inRoomRateStatus", "disabled");
+        return query.getResultList();
+    }
 }

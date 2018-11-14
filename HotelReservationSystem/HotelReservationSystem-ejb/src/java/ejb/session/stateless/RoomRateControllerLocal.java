@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.PublishedRate;
 import entity.Room;
 import entity.RoomRate;
 import java.util.List;
@@ -30,5 +31,7 @@ public interface RoomRateControllerLocal {
     public void updateRoomRate(RoomRate roomRate, String roomTypeName) throws RoomTypeNotFoundException, RoomNotFoundException, RoomRateNotFoundException;
     
     public void deleteRoomRate(Long roomRateId) throws RoomRateNotFoundException, DeleteRoomRateException;
+    
+    public List<PublishedRate> retrieveAllPublishedRate();
 }
 

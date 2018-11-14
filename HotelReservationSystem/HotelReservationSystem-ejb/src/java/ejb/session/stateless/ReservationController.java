@@ -6,11 +6,18 @@
 package ejb.session.stateless;
 
 import entity.OnlineReservation;
+import entity.PublishedRate;
 import entity.ReservationLineItem;
+import entity.Room;
+import entity.RoomRate;
 import entity.RoomType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -18,6 +25,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.ReservationLineItemNotFoundException;
+import util.exception.RoomRateNotFoundException;
+import util.exception.RoomTypeNotFoundException;
 
 /**
  *
@@ -28,8 +37,14 @@ import util.exception.ReservationLineItemNotFoundException;
 @Remote(ReservationControllerRemote.class)
 public class ReservationController implements ReservationControllerRemote, ReservationControllerLocal {
 
+    @EJB
+    private RoomTypeControllerLocal roomTypeControllerLocal;
+    @EJB
+    private RoomRateControllerLocal roomRateControllerLocal;
+
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
+    
     
     public ReservationController()
     {
@@ -44,7 +59,6 @@ public class ReservationController implements ReservationControllerRemote, Reser
         
         return query.getResultList();
     }
-    
     
     @Override
     public ReservationLineItem retrieveReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException
@@ -116,4 +130,34 @@ public class ReservationController implements ReservationControllerRemote, Reser
         
         return query.getResultList();
     }
+    
+    @Override
+    public ReservationLineItem createWalkInReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException
+    {
+        try 
+        {
+            ReservationLineItem reservationLineItem=new ReservationLineItem();
+            reservationLineItem.setCheckInDate(checkInDate);
+            reservationLineItem.setCheckOutDate(checkOutDate);
+            RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeById(roomTypeId);
+            reservationLineItem.setRoomType(roomType);
+            RoomRate roomRate = roomRateControllerLocal.retrieveRoomRateById(roomRateId, false);
+            reservationLineItem.setRoomRate(roomRate);
+
+            em.persist(reservationLineItem);
+            em.flush();
+
+            return reservationLineItem;
+        }
+        catch(RoomTypeNotFoundException ex)
+        {
+            throw new RoomTypeNotFoundException("Unable to create new reservation line item as the room type record does not exist");
+        } 
+        catch (RoomRateNotFoundException ex) 
+        {
+            throw new RoomRateNotFoundException("Unable to create new reservation line item as the room rate record does not exist");
+        }
+    }
+    
+    
 }

@@ -30,4 +30,6 @@ public interface RoomControllerLocal {
     public List<Room> retrieveRoomByRoomType(Long roomTypeId);
     
     public List<ExceptionReport> generateRoomAllocationExceptionReport();
+    
+    public List<Room> retrieveAllAvailableRooms();
 }

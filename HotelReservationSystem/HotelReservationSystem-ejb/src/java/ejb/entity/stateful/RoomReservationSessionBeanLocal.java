@@ -23,5 +23,4 @@ public interface RoomReservationSessionBeanLocal {
 
     public OnlineReservation reserveRoom(String email, ReservationLineItem reservationRoom) throws GuestNotFoundException;
     
-    public List<ReservationLineItem> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate);
 }

@@ -5,6 +5,7 @@
  */
 package horsmanagementclient;
 
+import ejb.entity.stateful.WalkInReservationSessionBeanRemote;
 import ejb.session.stateless.EmployeeControllerRemote;
 import ejb.session.stateless.PartnerControllerRemote;
 import ejb.session.stateless.RoomControllerRemote;
@@ -30,6 +31,7 @@ class MainApp {
     private RoomControllerRemote roomControllerRemote;
     private RoomTypeControllerRemote roomTypeControllerRemote;
     private RoomRateControllerRemote roomRateControllerRemote;
+    private WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote;
     
     private SystemAdministrationModule systemAdminModule;
     private HotelOperationModule hotelOpModule;
@@ -46,6 +48,7 @@ class MainApp {
         this.roomControllerRemote = roomControllerRemote;
         this.roomTypeControllerRemote = roomTypeControllerRemote;
         this.roomRateControllerRemote = roomRateControllerRemote;
+        this.walkInReservationSessionBeanRemote = walkInReservationSessionBeanRemote;
     }
     
     public void runApp()
@@ -75,7 +78,7 @@ class MainApp {
                         
                         systemAdminModule = new SystemAdministrationModule(employeeControllerRemote, partnerControllerRemote, currentEmployee);
                         hotelOpModule = new HotelOperationModule(employeeControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, currentEmployee);
-                        frontOfficeModule = new FrontOfficeModule(employeeControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, currentEmployee);
+                        frontOfficeModule = new FrontOfficeModule(employeeControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, walkInReservationSessionBeanRemote, currentEmployee);
                         
                         menuMain();
                     }
