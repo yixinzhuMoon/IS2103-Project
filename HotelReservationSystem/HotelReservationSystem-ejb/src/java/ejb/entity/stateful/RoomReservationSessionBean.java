@@ -205,4 +205,92 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
         }
         
     }
+    
+    @Override
+    public List<ReservationLineItem> walkInSearchHotelRoom(Date checkInDate,Date checkOutDate)
+    {
+        this.checkInDate=checkInDate;
+        this.checkOutDate=checkOutDate;
+        
+        SimpleDateFormat df=new SimpleDateFormat("MM-dd");
+        
+        Date BeginNormalRate=null;
+        Date EndNormalRate=null;
+        Date BeginPromotionRate=null;
+        Date EndPromotionRate=null;
+        Date BeginPeakRate=null;
+        Date EndPeakRate=null;
+        Date Begin=null;
+        Date End=null;
+        
+        try
+        {
+            BeginNormalRate=df.parse(normalRate.getStartDate().toString());
+            EndNormalRate=df.parse(normalRate.getEndDate().toString());
+            BeginPromotionRate=df.parse(promotionRate.getStartDate().toString());
+            EndPromotionRate=df.parse(promotionRate.getEndDate().toString());
+            BeginPeakRate=df.parse(peakRate.getStartDate().toString());
+            EndPeakRate=df.parse(peakRate.getEndDate().toString());
+            Begin=df.parse(checkInDate.toString());
+            End=df.parse(checkOutDate.toString());
+            
+        } 
+        catch (ParseException ex) 
+        {
+            ex.printStackTrace();
+        }
+        
+        BigDecimal pricePerNight=BigDecimal.ZERO;
+        String roomRate="";
+        
+        if(belongCalendar(Begin, BeginNormalRate, EndNormalRate)&&belongCalendar(End, BeginNormalRate, EndNormalRate))
+        {
+            pricePerNight=normalRate.getRatePerNight();
+            roomRate="NormalRate";
+        }
+        else if(belongCalendar(Begin, BeginPromotionRate, EndPromotionRate)&&belongCalendar(End, BeginPromotionRate, EndPromotionRate))
+        {
+            pricePerNight=promotionRate.getRatePerNight();
+            roomRate="PromotionRate";
+        }
+        else if(belongCalendar(Begin, BeginPeakRate, EndPeakRate)&&belongCalendar(End, BeginPeakRate, EndPeakRate))
+        {
+            pricePerNight=peakRate.getRatePerNight();
+            roomRate="PeakRate";
+        }
+        else if((belongCalendar(Begin, BeginNormalRate, EndNormalRate)&&belongCalendar(End, BeginPromotionRate, EndPromotionRate))||(belongCalendar(End, BeginNormalRate, EndNormalRate)&&belongCalendar(Begin, BeginPromotionRate, EndPromotionRate)))
+        {
+            pricePerNight=promotionRate.getRatePerNight();
+            roomRate="PromotionRate";
+        }
+        else if((belongCalendar(Begin, BeginNormalRate, EndNormalRate)&&belongCalendar(End, BeginPeakRate, EndPeakRate))||(belongCalendar(End, BeginNormalRate, EndNormalRate)&&belongCalendar(Begin, BeginPeakRate, EndPeakRate)))
+        {
+            pricePerNight=peakRate.getRatePerNight();
+            roomRate="PeakRate";
+        }
+        else if((belongCalendar(Begin, BeginPromotionRate, EndPromotionRate)&&belongCalendar(Begin, BeginPeakRate, EndPeakRate))||(belongCalendar(End, BeginPromotionRate, EndPromotionRate)&&belongCalendar(Begin, BeginPeakRate, EndPeakRate)))
+        {
+            pricePerNight=peakRate.getRatePerNight();
+            roomRate="PeakRate";
+        }
+        else if((belongCalendar(Begin, BeginNormalRate, EndNormalRate)&&belongCalendar(Begin, BeginPromotionRate, EndPromotionRate)&&belongCalendar(Begin, BeginPeakRate, EndPeakRate))||(belongCalendar(End, BeginNormalRate, EndNormalRate)&&belongCalendar(End, BeginPromotionRate, EndPromotionRate)&&belongCalendar(End, BeginPeakRate, EndPeakRate)))
+        {
+            pricePerNight=peakRate.getRatePerNight();
+            roomRate="PeakRate";
+        }
+        
+        totalAmount=(checkOutDate.getTime()-checkInDate.getTime())*pricePerNight.longValue();
+        
+        reservationLineItems.add(reservationControllerLocal.createReservationLineItem(checkInDate,checkInDate,1));
+        reservationLineItems.add(reservationControllerLocal.createReservationLineItem(checkInDate,checkInDate,2));
+        reservationLineItems.add(reservationControllerLocal.createReservationLineItem(checkInDate,checkInDate,3));
+        reservationLineItems.add(reservationControllerLocal.createReservationLineItem(checkInDate,checkInDate,4));
+        reservationLineItems.add(reservationControllerLocal.createReservationLineItem(checkInDate,checkInDate,5));
+        
+        return reservationLineItems;
+        
+       
+    }
+        
+    
 }

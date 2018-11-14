@@ -11,6 +11,10 @@ import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
 import entity.Employee;
+import entity.ReservationLineItem;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -102,19 +106,27 @@ public class FrontOfficeModule {
         }
     }
     
-    public void walkInSearchRoom() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void walkInSearchRoom() 
+    {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** HoRS :: Hotel Management System :: Walk-in Search Room ***\n");
     }
 
-    public void walkInReserveRoom() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void walkInReserveRoom() 
+    {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** HoRS :: Hotel Management System :: Walk-in Reserve Room ***\n");
     }
 
-    public void checkInGuest() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void checkInGuest() 
+    {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** HoRS :: Hotel Management System :: Check-in Guest ***\n");
     }
 
-    public void checkOutGuest() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void checkOutGuest() 
+    {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** HoRS :: Hotel Management System :: Check-out Guest ***\n");
     }
 }
