@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -38,17 +39,21 @@ public abstract class RoomRate implements Serializable {
 //    private String rateType; //removed since we already have inheritance classes
     @Column(nullable=false)
     protected BigDecimal ratePerNight;
-    @ManyToOne
+    @Column(nullable = false)
+    protected String roomRateStatus;
+    @ManyToOne(optional=false)
+    @JoinColumn(nullable=false)
     protected RoomType roomType;
 
     public RoomRate() {
     }
 
-    public RoomRate(String name, BigDecimal ratePerNight, RoomType roomType) {
+    public RoomRate(String name, BigDecimal ratePerNight, RoomType roomType, String roomRateStatus) {
         this();
         this.name = name;
         this.ratePerNight = ratePerNight;
         this.roomType = roomType;
+        this.roomRateStatus = roomRateStatus;
     }
 
     public RoomType getRoomType() {
@@ -81,6 +86,14 @@ public abstract class RoomRate implements Serializable {
 
     public void setRatePerNight(BigDecimal ratePerNight) {
         this.ratePerNight = ratePerNight;
+    }
+
+    public String getRoomRateStatus() {
+        return roomRateStatus;
+    }
+
+    public void setRoomRateStatus(String roomRateStatus) {
+        this.roomRateStatus = roomRateStatus;
     }
 
     @Override

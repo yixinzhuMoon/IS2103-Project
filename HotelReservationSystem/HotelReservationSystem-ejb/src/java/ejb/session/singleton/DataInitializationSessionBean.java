@@ -45,7 +45,7 @@ public class DataInitializationSessionBean {
     public void initializeData(){
         try{
             
-            employeeController.createEmployee(new Employee("sys_admin@gmail.com", "Default System Administrator", "password", EmployeeAccessRight.SYSTEM_ADMIN));
+            employeeController.createEmployee(new Employee("sys_admin@gmail.com", "Default System Administrator", "password", EmployeeAccessRight.SYSTEM_ADMINISTRATOR));
         
         }catch(Exception ex){
             

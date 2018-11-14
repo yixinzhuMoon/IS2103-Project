@@ -29,6 +29,10 @@ public class GuestController implements GuestControllerRemote, GuestControllerLo
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
 
+    public GuestController(){
+        
+    }
+    
     @Override
     public Guest guestLogin(String email,String password) throws InvalidLoginCredentialException,GuestNotFoundException
     {

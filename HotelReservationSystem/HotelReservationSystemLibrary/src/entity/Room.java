@@ -28,7 +28,7 @@ public class Room implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(length = 4)
+    @Column(length=4)
     private Integer roomNumber; // room floor + room number
     @Column(nullable = false)
     private String roomStatus;

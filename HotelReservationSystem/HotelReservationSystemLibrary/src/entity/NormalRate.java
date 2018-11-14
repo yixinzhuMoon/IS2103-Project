@@ -30,8 +30,8 @@ public class NormalRate extends RoomRate implements Serializable {
         super();
     }
 
-    public NormalRate(String name, BigDecimal ratePerNight, RoomType roomType, Date validity) {
-        super(name, ratePerNight, roomType);
+    public NormalRate(String name, BigDecimal ratePerNight, RoomType roomType, Date validity, String roomRateStatus) {
+        super(name, ratePerNight, roomType, roomRateStatus);
         this.validity = validity;
     }
 

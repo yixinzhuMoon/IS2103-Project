@@ -6,7 +6,13 @@
 package ejb.session.stateless;
 
 import entity.ExceptionReport;
+import entity.NormalRate;
+import entity.PeakRate;
+import entity.PromotionRate;
+import entity.PublishedRate;
+import entity.ReservationLineItem;
 import entity.Room;
+import entity.RoomRate;
 import entity.RoomType;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +22,14 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.exception.DeleteRoomException;
+import util.exception.DeleteRoomRateException;
+import util.exception.GeneralException;
+import util.exception.RoomExistException;
 import util.exception.RoomNotFoundException;
+import util.exception.RoomRateNotFoundException;
 import util.exception.RoomTypeNotFoundException;
 
 /**
@@ -30,10 +41,185 @@ import util.exception.RoomTypeNotFoundException;
 @Remote(RoomRateControllerRemote.class)
 public class RoomRateController implements RoomRateControllerRemote, RoomRateControllerLocal {
 
-    @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
-    private EntityManager em;
+    @EJB
+    private RoomNightControllerLocal roomNightControllerLocal;
 
     @EJB
     private RoomTypeControllerLocal roomTypeControllerLocal;
+
+    @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
+    private EntityManager em;
     
+    
+    
+    public RoomRateController(){
+        
+    }
+    
+    @Override
+    public RoomRate createRoomRate(RoomRate newRoomRate, Long roomTypeId) throws RoomTypeNotFoundException, RoomExistException, GeneralException
+    {
+        try 
+        {
+            RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeById(roomTypeId);
+            
+            if(!roomType.getStatus().equals("disabled"))
+            {
+                em.persist(newRoomRate);
+                
+                newRoomRate.setRoomType(roomType);
+                
+                em.flush();
+                em.refresh(newRoomRate);
+
+                return newRoomRate;
+            }
+            else
+            {
+                throw new RoomTypeNotFoundException("Unable to create new room as the room type record does not exist");
+            }
+        } 
+        catch (RoomTypeNotFoundException ex) 
+        {
+            throw new RoomTypeNotFoundException("Unable to create new room as the room type record does not exist");
+        }
+        catch(PersistenceException ex)
+        {
+            if(ex.getCause() != null && 
+                    ex.getCause().getCause() != null &&
+                    ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException"))
+            {
+                throw new RoomExistException("Room with same room number already exist");
+            }
+            else
+            {
+                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            }
+        }
+    }
+    
+    @Override
+    public List<RoomRate> retrieveAllRoomRates()
+    {
+        Query query = em.createQuery("SELECT rr FROM RoomRate rr");
+        return query.getResultList();
+    }
+    
+    @Override
+    public RoomRate retrieveRoomRateById(Long roomRateId, Boolean fetchRoomType) throws RoomRateNotFoundException{
+        RoomRate roomRate = em.find(RoomRate.class, roomRateId);
+        
+        if(roomRate != null)
+        {
+            if(fetchRoomType){
+                roomRate.getRoomType();
+            }
+            return roomRate;
+        }
+        else
+        {
+            throw new RoomRateNotFoundException("Room rate" + roomRateId + " does not exist!");
+        }
+    }
+    
+    @Override
+    public List<RoomRate> retrieveRoomRateByRoomType(Long roomTypeId)
+    {
+        Query query = em.createQuery("SELECT rr FROM RoomRate rr WHERE rr.roomType = :inRoomType");
+        query.setParameter("inRoomType", em.find(RoomType.class, roomTypeId));
+        
+        return query.getResultList();
+    }
+    
+    @Override
+    public void updateRoomRate(RoomRate roomRate, String roomTypeName) throws RoomTypeNotFoundException, RoomNotFoundException, RoomRateNotFoundException
+    {
+        if(roomRate.getRoomRateId()!= null)
+        {
+            if(roomRate instanceof PromotionRate){
+                PromotionRate roomRateToUpdate = (PromotionRate) retrieveRoomRateById(roomRate.getRoomRateId(), true);
+                if(roomRateToUpdate.getRoomRateId().equals(roomRate.getRoomRateId()))
+                {
+                    roomRateToUpdate.setName(roomRate.getName());
+                    if(!roomTypeName.equals("")){
+                        RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeByName(roomTypeName);
+                        roomRateToUpdate.setRoomType(roomType); 
+                    }
+                    roomRateToUpdate.setRatePerNight(roomRate.getRatePerNight());
+                    roomRateToUpdate.setStartDate(((PromotionRate) roomRate).getStartDate());
+                    roomRateToUpdate.setEndDate(((PromotionRate) roomRate).getEndDate());
+                }
+            }
+            else if(roomRate instanceof NormalRate)
+            {
+                NormalRate roomRateToUpdate = (NormalRate) retrieveRoomRateById(roomRate.getRoomRateId(), true);
+                if(roomRateToUpdate.getRoomRateId().equals(roomRate.getRoomRateId()))
+                {
+                    roomRateToUpdate.setName(roomRate.getName());
+                    if(!roomTypeName.equals("")){
+                        RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeByName(roomTypeName);
+                        roomRateToUpdate.setRoomType(roomType); 
+                    }
+                    roomRateToUpdate.setRatePerNight(roomRate.getRatePerNight());
+                    roomRateToUpdate.setValidity(((NormalRate) roomRate).getValidity());
+                }
+            }
+            else if(roomRate instanceof PeakRate)
+            {
+                PeakRate roomRateToUpdate = (PeakRate) retrieveRoomRateById(roomRate.getRoomRateId(), true);
+                if(roomRateToUpdate.getRoomRateId().equals(roomRate.getRoomRateId()))
+                {
+                    roomRateToUpdate.setName(roomRate.getName());
+                    if(!roomTypeName.equals("")){
+                        RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeByName(roomTypeName);
+                        roomRateToUpdate.setRoomType(roomType); 
+                    }
+                    roomRateToUpdate.setRatePerNight(roomRate.getRatePerNight());
+                    roomRateToUpdate.setStartDate(((PeakRate) roomRate).getStartDate());
+                    roomRateToUpdate.setEndDate(((PeakRate) roomRate).getEndDate());
+                }
+            }
+            else if(roomRate instanceof PublishedRate)
+            {
+                NormalRate roomRateToUpdate = (NormalRate) retrieveRoomRateById(roomRate.getRoomRateId(), true);
+                if(roomRateToUpdate.getRoomRateId().equals(roomRate.getRoomRateId()))
+                {
+                    roomRateToUpdate.setName(roomRate.getName());
+                    if(!roomTypeName.equals("")){
+                        RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeByName(roomTypeName);
+                        roomRateToUpdate.setRoomType(roomType); 
+                    }
+                    roomRateToUpdate.setRatePerNight(roomRate.getRatePerNight());
+                    roomRateToUpdate.setValidity(((NormalRate) roomRate).getValidity());
+                }
+            }
+            else
+            {
+                throw new RoomRateNotFoundException("Room Rate Id is invalid");
+            }
+        }
+        else
+        {
+            throw new RoomRateNotFoundException("Room Rate Id not provided for room rate to be updated");
+        }
+    }
+    
+    @Override
+    public void deleteRoomRate(Long roomRateId) throws RoomRateNotFoundException, DeleteRoomRateException
+    {
+        RoomRate roomRateToRemove = retrieveRoomRateById(roomRateId, false);
+        
+        if(roomRateToRemove.getRoomRateStatus().equals("enabled") && roomNightControllerLocal.retrieveRoomNightByRoomRate(roomRateId).isEmpty()) 
+        {
+            em.remove(roomRateToRemove); //enabled and not in use = delete
+        }
+        else if(roomRateToRemove.getRoomRateStatus().equals("enabled") && !roomNightControllerLocal.retrieveRoomNightByRoomRate(roomRateId).isEmpty())
+        {
+            roomRateToRemove.setRoomRateStatus("disabled"); //enabled and in use = disable
+        }
+        else
+        {
+            throw new DeleteRoomRateException("Room Rate " + roomRateId + " is currently in use and cannot be deleted!");
+        }
+    }
 }

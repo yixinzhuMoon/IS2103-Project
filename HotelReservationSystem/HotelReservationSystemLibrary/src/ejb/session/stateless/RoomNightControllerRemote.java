@@ -5,6 +5,13 @@
  */
 package ejb.session.stateless;
 
+import entity.RoomNight;
+import java.util.List;
+import util.exception.RoomRateNotFoundException;
+
 public interface RoomNightControllerRemote {
+
+    public List<RoomNight> retrieveRoomNightByRoomRate(Long roomRateId);
     
+    public RoomNight createRoomNight(RoomNight newRoomNight, Long roomRateId) throws RoomRateNotFoundException;
 }

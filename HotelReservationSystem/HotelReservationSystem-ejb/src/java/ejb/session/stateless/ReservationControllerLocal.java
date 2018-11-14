@@ -5,6 +5,13 @@
  */
 package ejb.session.stateless;
 
+import entity.ReservationLineItem;
+import java.util.List;
+import util.exception.ReservationLineItemNotFoundException;
+
 public interface ReservationControllerLocal {
-    
+
+    public List<ReservationLineItem> retrieveReservationLineItemByRoomType(Long roomTypeId);
+
+    public ReservationLineItem retrieveReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException;
 }

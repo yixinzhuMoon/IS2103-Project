@@ -113,7 +113,7 @@ public class SystemAdministrationModule {
             if (employeeRoleInt >= 1 && employeeRoleInt <= 4) {
                 switch (employeeRoleInt) {
                     case 1:
-                        newEmployee.setAccessRight(EmployeeAccessRight.SYSTEM_ADMIN);
+                        newEmployee.setAccessRight(EmployeeAccessRight.SYSTEM_ADMINISTRATOR);
                         break OUTER;
                     case 2:
                         newEmployee.setAccessRight(EmployeeAccessRight.OPERATION_MANAGER);
@@ -145,11 +145,11 @@ public class SystemAdministrationModule {
         System.out.println("*** HoRS :: Hotel Management System :: View All Employees ***\n");
         
         List<Employee> employees = employeeControllerRemote.retrieveAllEmployees();
-        System.out.printf("%8s%20s%20s%15s%20s\n", "Employee Id", "Name", "Email", "Access Right", "Password");
+        System.out.printf("%11s%40s%40s%25s%20s\n", "Employee Id", "Name", "Email", "Access Right", "Password");
 
         for(Employee employee:employees)
         {
-            System.out.printf("%8s%20s%20s%15s%20s\n", employee.getEmployeeId().toString(), employee.getName(), employee.getEmail(), employee.getAccessRight().toString(), employee.getPassword());
+            System.out.printf("%11s%40s%40s%25s%20s\n", employee.getEmployeeId().toString(), employee.getName(), employee.getEmail(), employee.getAccessRight().toString(), employee.getPassword());
         }
         
         System.out.print("Press any key to continue...> ");
@@ -180,11 +180,11 @@ public class SystemAdministrationModule {
         System.out.println("*** HoRS :: Hotel Management System :: View All Partners ***\n");
         
         List<Partner> partners = partnerControllerRemote.retrieveAllPartners();
-        System.out.printf("%8s%20s%20s%15s\n", "Partner Id", "Name", "Email", "Password");
+        System.out.printf("%10s%20s%30s%20s\n", "Partner Id", "Name", "Email", "Password");
 
         for(Partner partner:partners)
         {
-            System.out.printf("%8s%20s%20s%15s\n", partner.getPartnerId().toString(), partner.getName(), partner.getEmail(), partner.getPassword());
+            System.out.printf("%10s%20s%30s%20s\n", partner.getPartnerId().toString(), partner.getName(), partner.getEmail(), partner.getPassword());
         }
         
         System.out.print("Press any key to continue...> ");
