@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.RoomType;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -29,11 +30,23 @@ import util.exception.RoomTypeNotFoundException;
 
 public class RoomTypeController implements RoomTypeControllerRemote, RoomTypeControllerLocal {
     
-    
-
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
+    
+    @EJB
+    private RoomControllerLocal roomControllerLocal;
 
+    @EJB
+    private RoomRateControllerLocal roomRateControllerLocal;
+
+    @EJB
+    private ReservationControllerLocal reservationControllerLocal;
+
+    public RoomTypeController(){
+        
+    }
+    
+    @Override
     public RoomType createRoomType(RoomType newRoomType)
     {
         em.persist(newRoomType);
@@ -42,12 +55,14 @@ public class RoomTypeController implements RoomTypeControllerRemote, RoomTypeCon
         return newRoomType;
     }
     
+    @Override
     public List<RoomType> retrieveAllRoomTypes()
     {
         Query query = em.createQuery("SELECT rt FROM RoomType rt");
         return query.getResultList();
     }
     
+    @Override
     public RoomType retrieveRoomTypeById(Long roomTypeId) throws RoomTypeNotFoundException
     {
         RoomType roomType = em.find(RoomType.class, roomTypeId);
@@ -62,6 +77,7 @@ public class RoomTypeController implements RoomTypeControllerRemote, RoomTypeCon
         }
     }
     
+    @Override
     public RoomType retrieveRoomTypeByName(String name) throws RoomTypeNotFoundException
     {
         Query query = em.createQuery("SELECT rt FROM RoomType rt WHERE rt.name = :inRoomTypeName");
@@ -77,6 +93,7 @@ public class RoomTypeController implements RoomTypeControllerRemote, RoomTypeCon
         }
     }
     
+    @Override
     public void updateRoomType(RoomType roomType) throws RoomTypeNotFoundException
     {
         if(roomType.getRoomTypeId()!= null)
@@ -102,17 +119,23 @@ public class RoomTypeController implements RoomTypeControllerRemote, RoomTypeCon
         }
     }
     
+    @Override
     public void deleteRoomType(Long roomTypeId) throws RoomTypeNotFoundException, DeleteRoomTypeException 
     {
         
         RoomType roomTypeToRemove = retrieveRoomTypeById(roomTypeId);
         
-         //enabled and not in use = delete
-         //enabled and in use = change status to disabled
-         //otherwise unable to delete fromm because it is already disabled
-        if(roomTypeToRemove.getStatus().equals("enabled"))
+        if(roomTypeToRemove.getStatus().equals("enabled") && roomControllerLocal.retrieveRoomByRoomType(roomTypeId).isEmpty() 
+                && roomRateControllerLocal.retrieveRoomRateByRoomType(roomTypeId).isEmpty() 
+                && reservationControllerLocal.retrieveReservationLineItemByRoomType(roomTypeId).isEmpty())
         {
-            em.remove(roomTypeToRemove);
+            em.remove(roomTypeToRemove); //enabled and not in use = delete
+        }
+        else if(roomTypeToRemove.getStatus().equals("enabled") && !roomControllerLocal.retrieveRoomByRoomType(roomTypeId).isEmpty()
+                && !roomRateControllerLocal.retrieveRoomRateByRoomType(roomTypeId).isEmpty()
+                && !reservationControllerLocal.retrieveReservationLineItemByRoomType(roomTypeId).isEmpty()) //enabled and in use = disabled
+        {
+            roomTypeToRemove.setStatus("disabled");
         }
         else
         {

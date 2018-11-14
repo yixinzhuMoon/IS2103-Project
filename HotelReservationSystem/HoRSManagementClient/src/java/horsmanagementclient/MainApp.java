@@ -7,6 +7,8 @@ package horsmanagementclient;
 
 import ejb.session.stateless.EmployeeControllerRemote;
 import ejb.session.stateless.PartnerControllerRemote;
+import ejb.session.stateless.RoomControllerRemote;
+import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
 import entity.Employee;
 import entity.Partner;
@@ -25,7 +27,9 @@ class MainApp {
     
     private EmployeeControllerRemote employeeControllerRemote;
     private PartnerControllerRemote partnerControllerRemote;
+    private RoomControllerRemote roomControllerRemote;
     private RoomTypeControllerRemote roomTypeControllerRemote;
+    private RoomRateControllerRemote roomRateControllerRemote;
     
     private SystemAdministrationModule systemAdminModule;
     private HotelOperationModule hotelOpModule;
@@ -33,13 +37,15 @@ class MainApp {
     
     private Employee currentEmployee;
     
-    public MainApp(EmployeeControllerRemote employeeControllerRemote, PartnerControllerRemote partnerControllerRemote, RoomTypeControllerRemote roomTypeControllerRemote)
+    public MainApp(EmployeeControllerRemote employeeControllerRemote, PartnerControllerRemote partnerControllerRemote, 
+            RoomControllerRemote roomControllerRemote, RoomTypeControllerRemote roomTypeControllerRemote, 
+            RoomRateControllerRemote roomRateControllerRemote)
     {
-        
         this.employeeControllerRemote = employeeControllerRemote;
         this.partnerControllerRemote = partnerControllerRemote;
+        this.roomControllerRemote = roomControllerRemote;
         this.roomTypeControllerRemote = roomTypeControllerRemote;
-        
+        this.roomRateControllerRemote = roomRateControllerRemote;
     }
     
     public void runApp()
@@ -66,6 +72,10 @@ class MainApp {
                     {
                         doLogin();
                         System.out.println("Login successful!\n");
+                        
+                        systemAdminModule = new SystemAdministrationModule(employeeControllerRemote, partnerControllerRemote, currentEmployee);
+                        hotelOpModule = new HotelOperationModule(employeeControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, currentEmployee);
+                        frontOfficeModule = new FrontOfficeModule(employeeControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, currentEmployee);
                         
                         menuMain();
                     }

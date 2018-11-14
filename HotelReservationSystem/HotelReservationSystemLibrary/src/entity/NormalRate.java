@@ -25,15 +25,15 @@ public class NormalRate extends RoomRate implements Serializable {
     private static final long serialVersionUID = 1L;
    @Temporal(TemporalType.DATE)
     private Date startDate; ;
-    @Temporal(TemporalType.DATE)
-    private Date endDate; 
+   @Temporal(TemporalType.DATE)
+    private Date endDate; ;
     
     public NormalRate(){
         super();
     }
-
-    public NormalRate(String name, BigDecimal ratePerNight, RoomType roomType,Date startDate, Date endDate) {
-        super(name, ratePerNight, roomType);
+    
+    public NormalRate(String name, BigDecimal ratePerNight, RoomType roomType, Date startDate, Date endDate, String roomRateStatus) {
+        super(name, ratePerNight, roomType, roomRateStatus);
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -54,7 +54,6 @@ public class NormalRate extends RoomRate implements Serializable {
         this.endDate = endDate;
     }
 
-    
     
     @Override
     public int hashCode() {

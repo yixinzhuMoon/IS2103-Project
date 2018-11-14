@@ -32,8 +32,8 @@ public class PromotionRate extends RoomRate implements Serializable {
         super();
     }
 
-    public PromotionRate(String name, BigDecimal ratePerNight, RoomType roomType, Date startDate, Date endDate) {
-        super(name, ratePerNight, roomType);
+    public PromotionRate(String name, BigDecimal ratePerNight, RoomType roomType, Date startDate, Date endDate, String roomRateStatus) {
+        super(name, ratePerNight, roomType, roomRateStatus);
         this.startDate = startDate;
         this.endDate = endDate;
     }

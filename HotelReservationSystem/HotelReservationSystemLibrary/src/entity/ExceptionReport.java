@@ -25,11 +25,12 @@ public class ExceptionReport implements Serializable {
     private String description;
     //no available room + no upgrade to higher room 
     //no available room + upgrade to higher room
-    private Boolean upgrade;
 
-    public ExceptionReport(String description, Boolean upgrade) {
+    public ExceptionReport() {
+    }
+
+    public ExceptionReport(String description) {
         this.description = description;
-        this.upgrade = upgrade;
     }
 
     public Long getExceptionReportId() {
@@ -46,14 +47,6 @@ public class ExceptionReport implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Boolean getUpgrade() {
-        return upgrade;
-    }
-
-    public void setUpgrade(Boolean upgrade) {
-        this.upgrade = upgrade;
     }
 
     @Override

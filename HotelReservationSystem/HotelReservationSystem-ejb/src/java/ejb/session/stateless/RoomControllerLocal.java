@@ -5,21 +5,29 @@
  */
 package ejb.session.stateless;
 
+import entity.ExceptionReport;
 import entity.Room;
 import java.util.List;
 import util.exception.DeleteRoomException;
+import util.exception.GeneralException;
+import util.exception.ReservationLineItemNotFoundException;
+import util.exception.RoomExistException;
 import util.exception.RoomNotFoundException;
 import util.exception.RoomTypeNotFoundException;
 
 public interface RoomControllerLocal {
 
-    public Room createRoom(Room newRoom);
+    public Room createRoom(Room newRoom, Long roomTypeId) throws RoomTypeNotFoundException, RoomExistException, GeneralException;
 
     public List<Room> retrieveAllRooms();
 
-    public Room retrieveRoomById(Integer roomId) throws RoomNotFoundException;
+    public Room retrieveRoomById(Integer roomId, Boolean fetchRoomType, Boolean fetchReservation) throws RoomNotFoundException;
 
-    public void updateRoom(Room room, String roomTypeName) throws RoomNotFoundException, RoomTypeNotFoundException;
+    public void updateRoom(Room room, String roomTypeName, Long reservationLineItemId) throws RoomNotFoundException, RoomTypeNotFoundException, ReservationLineItemNotFoundException;
 
     public void deleteRoom(Integer roomId) throws RoomNotFoundException, DeleteRoomException;
+
+    public List<Room> retrieveRoomByRoomType(Long roomTypeId);
+    
+    public List<ExceptionReport> generateRoomAllocationExceptionReport();
 }

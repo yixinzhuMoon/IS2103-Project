@@ -3,15 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package util.enumeration;
+package util.exception;
 
 /**
  *
  * @author casseylow
  */
-public enum EmployeeAccessRight {
-    SYSTEM_ADMINISTRATOR,
-    OPERATION_MANAGER,
-    SALES_MANAGER,
-    GUEST_RELATION_OFFICER
+public class RoomExistException extends Exception{
+    
+    public RoomExistException(){
+        
+    }
+    
+    public RoomExistException(String msg){
+        super(msg);
+    }
 }
