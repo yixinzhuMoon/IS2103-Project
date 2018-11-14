@@ -19,8 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -176,17 +174,11 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
         Calendar end = Calendar.getInstance();
         end.setTime(endTime);
 
-        if (date.after(begin) && date.before(end)) {
-            return true;
-        } 
-        else 
-        {
-            return false;
-        }
+        return date.after(begin) && date.before(end);
     }
      
     @Override
-    public Long getTotalAmount() 
+    public Long getTotalAmount(ReservationLineItem reservationLineItem) 
     {
         return totalAmount;
     }
