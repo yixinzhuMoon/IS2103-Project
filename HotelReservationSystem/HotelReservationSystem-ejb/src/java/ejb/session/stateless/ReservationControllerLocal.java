@@ -28,5 +28,6 @@ public interface ReservationControllerLocal {
     
     public ReservationLineItem createWalkInReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException;
 
+    public void allocateRoomToCurrentDayReservations();
     
 }

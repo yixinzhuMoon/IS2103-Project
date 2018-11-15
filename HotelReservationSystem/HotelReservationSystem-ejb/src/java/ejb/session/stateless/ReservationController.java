@@ -132,6 +132,11 @@ public class ReservationController implements ReservationControllerRemote, Reser
     }
     
     @Override
+    public void allocateRoomToCurrentDayReservations(){
+        
+    }
+    
+    @Override
     public ReservationLineItem createWalkInReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException
     {
         try 

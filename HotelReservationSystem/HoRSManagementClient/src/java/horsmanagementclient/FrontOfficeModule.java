@@ -7,6 +7,7 @@ package horsmanagementclient;
 
 import ejb.entity.stateful.WalkInReservationSessionBeanRemote;
 import ejb.session.stateless.EmployeeControllerRemote;
+import ejb.session.stateless.GuestControllerRemote;
 import ejb.session.stateless.PartnerControllerRemote;
 import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
@@ -24,6 +25,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.exception.EmployeeNotFoundException;
+import util.exception.GuestNotFoundException;
 
 /**
  *
@@ -32,13 +34,13 @@ import util.exception.EmployeeNotFoundException;
 public class FrontOfficeModule {
     
     private EmployeeControllerRemote employeeControllerRemote;
+    private GuestControllerRemote guestControllerRemote;
     private PartnerControllerRemote partnerControllerRemote;
     private RoomControllerRemote roomControllerRemote;
     private RoomTypeControllerRemote roomTypeControllerRemote;
     private RoomRateControllerRemote roomRateControllerRemote;
     
     private WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote;
-    
     
     private Employee currentEmployee;
     private List<Long> totalAmount;
@@ -47,13 +49,14 @@ public class FrontOfficeModule {
         
     }
     
-    public FrontOfficeModule(EmployeeControllerRemote employeeControllerRemote, PartnerControllerRemote partnerControllerRemote, 
+    public FrontOfficeModule(EmployeeControllerRemote employeeControllerRemote, GuestControllerRemote guestControllerRemote, PartnerControllerRemote partnerControllerRemote, 
             RoomControllerRemote roomControllerRemote, RoomTypeControllerRemote roomTypeControllerRemote, 
             RoomRateControllerRemote roomRateControllerRemote, WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote,
             Employee currentEmployee)
     {
         this();
         this.employeeControllerRemote = employeeControllerRemote;
+        this.guestControllerRemote = guestControllerRemote;
         this.partnerControllerRemote = partnerControllerRemote;
         this.roomControllerRemote = roomControllerRemote;
         this.roomTypeControllerRemote = roomTypeControllerRemote;
@@ -184,20 +187,42 @@ public class FrontOfficeModule {
         } catch (ParseException ex) {
             System.out.println("Invalid Date Format entered!" + "\n");
         } catch (EmployeeNotFoundException ex) {
-                System.out.println("An error has occurred while searching/reserving Rooms: " + ex.getMessage() + "\n");
+            System.out.println("An error has occurred while searching/reserving Rooms: " + ex.getMessage() + "\n");
         }
     }
 
     public void checkInGuest() 
     {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("*** HoRS :: Hotel Management System :: Check-in Guest ***\n");
+        try 
+        {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("*** HoRS :: Hotel Management System :: Check-in Guest ***\n");
+            System.out.print("Enter Guest id>");
+            Long guestId = scanner.nextLong();
+            guestControllerRemote.checkInGuest(guestId);
+            System.out.println("Guest checked in successfully!");
+        }   
+        catch (GuestNotFoundException ex) 
+        {
+            System.out.println("An error has occurred while checking in guest: " + ex.getMessage() + "\n");
+        }
     }
 
     public void checkOutGuest() 
     {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("*** HoRS :: Hotel Management System :: Check-out Guest ***\n");
+        try 
+        {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("*** HoRS :: Hotel Management System :: Check-out Guest ***\n");
+            System.out.print("Enter Guest id>");
+            Long guestId = scanner.nextLong();
+            guestControllerRemote.checkOutGuest(guestId);
+            System.out.println("Guest checked out successfully!");
+        } 
+        catch (GuestNotFoundException ex) 
+        {
+            System.out.println("An error has occurred while checking out guest: " + ex.getMessage() + "\n");
+        }
     }
 }
  

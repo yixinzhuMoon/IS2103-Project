@@ -54,9 +54,11 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @EJB 
     private ReservationControllerLocal reservationControllerLocal;
     
+    private Date checkInDate;
+    private Date checkOutDate;
     private Long totalAmount;
     
-    private List<Room> validRooms;
+    private List<ReservationLineItem> reservationLineItems;
 
     @Remove
     @Override
@@ -69,21 +71,24 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @Override
     public void preDestroy()
     {
-        if(validRooms != null)
+        if(reservationLineItems != null)
         {
-            validRooms.clear();
-            validRooms = null;
+            reservationLineItems.clear();
+            reservationLineItems = null;
         }
     }
     
     @Override
     public List<ReservationLineItem> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate){
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate; 
+        
         List<Room> allRoomAvailable = roomControllerLocal.retrieveAllRooms();
         List<PublishedRate> allPublishedRateAvailable = roomRateControllerLocal.retrieveAllPublishedRate();
         List<String> validRoomTypes = new ArrayList<>();
         List<PublishedRate> validPublishedRates = new ArrayList<>();
-        List<ReservationLineItem> reservationLineItems = new ArrayList<>();
-        validRooms = new ArrayList<>();
+        List<Room> validRooms = new ArrayList<>();
+        reservationLineItems = new ArrayList<>();
         
         //store the room types of published rates within check in and check out date
         for(PublishedRate pubRate:allPublishedRateAvailable){
