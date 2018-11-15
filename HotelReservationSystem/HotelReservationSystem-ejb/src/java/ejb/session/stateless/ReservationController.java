@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.ExceptionReport;
 import entity.OnlineReservation;
+import entity.PartnerReservation;
 import entity.PublishedRate;
 import entity.ReservationLineItem;
 import entity.Room;
@@ -142,6 +143,24 @@ public class ReservationController implements ReservationControllerRemote, Reser
         return query.getResultList();
     }
     
+    @Override
+    public PartnerReservation retrievePartnerReservationById(Long reservationId)
+    {
+        Query query=em.createQuery("SELECT p FROM PartnerReservationp WHERE p.reservationId=:inReservationId");
+        query.setParameter("inReservationId", reservationId);
+        
+        return (PartnerReservation) query.getSingleResult();
+    }
+    
+    @Override
+    public List<PartnerReservation> retrieveAllPartnerReservations()
+    {
+        Query query=em.createNamedQuery("SELECT p FROM PartnerReservation o");
+        
+        return query.getResultList();
+    }
+    
+    @Override
     public ExceptionReport createExceptionReport(ExceptionReport exceptionReport){
         em.persist(exceptionReport);
         em.flush();
