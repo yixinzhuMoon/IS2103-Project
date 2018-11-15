@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.OnlineReservation;
+import entity.PartnerReservation;
 import entity.ReservationLineItem;
 import entity.Room;
 import java.util.Date;
@@ -16,7 +17,7 @@ import util.exception.RoomTypeNotFoundException;
 
 public interface ReservationControllerLocal {
 
-    public List<ReservationLineItem> retrieveReservationLineItemByRoomType(Long roomTypeId);
+   public List<ReservationLineItem> retrieveReservationLineItemByRoomType(Long roomTypeId);
 
     public ReservationLineItem retrieveReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException;
     
@@ -25,9 +26,14 @@ public interface ReservationControllerLocal {
     public List<OnlineReservation> retrieveAllOnlineReservations();
     
     public ReservationLineItem createReservationLineItem(Date checkInDate, Date checkOutDate, int roomType);
-    
+
     public ReservationLineItem createWalkInReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException;
 
     public void allocateRoomToCurrentDayReservations();
+
+    public PartnerReservation retrievePartnerReservationById(Long reservationId);
+
+    public List<PartnerReservation> retrieveAllPartnerReservations();
+
     
 }
