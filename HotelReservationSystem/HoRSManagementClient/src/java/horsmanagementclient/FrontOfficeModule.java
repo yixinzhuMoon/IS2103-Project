@@ -76,10 +76,10 @@ public class FrontOfficeModule {
             System.out.println("*** HoRS :: Front Office ***\n");
             System.out.println("1: Walk-in Search Room");
             System.out.println("-----------------------");
-            System.out.println("3: Check-in Guest");
-            System.out.println("4: Check-out Guest");
+            System.out.println("2: Check-in Guest");
+            System.out.println("3: Check-out Guest");
             System.out.println("-----------------------");
-            System.out.println("5: Back\n");
+            System.out.println("4: Back\n");
             response = 0;
             
             while(response < 1 || response > 5)
@@ -110,7 +110,7 @@ public class FrontOfficeModule {
                 }
             }
             
-            if(response == 5)
+            if(response == 4)
             {
                 break;
             }
