@@ -23,5 +23,4 @@ public interface RoomReservationSessionBeanRemote {
 
     public OnlineReservation reserveRoom(String email, ReservationLineItem reservationRoom) throws GuestNotFoundException;
 
-
 }

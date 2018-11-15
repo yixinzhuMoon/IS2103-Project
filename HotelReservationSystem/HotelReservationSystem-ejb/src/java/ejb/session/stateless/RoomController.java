@@ -105,6 +105,14 @@ public class RoomController implements RoomControllerRemote, RoomControllerLocal
     }
     
     @Override
+    public List<Room> retrieveAllAvailableRooms(){
+        Query query = em.createQuery("SELECT r FROM Room r WHERE r.roomStatus = :inRoomStatus");
+        query.setParameter("inRoomStatus", "available");
+        return query.getResultList();
+    }
+    
+    
+    @Override
     public Room retrieveRoomById(Integer roomId, Boolean fetchRoomType, Boolean fetchReservation) throws RoomNotFoundException
     {
         Room room = em.find(Room.class, roomId);
@@ -134,6 +142,15 @@ public class RoomController implements RoomControllerRemote, RoomControllerLocal
         return query.getResultList();
     }
     
+    @Override
+    public List<Room> retrieveAvailableRoomsByRoomType(Long roomTypeId)
+    {
+        Query query = em.createQuery("SELECT r FROM Room r WHERE r.roomType = :inRoomType AND r.roomStatus = :inRoomStatus");
+        query.setParameter("inRoomType", em.find(RoomType.class, roomTypeId));
+        query.setParameter("inRoomStatus", "available");
+        
+        return query.getResultList();
+    }
     @Override
     public void updateRoom(Room room, String roomTypeName, Long reservationLineItemId) throws RoomNotFoundException, RoomTypeNotFoundException, ReservationLineItemNotFoundException
     {

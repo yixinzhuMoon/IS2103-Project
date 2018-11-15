@@ -95,11 +95,10 @@ public class HotelOperationModule {
             System.out.println("14: Delete Room Rate");
             System.out.println("15: View All Room Rates");
             System.out.println("-----------------------");
-            System.out.println("16: Allocate Room to Current Day Reservations");
-            System.out.println("17: Back\n");
+            System.out.println("16: Back\n");
             response = 0;
             
-            while(response < 1 || response > 17)
+            while(response < 1 || response > 16)
             {
                 System.out.print("> ");
 
@@ -192,11 +191,7 @@ public class HotelOperationModule {
                 {
                     viewAllRoomRates();
                 }
-                else if(response == 16)
-                {
-                    allocateRoomToCurrentDayReservations();
-                }
-                else if (response == 17)
+                else if (response == 16)
                 {
                     break;
                 }
@@ -206,7 +201,7 @@ public class HotelOperationModule {
                 }
             }
             
-            if(response == 17)
+            if(response == 16)
             {
                 break;
             }
@@ -894,11 +889,6 @@ public class HotelOperationModule {
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
-    }
-
-    public void allocateRoomToCurrentDayReservations() 
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

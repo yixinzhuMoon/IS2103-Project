@@ -5,7 +5,9 @@
  */
 package horsmanagementclient;
 
+import ejb.entity.stateful.WalkInReservationSessionBeanRemote;
 import ejb.session.stateless.EmployeeControllerRemote;
+import ejb.session.stateless.GuestControllerRemote;
 import ejb.session.stateless.PartnerControllerRemote;
 import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
@@ -26,10 +28,12 @@ import util.exception.InvalidLoginCredentialException;
 class MainApp {
     
     private EmployeeControllerRemote employeeControllerRemote;
+    private GuestControllerRemote guestControllerRemote;
     private PartnerControllerRemote partnerControllerRemote;
     private RoomControllerRemote roomControllerRemote;
     private RoomTypeControllerRemote roomTypeControllerRemote;
     private RoomRateControllerRemote roomRateControllerRemote;
+    private WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote;
     
     private SystemAdministrationModule systemAdminModule;
     private HotelOperationModule hotelOpModule;
@@ -37,8 +41,8 @@ class MainApp {
     
     private Employee currentEmployee;
     
-    public MainApp(EmployeeControllerRemote employeeControllerRemote, PartnerControllerRemote partnerControllerRemote, 
-            RoomControllerRemote roomControllerRemote, RoomTypeControllerRemote roomTypeControllerRemote, 
+    public MainApp(EmployeeControllerRemote employeeControllerRemote, GuestControllerRemote guestControllerRemote, PartnerControllerRemote partnerControllerRemote, 
+            RoomControllerRemote roomControllerRemote, RoomTypeControllerRemote roomTypeControllerRemote, WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote,
             RoomRateControllerRemote roomRateControllerRemote)
     {
         this.employeeControllerRemote = employeeControllerRemote;
@@ -46,6 +50,8 @@ class MainApp {
         this.roomControllerRemote = roomControllerRemote;
         this.roomTypeControllerRemote = roomTypeControllerRemote;
         this.roomRateControllerRemote = roomRateControllerRemote;
+        this.guestControllerRemote = guestControllerRemote;
+        this.walkInReservationSessionBeanRemote = walkInReservationSessionBeanRemote;
     }
     
     public void runApp()
@@ -75,7 +81,7 @@ class MainApp {
                         
                         systemAdminModule = new SystemAdministrationModule(employeeControllerRemote, partnerControllerRemote, currentEmployee);
                         hotelOpModule = new HotelOperationModule(employeeControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, currentEmployee);
-                        frontOfficeModule = new FrontOfficeModule(employeeControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, currentEmployee);
+                        frontOfficeModule = new FrontOfficeModule(employeeControllerRemote, guestControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, walkInReservationSessionBeanRemote, currentEmployee);
                         
                         menuMain();
                     }

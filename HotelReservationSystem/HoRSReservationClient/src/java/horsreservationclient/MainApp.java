@@ -195,7 +195,6 @@ class MainApp {
         System.out.println("Visitor registered as guest "+guestId+" successfully! ");
     }
 
-
      private void searchHotelRoom() throws GuestNotFoundException
     {
         try

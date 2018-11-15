@@ -6,6 +6,8 @@
 package ejb.session.stateless;
 
 import entity.Guest;
+import entity.OnlineReservation;
+import java.util.List;
 import util.exception.GuestNotFoundException;
 import util.exception.InvalidLoginCredentialException;
 
@@ -16,5 +18,13 @@ public interface GuestControllerRemote {
     public Guest retrieveGuestByEmail(String email) throws GuestNotFoundException;
 
     public Long createGuest(Guest newGuest);
+
+    public Guest retrieveGuestById(Long guestId) throws GuestNotFoundException;
+
+    public List<OnlineReservation> retrieveOnlineReservationListByGuest(Long guestId) throws GuestNotFoundException;
+
+    public void checkOutGuest(Long guestId) throws GuestNotFoundException;
+
+    public void checkInGuest(Long guestId) throws GuestNotFoundException;
     
 }

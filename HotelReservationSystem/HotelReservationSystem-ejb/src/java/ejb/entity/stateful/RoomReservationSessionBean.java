@@ -40,10 +40,6 @@ import util.exception.GuestNotFoundException;
 public class RoomReservationSessionBean implements RoomReservationSessionBeanRemote, RoomReservationSessionBeanLocal {
 
     @EJB
-    private RoomTypeControllerLocal roomTypeControllerLocal;
-
-
-    @EJB
     private ReservationControllerLocal reservationControllerLocal;
     
 
@@ -205,4 +201,6 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
         }
         
     }
+    
+    
 }
