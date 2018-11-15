@@ -5,12 +5,14 @@
  */
 package ejb.session.stateless;
 
+import entity.ExceptionReport;
 import entity.OnlineReservation;
 import entity.PublishedRate;
 import entity.ReservationLineItem;
 import entity.Room;
 import entity.RoomRate;
 import entity.RoomType;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -38,6 +40,8 @@ import util.exception.RoomTypeNotFoundException;
 public class ReservationController implements ReservationControllerRemote, ReservationControllerLocal {
 
     @EJB
+    private RoomControllerLocal roomControllerLocal;
+    @EJB
     private RoomTypeControllerLocal roomTypeControllerLocal;
     @EJB
     private RoomRateControllerLocal roomRateControllerLocal;
@@ -49,6 +53,13 @@ public class ReservationController implements ReservationControllerRemote, Reser
     public ReservationController()
     {
         
+    }
+    
+    public List<ReservationLineItem> retrieveReservationLineItemByCheckInDate(Date checkInDate)
+    {
+        Query query = em.createQuery("SELECT rli FROM ReservationLineItem rli WHERE rli.checkInDate = :inCheckInDate");
+        query.setParameter("inCheckInDate", checkInDate);
+        return query.getResultList();
     }
     
     @Override
@@ -131,9 +142,69 @@ public class ReservationController implements ReservationControllerRemote, Reser
         return query.getResultList();
     }
     
+    public ExceptionReport createExceptionReport(ExceptionReport exceptionReport){
+        em.persist(exceptionReport);
+        em.flush();
+        return exceptionReport;
+    }
+    
     @Override
     public void allocateRoomToCurrentDayReservations(){
-        
+        Date todayDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        List<ReservationLineItem> reservationLineItems = retrieveReservationLineItemByCheckInDate(todayDate);
+        List<Room> rooms = new ArrayList<>();
+        for(ReservationLineItem reservationLineItem:reservationLineItems)
+        {
+            //allocate an available room for reserved room type
+            List<Room> roomsFiltered = roomControllerLocal.retrieveAvailableRoomsByRoomType(reservationLineItem.getRoomType().getRoomTypeId());
+            List<Room> otherRooms = roomControllerLocal.retrieveAllAvailableRooms();
+            if(roomsFiltered!=null){
+                for(Room room:roomsFiltered){
+                    if(room.getRoomStatus().equals("available"))
+                    {
+                        room.setRoomStatus("occupied");
+                        room.setReservation(reservationLineItem);
+                        reservationLineItem.getRoomList().add(room);
+                    }
+                }
+            }
+            else if(otherRooms != null)
+            {
+                //no room of room type, upgrade available
+                if(roomsFiltered!=null){
+                    for(Room room:roomsFiltered){
+                        if(room.getRoomStatus().equals("available"))
+                        {
+                            room.setRoomStatus("occupied");
+                            room.setReservation(reservationLineItem);
+                            reservationLineItem.getRoomList().add(room);
+                            //no rooms allocated
+                            if(reservationLineItem.getRoomList() == null){
+                                ExceptionReport exReport = new ExceptionReport();
+                                exReport.setDescription("No available room for reserved room type, upgrade to next higher room type available. Room " + room.getRoomNumber() + " allocated.");
+                                createExceptionReport(exReport);
+                            }
+                        }
+                    }
+                }
+                //no room no upgrade
+                if(reservationLineItem.getRoomList() == null){
+                    ExceptionReport exReport = new ExceptionReport();
+                    exReport.setDescription("No available room for reserved room type, no upgrade to next higher room type available. No room allocated.");
+                    createExceptionReport(exReport);
+                }
+            }
+            else
+            {
+                //no room no upgrade
+                if(reservationLineItem.getRoomList() == null){
+                    ExceptionReport exReport = new ExceptionReport();
+                    exReport.setDescription("No available room for reserved room type, no upgrade to next higher room type available. No room allocated.");
+                    createExceptionReport(exReport);
+                }
+            }
+        }
     }
     
     @Override
