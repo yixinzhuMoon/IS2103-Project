@@ -26,6 +26,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.TimeException;
 
 /**
  *
@@ -145,41 +146,55 @@ public class GuestController implements GuestControllerRemote, GuestControllerLo
     }
     
     @Override
-    public void checkInGuest(Long guestId) throws GuestNotFoundException
+    public void checkInGuest(Long guestId)
     {
-        Date todayDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm") ;
-        List<OnlineReservation> guestList = retrieveOnlineReservationListByGuest(guestId);
-        for(OnlineReservation guestReservation:guestList){
-            for(ReservationLineItem reservationLineItem:guestReservation.getReservationLineItems())
-            {
-                try {
+        try {
+            Date todayDate = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm") ;
+            List<OnlineReservation> guestList = retrieveOnlineReservationListByGuest(guestId);
+            for(OnlineReservation guestReservation:guestList){
+                for(ReservationLineItem reservationLineItem:guestReservation.getReservationLineItems())
+                {
                     //today's date is reservation line item check out date && time is 12pm
                     if(sdf.format(todayDate).equals(sdf.format(reservationLineItem.getCheckInDate())) &&
                             dateFormat.parse(dateFormat.format(todayDate)).equals(dateFormat.parse("14:00"))){
-                        for(Room roomToCheckOut:reservationLineItem.getRoomList()){
-                            roomToCheckOut.setRoomStatus("occupied");
-                            roomToCheckOut.setReservation(reservationLineItem);
+                        for(Room roomToCheckIn:reservationLineItem.getRoomList()){
+                            roomToCheckIn.setRoomStatus("occupied");
+                            roomToCheckIn.setReservation(reservationLineItem);
+                            em.merge(reservationLineItem);
                         }
                     }
                     else if(!dateFormat.parse(dateFormat.format(todayDate)).equals(dateFormat.parse("14:00")))
                     {
-                        for(Room roomToCheckOut:reservationLineItem.getRoomList()){
-                            if(roomToCheckOut.getRoomStatus().equals("available")){
-                                roomToCheckOut.setRoomStatus("occupied");
-                                roomToCheckOut.setReservation(reservationLineItem);
+                        //current time before 12pm and room is available
+                        for(Room roomToCheckIn:reservationLineItem.getRoomList()){
+                            if(roomToCheckIn.getRoomStatus().equals("available")){
+                                roomToCheckIn.setRoomStatus("occupied");
+                                roomToCheckIn.setReservation(reservationLineItem);
+                                em.merge(reservationLineItem);
                             }
                         }
                     }
                     else
                     {
-                        System.out.println("Check in of guest only happens at 2pm on the day of arrival unless room is available before then.");
+                        throw new TimeException("Check in of guest only happens at 2pm on the day of arrival unless room is available before then.");
                     }
-                } catch (ParseException ex) {
-                    System.out.println("Invalid Date Format entered!" + "\n");
                 }
             }
+            System.out.println("");
+        } 
+        catch (GuestNotFoundException ex) 
+        {
+            System.out.println("Guest " + guestId + " does not exist: " + ex.getMessage() + "\n");
+        }
+        catch (ParseException ex)
+        {
+            System.out.println("Invalid Date Format entered!" + "\n");
+        } 
+        catch (TimeException ex) 
+        {
+            System.out.println("Check in of guest only happens at 2pm on the day of arrival unless room is available before then.\n");
         }
     }
 }
