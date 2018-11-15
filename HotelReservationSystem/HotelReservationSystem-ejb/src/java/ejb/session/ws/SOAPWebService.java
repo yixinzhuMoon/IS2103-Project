@@ -51,10 +51,6 @@ public class SOAPWebService {
         return roomReservationSessionBeanLocal.searchHotelRoom(checkInDate, checkOutDate);
     }
      
-    public OnlineReservation reserveRoom(String email,ReservationLineItem reservationRoom) throws GuestNotFoundException
-    {
-        return roomReservationSessionBeanLocal.reserveRoom(email, reservationRoom);
-    }
      
     public PartnerReservation retrievePartnerReservationById(Long reservationId)
     {
@@ -66,4 +62,13 @@ public class SOAPWebService {
         return reservationControllerLocal.retrieveAllPartnerReservations();
     }
     
+    public PartnerReservation reservePartnerRoom(String email,ReservationLineItem reservationRoom)
+    {
+        return roomReservationSessionBeanLocal.reservePartnerRoom(email,reservationRoom);
+    }
+    
+    public Long getTotalAmount(ReservationLineItem reservationLineItem)
+    {
+        return roomReservationSessionBeanLocal.getTotalAmount(reservationLineItem);
+    }
 }
