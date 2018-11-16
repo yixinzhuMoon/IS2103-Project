@@ -243,5 +243,33 @@ public class ReservationController implements ReservationControllerRemote, Reser
         }
     }
     
+    @Override
+    public ReservationLineItem createRoomReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException
+    {
+        try 
+        {
+            ReservationLineItem reservationLineItem=new ReservationLineItem();
+            reservationLineItem.setCheckInDate(checkInDate);
+            reservationLineItem.setCheckOutDate(checkOutDate);
+            RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeById(roomTypeId);
+            reservationLineItem.setRoomType(roomType);
+            RoomRate roomRate = roomRateControllerLocal.retrieveRoomRateById(roomRateId, false);
+            reservationLineItem.setRoomRate(roomRate);
+
+            em.persist(reservationLineItem);
+            em.flush();
+
+            return reservationLineItem;
+        }
+        catch(RoomTypeNotFoundException ex)
+        {
+            throw new RoomTypeNotFoundException("Unable to create new reservation line item as the room type record does not exist");
+        } 
+        catch (RoomRateNotFoundException ex) 
+        {
+            throw new RoomRateNotFoundException("Unable to create new reservation line item as the room rate record does not exist");
+        }
+    }
+    
     
 }

@@ -5,6 +5,9 @@
  */
 package ejb.session.stateless;
 
+import entity.NormalRate;
+import entity.PeakRate;
+import entity.PromotionRate;
 import entity.PublishedRate;
 import entity.Room;
 import entity.RoomRate;
@@ -20,18 +23,27 @@ import java.util.Date;
 
 public interface RoomRateControllerLocal {
     
-    public List<RoomRate> retrieveRoomRateByRoomType(Long roomTypeId);
-    
+      public List<RoomRate> retrieveRoomRateByRoomType(Long roomTypeId);
+
     public RoomRate createRoomRate(RoomRate newRoomRate, Long roomTypeId) throws RoomTypeNotFoundException, RoomExistException, GeneralException;
-    
+
     public RoomRate retrieveRoomRateById(Long roomRateId, Boolean fetchRoomType) throws RoomRateNotFoundException;
-    
+
     public List<RoomRate> retrieveAllRoomRates();
-    
+
     public void updateRoomRate(RoomRate roomRate, String roomTypeName) throws RoomTypeNotFoundException, RoomNotFoundException, RoomRateNotFoundException;
-    
+
     public void deleteRoomRate(Long roomRateId) throws RoomRateNotFoundException, DeleteRoomRateException;
-    
+
     public List<PublishedRate> retrieveAllPublishedRate();
+
+    public List<NormalRate> retrieveAllNormalRate();
+
+    public List<PromotionRate> retrieveAllPromotionRate();
+
+    public List<PeakRate> retrieveAllPeakRate();
+
+    public List<PeakRate> retrieveAllRoomRate();
+    
 }
 

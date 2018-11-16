@@ -6,6 +6,8 @@
 package ejb.entity.stateful;
 
 import ejb.session.stateless.ReservationControllerLocal;
+import ejb.session.stateless.RoomControllerLocal;
+import ejb.session.stateless.RoomRateControllerLocal;
 import ejb.session.stateless.RoomTypeControllerLocal;
 import entity.Guest;
 import entity.NormalRate;
@@ -15,9 +17,12 @@ import entity.PartnerReservation;
 import entity.PeakRate;
 import entity.PromotionRate;
 import entity.ReservationLineItem;
+import entity.Room;
+import entity.RoomRate;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +36,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.GuestNotFoundException;
+import util.exception.RoomRateNotFoundException;
+import util.exception.RoomTypeNotFoundException;
 
 /**
  *
@@ -42,7 +49,14 @@ import util.exception.GuestNotFoundException;
 public class RoomReservationSessionBean implements RoomReservationSessionBeanRemote, RoomReservationSessionBeanLocal {
 
     @EJB
+    private RoomRateControllerLocal roomRateControllerLocal;
+
+    @EJB
+    private RoomControllerLocal roomControllerLocal;
+
+    @EJB
     private ReservationControllerLocal reservationControllerLocal;
+    
     
 
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
@@ -79,11 +93,21 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
     @Override
     public List<ReservationLineItem> searchHotelRoom(Date checkInDate,Date checkOutDate)
     {
-        this.checkInDate=checkInDate;
-        this.checkOutDate=checkOutDate;
+        List<Room> allRoomAvailable = roomControllerLocal.retrieveAllRooms();
+        List<NormalRate> allNormalRateAvailable = roomRateControllerLocal.retrieveAllNormalRate();
+        List<PromotionRate> allPromotionRateAvailable= roomRateControllerLocal.retrieveAllPromotionRate();
+        List<PeakRate> allPeakRateAvailable= roomRateControllerLocal.retrieveAllPeakRate();
+        List<String> validRoomTypes = new ArrayList<>();
+        List<NormalRate> validNormalRates = new ArrayList<>();
+        List<PromotionRate> validPromotionRates = new ArrayList<>();
+        List<PeakRate> validPeakRates = new ArrayList<>();
+        List<Room> validRooms = new ArrayList<>();
+        reservationLineItems = new ArrayList<>();
         
-        SimpleDateFormat df=new SimpleDateFormat("MM-dd");
+        String indicate="";
         
+        
+        SimpleDateFormat df=new SimpleDateFormat("dd-MM-YYYY");
         Date BeginNormalRate=null;
         Date EndNormalRate=null;
         Date BeginPromotionRate=null;
@@ -110,53 +134,108 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
             ex.printStackTrace();
         }
         
-        BigDecimal pricePerNight=BigDecimal.ZERO;
         String roomRate="";
         
         if(belongCalendar(Begin, BeginNormalRate, EndNormalRate)&&belongCalendar(End, BeginNormalRate, EndNormalRate))
         {
-            pricePerNight=normalRate.getRatePerNight();
             roomRate="NormalRate";
         }
         else if(belongCalendar(Begin, BeginPromotionRate, EndPromotionRate)&&belongCalendar(End, BeginPromotionRate, EndPromotionRate))
         {
-            pricePerNight=promotionRate.getRatePerNight();
             roomRate="PromotionRate";
         }
         else if(belongCalendar(Begin, BeginPeakRate, EndPeakRate)&&belongCalendar(End, BeginPeakRate, EndPeakRate))
         {
-            pricePerNight=peakRate.getRatePerNight();
             roomRate="PeakRate";
         }
         else if((belongCalendar(Begin, BeginNormalRate, EndNormalRate)&&belongCalendar(End, BeginPromotionRate, EndPromotionRate))||(belongCalendar(End, BeginNormalRate, EndNormalRate)&&belongCalendar(Begin, BeginPromotionRate, EndPromotionRate)))
         {
-            pricePerNight=promotionRate.getRatePerNight();
             roomRate="PromotionRate";
         }
         else if((belongCalendar(Begin, BeginNormalRate, EndNormalRate)&&belongCalendar(End, BeginPeakRate, EndPeakRate))||(belongCalendar(End, BeginNormalRate, EndNormalRate)&&belongCalendar(Begin, BeginPeakRate, EndPeakRate)))
         {
-            pricePerNight=peakRate.getRatePerNight();
             roomRate="PeakRate";
         }
         else if((belongCalendar(Begin, BeginPromotionRate, EndPromotionRate)&&belongCalendar(Begin, BeginPeakRate, EndPeakRate))||(belongCalendar(End, BeginPromotionRate, EndPromotionRate)&&belongCalendar(Begin, BeginPeakRate, EndPeakRate)))
         {
-            pricePerNight=peakRate.getRatePerNight();
             roomRate="PeakRate";
         }
         else if((belongCalendar(Begin, BeginNormalRate, EndNormalRate)&&belongCalendar(Begin, BeginPromotionRate, EndPromotionRate)&&belongCalendar(Begin, BeginPeakRate, EndPeakRate))||(belongCalendar(End, BeginNormalRate, EndNormalRate)&&belongCalendar(End, BeginPromotionRate, EndPromotionRate)&&belongCalendar(End, BeginPeakRate, EndPeakRate)))
         {
-            pricePerNight=peakRate.getRatePerNight();
             roomRate="PeakRate";
         }
+
         
-        totalAmount=(checkOutDate.getTime()-checkInDate.getTime())*pricePerNight.longValue();
+        //store the room types of published rates within check in and check out date
+        if(roomRate.equals("NormalRate"))
+        {
+            for(NormalRate normalRate:allNormalRateAvailable)
+            {
+                String roomTypeName = normalRate.getRoomType().getName();
+                if(!validRoomTypes.contains(roomTypeName))
+                {
+                    validRoomTypes.add(roomTypeName);
+                    validNormalRates.add(normalRate);
+                }
+            }
+        }
+        else if(roomRate.equals("PromotionRate"))
+        {
+            for(PromotionRate promotionRate:allPromotionRateAvailable)
+            {
+                String roomTypeName = promotionRate.getRoomType().getName();
+                if(!validRoomTypes.contains(roomTypeName))
+                {
+                    validRoomTypes.add(roomTypeName);
+                    validPromotionRates.add(promotionRate);
+                }
+            }
+        }
+        else if(roomRate.equals("PeakRate"))
+        {
+            for(PeakRate peakRate:allPeakRateAvailable)
+            {
+                String roomTypeName = peakRate.getRoomType().getName();
+                if(!validRoomTypes.contains(roomTypeName))
+                {
+                    validRoomTypes.add(roomTypeName);
+                    validPeakRates.add(peakRate);
+                }
+            }
+        }
         
-        reservationLineItems.add(reservationControllerLocal.createReservationLineItem(checkInDate,checkInDate,1));
-        reservationLineItems.add(reservationControllerLocal.createReservationLineItem(checkInDate,checkInDate,2));
-        reservationLineItems.add(reservationControllerLocal.createReservationLineItem(checkInDate,checkInDate,3));
-        reservationLineItems.add(reservationControllerLocal.createReservationLineItem(checkInDate,checkInDate,4));
-        reservationLineItems.add(reservationControllerLocal.createReservationLineItem(checkInDate,checkInDate,5));
-        
+        //create reservation line items belonging to valid room type
+        Integer counter = 0;
+        for(Room room:allRoomAvailable){
+            if(validRoomTypes.contains(room.getRoomType().getName())){
+                try {
+                    counter++;
+                    validRooms.add(room);
+                    if(roomRate.equals("NormalRate"))
+                    {
+                        totalAmount = (checkOutDate.getTime()-checkInDate.getTime())*validNormalRates.get(counter).getRatePerNight().longValue();
+                        reservationLineItems.add(reservationControllerLocal.createRoomReservationLineItem(checkInDate, checkOutDate,
+                            room.getRoomType().getRoomTypeId(), validNormalRates.get(counter).getRoomRateId()));
+                    }
+                    else if(roomRate.equals("PromotionRate"))
+                    {
+                        totalAmount = (checkOutDate.getTime()-checkInDate.getTime())*validPromotionRates.get(counter).getRatePerNight().longValue();
+                        reservationLineItems.add(reservationControllerLocal.createRoomReservationLineItem(checkInDate, checkOutDate,
+                            room.getRoomType().getRoomTypeId(), validPromotionRates.get(counter).getRoomRateId()));
+                    }
+                    else if(roomRate.equals("PeakRate"))
+                    {
+                        totalAmount = (checkOutDate.getTime()-checkInDate.getTime())*validPeakRates.get(counter).getRatePerNight().longValue();
+                        reservationLineItems.add(reservationControllerLocal.createRoomReservationLineItem(checkInDate, checkOutDate,
+                            room.getRoomType().getRoomTypeId(), validPeakRates.get(counter).getRoomRateId()));
+                    }
+                    
+                } catch (RoomTypeNotFoundException | RoomRateNotFoundException ex) {
+                    System.out.println("An error has occured while creating reservation line item");
+                }
+            }
+        }
+        //calculate total amount for published rate within check in date and checkout date
         return reservationLineItems;
         
        
@@ -224,6 +303,10 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
             return null;
         }
 
+    }
+
+    public void persist(Object object) {
+        em.persist(object);
     }
     
     

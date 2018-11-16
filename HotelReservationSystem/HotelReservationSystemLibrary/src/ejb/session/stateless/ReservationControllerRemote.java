@@ -38,4 +38,6 @@ public interface ReservationControllerRemote {
 
     public ExceptionReport createExceptionReport(ExceptionReport exceptionReport);
 
+    public ReservationLineItem createRoomReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException;
+
 }
