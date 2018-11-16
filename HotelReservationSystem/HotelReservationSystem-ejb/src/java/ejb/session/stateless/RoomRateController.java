@@ -231,4 +231,32 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
         query.setParameter("inRoomRateStatus", "disabled");
         return query.getResultList();
     }
+    
+    @Override
+    public List<NormalRate> retrieveAllNormalRate(){
+        Query query = em.createQuery("SELECT n FROM NormalRate n WHERE n.roomRateStatus <> :inRoomRateStatus");
+        query.setParameter("inRoomRateStatus", "disabled");
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<PromotionRate> retrieveAllPromotionRate(){
+        Query query = em.createQuery("SELECT p FROM PromotionRate p WHERE p.roomRateStatus <> :inRoomRateStatus");
+        query.setParameter("inRoomRateStatus", "disabled");
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<PeakRate> retrieveAllPeakRate(){
+        Query query = em.createQuery("SELECT p FROM PeakRate p WHERE p.roomRateStatus <> :inRoomRateStatus");
+        query.setParameter("inRoomRateStatus", "disabled");
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<PeakRate> retrieveAllRoomRate(){
+        Query query = em.createQuery("SELECT r FROM RoomRate r WHERE r.roomRateStatus <> :inRoomRateStatus");
+        query.setParameter("inRoomRateStatus", "disabled");
+        return query.getResultList();
+    }
 }

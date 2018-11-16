@@ -5,6 +5,9 @@
  */
 package ejb.session.stateless;
 
+import entity.NormalRate;
+import entity.PeakRate;
+import entity.PromotionRate;
 import entity.PublishedRate;
 import entity.Room;
 import entity.RoomRate;
@@ -32,5 +35,13 @@ public interface RoomRateControllerRemote {
     public void deleteRoomRate(Long roomRateId) throws RoomRateNotFoundException, DeleteRoomRateException;
 
     public List<PublishedRate> retrieveAllPublishedRate();
+
+    public List<NormalRate> retrieveAllNormalRate();
+
+    public List<PromotionRate> retrieveAllPromotionRate();
+
+    public List<PeakRate> retrieveAllPeakRate();
+
+    public List<PeakRate> retrieveAllRoomRate();
     
 }

@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.ExceptionReport;
 import entity.OnlineReservation;
 import entity.PartnerReservation;
 import entity.ReservationLineItem;
@@ -17,7 +18,7 @@ import util.exception.RoomTypeNotFoundException;
 
 public interface ReservationControllerLocal {
 
-   public List<ReservationLineItem> retrieveReservationLineItemByRoomType(Long roomTypeId);
+    public List<ReservationLineItem> retrieveReservationLineItemByRoomType(Long roomTypeId);
 
     public ReservationLineItem retrieveReservationLineItemById(Long reservationLineItemId) throws ReservationLineItemNotFoundException;
     
@@ -35,5 +36,8 @@ public interface ReservationControllerLocal {
 
     public List<PartnerReservation> retrieveAllPartnerReservations();
 
-    
+    public ExceptionReport createExceptionReport(ExceptionReport exceptionReport);
+
+    public ReservationLineItem createRoomReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException;
+
 }

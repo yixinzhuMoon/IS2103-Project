@@ -171,14 +171,14 @@ class MainApp {
             
             reservationLineItems=searchHotelRoom(xgcal1,xgcal2);
             
-            System.out.printf("%8s%22s   %s\n", "No.","Room Type", "Check in Date", "Check out Date", "Total amount");
-            
+             System.out.printf("%11s%20s%15%15s%14s%\n", "Room Number","Room Type", "Check in Date", "Check out Date", "Total amount");
+
             Integer number=0;
             for(ReservationLineItem reservationLineItem:reservationLineItems)
             {
                 number++;
                 totalAmount.add(getTotalAmount(reservationLineItem));
-                System.out.printf("%8s%22s   %s\n",number, reservationLineItem.getRoomType(), outputDateFormat.format(checkInDate), outputDateFormat.format(checkOutDate),totalAmount);
+                System.out.printf("%11s%20s%15%15s%14s%%s\n",number, reservationLineItem.getRoomType(), outputDateFormat.format(checkInDate), outputDateFormat.format(checkOutDate),totalAmount);
             }
             
             System.out.println("------------------------");
