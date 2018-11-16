@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +39,7 @@ public class Room implements Serializable {
     @ManyToOne(optional=true)
     @JoinColumn(nullable=true)
     private ReservationLineItem reservation;
+    private BigDecimal totalAmount; //total amount for a current reservation in the room, updated everytime guest reserves a room
 
     public Room() {
     }
@@ -87,6 +89,14 @@ public class Room implements Serializable {
 
     public void setRoomNumber(Integer roomNumber) {
         this.roomNumber = roomNumber;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     @Override
