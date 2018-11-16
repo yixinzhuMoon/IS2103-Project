@@ -10,6 +10,8 @@ import ejb.session.stateless.RoomTypeControllerLocal;
 import entity.Guest;
 import entity.NormalRate;
 import entity.OnlineReservation;
+import entity.Partner;
+import entity.PartnerReservation;
 import entity.PeakRate;
 import entity.PromotionRate;
 import entity.ReservationLineItem;
@@ -200,6 +202,28 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
             throw new GuestNotFoundException("Missing customer data or no holiday to checkout");
         }
         
+    }
+    
+    @Override
+    public PartnerReservation reservePartnerRoom(String email,ReservationLineItem reservationRoom)
+    {
+        if(email!=null)
+        {
+            Query query=em.createQuery("SELECT p FROM Partner p WHERE p.email=:inEMail");
+            query.setParameter("inEmail", email);
+            Partner partner=(Partner) query.getSingleResult();
+            
+            PartnerReservation partnerReservation=new PartnerReservation();
+            partnerReservation.getReservationLineItems().add(reservationRoom);
+            partner.getPartnerReservations().add(partnerReservation);
+            
+            return partnerReservation;
+        }
+        else 
+        {
+            return null;
+        }
+
     }
     
     

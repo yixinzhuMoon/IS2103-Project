@@ -6,6 +6,7 @@
 package ejb.entity.stateful;
 
 import entity.OnlineReservation;
+import entity.PartnerReservation;
 import entity.ReservationLineItem;
 import java.util.Date;
 import java.util.List;
@@ -22,5 +23,7 @@ public interface RoomReservationSessionBeanRemote {
     public Long getTotalAmount(ReservationLineItem reservationLineItem);
 
     public OnlineReservation reserveRoom(String email, ReservationLineItem reservationRoom) throws GuestNotFoundException;
+
+    public PartnerReservation reservePartnerRoom(String email, ReservationLineItem reservationRoom);
 
 }
