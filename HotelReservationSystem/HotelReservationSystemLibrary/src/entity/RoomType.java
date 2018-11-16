@@ -33,11 +33,12 @@ public class RoomType implements Serializable {
     private Integer capacity;
     private String amenities;
     private String status;
+    private Integer roomRank; //1 is highest room rank
 
     public RoomType() {
     }
 
-    public RoomType(String name, String description, Integer roomSize, String bed, Integer capacity, String amenities, String status) {
+    public RoomType(String name, String description, Integer roomSize, String bed, Integer capacity, String amenities, String status, Integer roomRank) {
         this();
         this.name = name;
         this.description = description;
@@ -46,6 +47,15 @@ public class RoomType implements Serializable {
         this.capacity = capacity;
         this.amenities = amenities;
         this.status = status;
+        this.roomRank = roomRank;
+    }
+
+    public Integer getRoomRank() {
+        return roomRank;
+    }
+
+    public void setRoomRank(Integer roomRank) {
+        this.roomRank = roomRank;
     }
     
     public Long getRoomTypeId() {

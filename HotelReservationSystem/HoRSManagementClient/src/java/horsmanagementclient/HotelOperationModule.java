@@ -241,6 +241,9 @@ public class HotelOperationModule {
         scanner.nextLine();
         System.out.print("Enter Amenities> ");
         newRoomType.setAmenities(scanner.nextLine().trim());
+        System.out.print("Enter Room Rank (1 is the highest)> ");
+        newRoomType.setRoomRank(scanner.nextInt());
+        scanner.nextLine();
         newRoomType.setStatus("enabled");
         
         newRoomType = roomTypeControllerRemote.createRoomType(newRoomType);
@@ -355,6 +358,12 @@ public class HotelOperationModule {
         {
             roomType.setAmenities(input);
         }
+        System.out.print("Enter Room Rank (blank if no change)> ");
+        Integer roomRank = scanner.nextInt();
+        if(roomRank != null)
+        {
+            roomType.setRoomRank(roomRank);
+        }
         
         try 
         {
@@ -421,7 +430,7 @@ public class HotelOperationModule {
             
             System.out.println("*** HoRS :: Hotel Management System :: Create New Room ***\n");
             System.out.print("Enter Room Number (room floor + room number)> ");
-            newRoom.setRoomNumber(scanner.nextInt());
+            newRoom.setRoomId(scanner.nextLong());
             scanner.nextLine();
             System.out.print("Enter Room Type Id> ");
             Long roomTypeId = scanner.nextLong();
@@ -429,7 +438,7 @@ public class HotelOperationModule {
             System.out.println("Open room for room type: " + roomType.getName()+ "\n");
             newRoom.setRoomStatus("available");
             newRoom = roomControllerRemote.createRoom(newRoom, roomTypeId);
-            System.out.println("New room created successfully!: " + newRoom.getRoomNumber()+ "\n");
+            System.out.println("New room created successfully!: " + newRoom.getRoomId()+ "\n");
         } 
         catch (RoomTypeNotFoundException ex) 
         {
@@ -448,9 +457,16 @@ public class HotelOperationModule {
             String input;
             
             System.out.println("*** HoRS :: Hotel Management System :: Update Room ***\n");
-            System.out.print("Enter Room Number> ");
-            Integer roomNumber = Integer.parseInt(scanner.nextLine());
-            Room room = roomControllerRemote.retrieveRoomById(roomNumber, true, true);
+            System.out.print("Enter Room Id> ");
+            Long roomId = scanner.nextLong();
+            scanner.nextLine();
+            Room room = roomControllerRemote.retrieveRoomById(roomId, true, true);
+            System.out.print("Enter Room Number (blank if no change)> ");
+            input = scanner.nextLine().trim();
+            if(input.length() > 0)
+            {
+                room.setRoomNumber(Integer.parseInt(input));
+            }
             System.out.print("Enter Room Type name (blank if no change)> ");
             input = scanner.nextLine();
             String roomTypeName = "";
@@ -510,16 +526,16 @@ public class HotelOperationModule {
             String input;
             
             System.out.println("*** HoRS :: Hotel Management System :: Delete Room ***\n");
-            System.out.print("Enter Room Number> ");
-            Integer roomNumber = scanner.nextInt();
+            System.out.print("Enter Room Id> ");
+            Long roomId = scanner.nextLong();
             scanner.nextLine();
-            Room room = roomControllerRemote.retrieveRoomById(roomNumber, false, false);
-            System.out.printf("Confirm Delete Room Number %d (Enter 'Y' to Delete)> ", room.getRoomNumber());
+            Room room = roomControllerRemote.retrieveRoomById(roomId, false, false);
+            System.out.printf("Confirm Delete Room Number %d (Enter 'Y' to Delete)> ", room.getRoomId());
             input = scanner.nextLine().trim();
             
             if(input.equals("Y")) 
             {
-                roomControllerRemote.deleteRoom(room.getRoomNumber());
+                roomControllerRemote.deleteRoom(room.getRoomId());
                 System.out.println("Room deleted successfully!\n");
             }
             else 
@@ -543,12 +559,12 @@ public class HotelOperationModule {
             for(Room room:rooms)
             {
                 if(room.getReservation() != null){
-                    System.out.printf("%12s%12s%20s%20s\n", room.getRoomNumber().toString(), room.getRoomStatus(),
+                    System.out.printf("%12s%12s%20s%20s\n", room.getRoomId().toString(), room.getRoomStatus(),
                             room.getRoomType().getName(), room.getReservation().getReservationLineItemId().toString());
                 }
                 else
                 {
-                    System.out.printf("%12s%12s%20s%20s\n", room.getRoomNumber().toString(), room.getRoomStatus(),
+                    System.out.printf("%12s%12s%20s%20s\n", room.getRoomId().toString(), room.getRoomStatus(),
                             room.getRoomType().getName(), "none");
                 }
             }

@@ -113,7 +113,7 @@ public class RoomController implements RoomControllerRemote, RoomControllerLocal
     
     
     @Override
-    public Room retrieveRoomById(Integer roomId, Boolean fetchRoomType, Boolean fetchReservation) throws RoomNotFoundException
+    public Room retrieveRoomById(Long roomId, Boolean fetchRoomType, Boolean fetchReservation) throws RoomNotFoundException
     {
         Room room = em.find(Room.class, roomId);
         
@@ -154,10 +154,10 @@ public class RoomController implements RoomControllerRemote, RoomControllerLocal
     @Override
     public void updateRoom(Room room, String roomTypeName, Long reservationLineItemId) throws RoomNotFoundException, RoomTypeNotFoundException, ReservationLineItemNotFoundException
     {
-        if(room.getRoomNumber()!= null)
+        if(room.getRoomId()!= null)
         { 
-            Room roomToUpdate = retrieveRoomById(room.getRoomNumber(), true, true);
-            if(roomToUpdate.getRoomNumber().equals(room.getRoomNumber()))
+            Room roomToUpdate = retrieveRoomById(room.getRoomId(), true, true);
+            if(roomToUpdate.getRoomId().equals(room.getRoomId()))
             {
                 roomToUpdate.setRoomStatus(room.getRoomStatus());
                 if(!roomTypeName.equals("")){
@@ -181,7 +181,7 @@ public class RoomController implements RoomControllerRemote, RoomControllerLocal
     }
     
     @Override
-    public void deleteRoom(Integer roomId) throws RoomNotFoundException, DeleteRoomException 
+    public void deleteRoom(Long roomId) throws RoomNotFoundException, DeleteRoomException 
     {
         Room roomToRemove = retrieveRoomById(roomId, false, false);
         

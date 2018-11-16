@@ -198,7 +198,7 @@ public class ReservationController implements ReservationControllerRemote, Reser
                         room.setReservation(reservationLineItem);
                         reservationLineItem.getRoomList().add(room);
                         if(reservationLineItem.getRoomList() == null){
-                            exReport.setDescription("No available room for reserved room type, upgrade to next higher room type available. Room " + room.getRoomNumber() + " allocated.");
+                            exReport.setDescription("No available room for reserved room type, upgrade to next higher room type available. Room " + room.getRoomId() + " allocated.");
                             createExceptionReport(exReport);
                         }
                     }
