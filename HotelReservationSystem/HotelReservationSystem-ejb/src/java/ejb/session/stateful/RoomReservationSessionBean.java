@@ -99,111 +99,82 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
         List<PromotionRate> allPromotionRateAvailable= roomRateControllerLocal.retrieveAllPromotionRate();
         List<PeakRate> allPeakRateAvailable= roomRateControllerLocal.retrieveAllPeakRate();
         List<String> validRoomTypes = new ArrayList<>();
+        List<String> validNormalRoomTypes = new ArrayList<>();
+        List<String> validPromotionRoomTypes = new ArrayList<>();
+        List<String> validPeakRoomTypes = new ArrayList<>();
         List<NormalRate> validNormalRates = new ArrayList<>();
         List<PromotionRate> validPromotionRates = new ArrayList<>();
         List<PeakRate> validPeakRates = new ArrayList<>();
         List<Room> validRooms = new ArrayList<>();
         reservationLineItems = new ArrayList<>();
         
-        String indicate="";
         
         
-        SimpleDateFormat df=new SimpleDateFormat("dd-MM-YYYY");
-        Date BeginNormalRate=null;
-        Date EndNormalRate=null;
-        Date BeginPromotionRate=null;
-        Date EndPromotionRate=null;
-        Date BeginPeakRate=null;
-        Date EndPeakRate=null;
-        Date Begin=null;
-        Date End=null;
-        
-        try
-        {
-            BeginNormalRate=df.parse(normalRate.getStartDate().toString());
-            EndNormalRate=df.parse(normalRate.getEndDate().toString());
-            BeginPromotionRate=df.parse(promotionRate.getStartDate().toString());
-            EndPromotionRate=df.parse(promotionRate.getEndDate().toString());
-            BeginPeakRate=df.parse(peakRate.getStartDate().toString());
-            EndPeakRate=df.parse(peakRate.getEndDate().toString());
-            Begin=df.parse(checkInDate.toString());
-            End=df.parse(checkOutDate.toString());
-            
-        } 
-        catch (ParseException ex) 
-        {
-            ex.printStackTrace();
-        }
-        
-        String roomRate="";
-        
-        if(belongCalendar(Begin, BeginNormalRate, EndNormalRate)&&belongCalendar(End, BeginNormalRate, EndNormalRate))
-        {
-            roomRate="NormalRate";
-        }
-        else if(belongCalendar(Begin, BeginPromotionRate, EndPromotionRate)&&belongCalendar(End, BeginPromotionRate, EndPromotionRate))
-        {
-            roomRate="PromotionRate";
-        }
-        else if(belongCalendar(Begin, BeginPeakRate, EndPeakRate)&&belongCalendar(End, BeginPeakRate, EndPeakRate))
-        {
-            roomRate="PeakRate";
-        }
-        else if((belongCalendar(Begin, BeginNormalRate, EndNormalRate)&&belongCalendar(End, BeginPromotionRate, EndPromotionRate))||(belongCalendar(End, BeginNormalRate, EndNormalRate)&&belongCalendar(Begin, BeginPromotionRate, EndPromotionRate)))
-        {
-            roomRate="PromotionRate";
-        }
-        else if((belongCalendar(Begin, BeginNormalRate, EndNormalRate)&&belongCalendar(End, BeginPeakRate, EndPeakRate))||(belongCalendar(End, BeginNormalRate, EndNormalRate)&&belongCalendar(Begin, BeginPeakRate, EndPeakRate)))
-        {
-            roomRate="PeakRate";
-        }
-        else if((belongCalendar(Begin, BeginPromotionRate, EndPromotionRate)&&belongCalendar(Begin, BeginPeakRate, EndPeakRate))||(belongCalendar(End, BeginPromotionRate, EndPromotionRate)&&belongCalendar(Begin, BeginPeakRate, EndPeakRate)))
-        {
-            roomRate="PeakRate";
-        }
-        else if((belongCalendar(Begin, BeginNormalRate, EndNormalRate)&&belongCalendar(Begin, BeginPromotionRate, EndPromotionRate)&&belongCalendar(Begin, BeginPeakRate, EndPeakRate))||(belongCalendar(End, BeginNormalRate, EndNormalRate)&&belongCalendar(End, BeginPromotionRate, EndPromotionRate)&&belongCalendar(End, BeginPeakRate, EndPeakRate)))
-        {
-            roomRate="PeakRate";
-        }
 
-
-        if(roomRate.equals("NormalRate"))
-        {
             for(NormalRate normalRate:allNormalRateAvailable)
             {
+            if(isWithinRange(normalRate.getStartDate(),normalRate.getEndDate(), checkInDate, checkOutDate))
+            {
                 String roomTypeName = normalRate.getRoomType().getName();
-                if(!validRoomTypes.contains(roomTypeName))
-                {
-                    validRoomTypes.add(roomTypeName);
+                if(!validRoomTypes.contains(roomTypeName)){
+                    validNormalRoomTypes.add(roomTypeName);
                     validNormalRates.add(normalRate);
                 }
             }
-        }
-        else if(roomRate.equals("PromotionRate"))
-        {
-            for(PromotionRate promotionRate:allPromotionRateAvailable)
-            {
+            }
+
+        
+        for(PromotionRate promotionRate:allPromotionRateAvailable){
+            if(isWithinRange(promotionRate.getStartDate(),promotionRate.getEndDate(), checkInDate, checkOutDate)){
                 String roomTypeName = promotionRate.getRoomType().getName();
-                if(!validRoomTypes.contains(roomTypeName))
-                {
-                    validRoomTypes.add(roomTypeName);
+                if(!validRoomTypes.contains(roomTypeName)){
+                    validPromotionRoomTypes.add(roomTypeName);
                     validPromotionRates.add(promotionRate);
                 }
             }
         }
-        else if(roomRate.equals("PeakRate"))
-        {
-            for(PeakRate peakRate:allPeakRateAvailable)
-            {
+        
+        for(PeakRate peakRate:allPeakRateAvailable){
+            if(isWithinRange(peakRate.getStartDate(),peakRate.getEndDate(), checkInDate, checkOutDate)){
                 String roomTypeName = peakRate.getRoomType().getName();
-                if(!validRoomTypes.contains(roomTypeName))
-                {
-                    validRoomTypes.add(roomTypeName);
+                if(!validRoomTypes.contains(roomTypeName)){
+                    validPeakRoomTypes.add(roomTypeName);
                     validPeakRates.add(peakRate);
                 }
             }
         }
-
+        
+       
+        String roomRate="NormalRate";
+        
+        for(int a=0;a<validNormalRates.size();a++)
+        {
+            for(int b=0;b<validPromotionRoomTypes.size();b++)
+            {
+                for(int c=0;c<validPeakRoomTypes.size();c++)
+                {
+                    if(validPeakRoomTypes.get(c).equals(validPromotionRoomTypes.get(b))&&validPeakRoomTypes.get(c).equals(validNormalRoomTypes.get(a)))
+                    {
+                        roomRate="PromotionRate";
+                    }
+                    else if(validPeakRoomTypes.get(c).equals(validPromotionRoomTypes.get(b)))
+                    {
+                        roomRate="PeakRate";
+                    }
+                    else if(validPeakRoomTypes.get(c).equals(validNormalRoomTypes.get(a)))
+                    {
+                        roomRate="PeakRate";
+                    }
+                           
+                }
+                if(validNormalRoomTypes.get(a).equals(validPromotionRoomTypes.get(b)))
+                {
+                    roomRate="PromotionRate";
+                }
+            }
+        }
+        
+       
         Integer counter = 0;
         for(Room room:allRoomAvailable){
             if(validRoomTypes.contains(room.getRoomType().getName())){
@@ -234,24 +205,10 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
                 }
             }
         }
-        //calculate total amount for published rate within check in date and checkout date
-        return reservationLineItems;
         
-       
+        return reservationLineItems;             
     }
         
-     private boolean belongCalendar(Date nowTime, Date beginTime, Date endTime) {
-        Calendar date = Calendar.getInstance();
-        date.setTime(nowTime);
-
-        Calendar begin = Calendar.getInstance();
-        begin.setTime(beginTime);
-
-        Calendar end = Calendar.getInstance();
-        end.setTime(endTime);
-
-        return date.after(begin) && date.before(end);
-    }
      
     @Override
     public Long getTotalAmount(ReservationLineItem reservationLineItem) 
@@ -308,5 +265,8 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
         em.persist(object);
     }
     
+    public boolean isWithinRange(Date startDate, Date endDate,Date checkInDate, Date checkOutDate) {
+        return !(startDate.after(checkInDate) || endDate.before(checkOutDate));
+    }
     
 }
