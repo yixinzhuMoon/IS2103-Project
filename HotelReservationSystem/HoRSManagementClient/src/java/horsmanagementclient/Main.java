@@ -42,11 +42,13 @@ public class Main {
     private static RoomTypeControllerRemote roomTypeControllerRemote;
     @EJB
     private static WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote;
+    @EJB
+    private static ReservationControllerRemote reservationControllerRemote;
 
     
     public static void main(String[] args) {
         
-        MainApp mainApp=new MainApp(employeeControllerRemote, guestControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, walkInReservationSessionBeanRemote, roomRateControllerRemote);
+        MainApp mainApp=new MainApp(employeeControllerRemote, guestControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, walkInReservationSessionBeanRemote, roomRateControllerRemote, reservationControllerRemote);
         mainApp.runApp();
         
         try {

@@ -7,6 +7,7 @@ package horsmanagementclient;
 
 import ejb.session.stateless.EmployeeControllerRemote;
 import ejb.session.stateless.PartnerControllerRemote;
+import ejb.session.stateless.ReservationControllerRemote;
 import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import util.exception.DeleteRoomException;
 import util.exception.DeleteRoomRateException;
 import util.exception.DeleteRoomTypeException;
@@ -49,6 +51,7 @@ public class HotelOperationModule {
     private RoomControllerRemote roomControllerRemote;
     private RoomTypeControllerRemote roomTypeControllerRemote;
     private RoomRateControllerRemote roomRateControllerRemote;
+    private static ReservationControllerRemote reservationControllerRemote;
     private Employee currentEmployee;
     
     public HotelOperationModule(){
@@ -57,7 +60,7 @@ public class HotelOperationModule {
     
     public HotelOperationModule(EmployeeControllerRemote employeeControllerRemote, PartnerControllerRemote partnerControllerRemote, 
             RoomControllerRemote roomControllerRemote, RoomTypeControllerRemote roomTypeControllerRemote, 
-            RoomRateControllerRemote roomRateControllerRemote, Employee currentEmployee)
+            RoomRateControllerRemote roomRateControllerRemote, ReservationControllerRemote reservationControllerRemote, Employee currentEmployee)
     {
         this();
         this.employeeControllerRemote = employeeControllerRemote;
@@ -65,6 +68,7 @@ public class HotelOperationModule {
         this.roomControllerRemote = roomControllerRemote;
         this.roomTypeControllerRemote = roomTypeControllerRemote;
         this.roomRateControllerRemote = roomRateControllerRemote;
+        this.reservationControllerRemote = reservationControllerRemote;
         
         this.currentEmployee = currentEmployee;
     }
@@ -94,8 +98,9 @@ public class HotelOperationModule {
             System.out.println("13: Update Room Rate");
             System.out.println("14: Delete Room Rate");
             System.out.println("15: View All Room Rates");
+            System.out.println("16: Allocate room");
             System.out.println("-----------------------");
-            System.out.println("16: Back\n");
+            System.out.println("17: Back\n");
             response = 0;
             
             while(response < 1 || response > 16)
@@ -193,6 +198,9 @@ public class HotelOperationModule {
                 }
                 else if (response == 16)
                 {
+                    allocateRoom();
+                }
+                else if (response == 17){
                     break;
                 }
                 else
@@ -208,6 +216,9 @@ public class HotelOperationModule {
         }
     }
     
+    public void allocateRoom(){
+        reservationControllerRemote.allocateRoomToCurrentDayReservations();
+    }
     
     public void createRoomType() 
     {

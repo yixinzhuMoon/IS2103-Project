@@ -193,18 +193,20 @@ public class FrontOfficeModule {
 
     public void checkInGuest() 
     {
+        Long guest = null;
         try 
         {
             Scanner scanner = new Scanner(System.in);
             System.out.println("*** HoRS :: Hotel Management System :: Check-in Guest ***\n");
             System.out.print("Enter Guest id>");
             Long guestId = scanner.nextLong();
-            guestControllerRemote.checkInGuest(guestId);
-            System.out.println("Guest checked in successfully!");
+            guest = guestControllerRemote.checkInGuest(guestId);
+            System.out.println("Guest " + guest + " checked in successfully!");
+            scanner.nextLine();
         }   
         catch (GuestNotFoundException ex) 
         {
-            System.out.println("An error has occurred while checking in guest: " + ex.getMessage() + "\n");
+            System.out.println("An error has occurred while checking in guest: " + guest.toString() + ex.getMessage() + "\n");
         }
     }
 

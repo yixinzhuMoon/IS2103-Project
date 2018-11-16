@@ -9,6 +9,7 @@ import ejb.entity.stateful.WalkInReservationSessionBeanRemote;
 import ejb.session.stateless.EmployeeControllerRemote;
 import ejb.session.stateless.GuestControllerRemote;
 import ejb.session.stateless.PartnerControllerRemote;
+import ejb.session.stateless.ReservationControllerRemote;
 import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
@@ -34,6 +35,7 @@ class MainApp {
     private RoomTypeControllerRemote roomTypeControllerRemote;
     private RoomRateControllerRemote roomRateControllerRemote;
     private WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote;
+    private ReservationControllerRemote reservationControllerRemote;
     
     private SystemAdministrationModule systemAdminModule;
     private HotelOperationModule hotelOpModule;
@@ -43,7 +45,7 @@ class MainApp {
     
     public MainApp(EmployeeControllerRemote employeeControllerRemote, GuestControllerRemote guestControllerRemote, PartnerControllerRemote partnerControllerRemote, 
             RoomControllerRemote roomControllerRemote, RoomTypeControllerRemote roomTypeControllerRemote, WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote,
-            RoomRateControllerRemote roomRateControllerRemote)
+            RoomRateControllerRemote roomRateControllerRemote, ReservationControllerRemote reservationControllerRemote)
     {
         this.employeeControllerRemote = employeeControllerRemote;
         this.partnerControllerRemote = partnerControllerRemote;
@@ -51,6 +53,7 @@ class MainApp {
         this.roomTypeControllerRemote = roomTypeControllerRemote;
         this.roomRateControllerRemote = roomRateControllerRemote;
         this.guestControllerRemote = guestControllerRemote;
+        this.reservationControllerRemote = reservationControllerRemote;
         this.walkInReservationSessionBeanRemote = walkInReservationSessionBeanRemote;
     }
     
@@ -80,7 +83,7 @@ class MainApp {
                         System.out.println("Login successful!\n");
                         
                         systemAdminModule = new SystemAdministrationModule(employeeControllerRemote, partnerControllerRemote, currentEmployee);
-                        hotelOpModule = new HotelOperationModule(employeeControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, currentEmployee);
+                        hotelOpModule = new HotelOperationModule(employeeControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, reservationControllerRemote, currentEmployee);
                         frontOfficeModule = new FrontOfficeModule(employeeControllerRemote, guestControllerRemote, partnerControllerRemote, roomControllerRemote, roomTypeControllerRemote, roomRateControllerRemote, walkInReservationSessionBeanRemote, currentEmployee);
                         
                         menuMain();

@@ -11,11 +11,17 @@ import ejb.session.stateless.ReservationControllerLocal;
 import ejb.session.stateless.RoomControllerLocal;
 import ejb.session.stateless.RoomRateControllerLocal;
 import entity.Employee;
+import entity.NormalRate;
+import entity.PeakRate;
+import entity.PromotionRate;
 import entity.PublishedRate;
 import entity.ReservationLineItem;
 import entity.Room;
 import entity.WalkInReservation;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -55,6 +61,7 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @EJB 
     private ReservationControllerLocal reservationControllerLocal;
     
+    private PublishedRate publishedRate;
     private Date checkInDate;
     private Date checkOutDate;
     private Long totalAmount;
@@ -81,27 +88,28 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     
     @Override
     public List<ReservationLineItem> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate){
-        this.checkInDate = checkInDate;
-        this.checkOutDate = checkOutDate; 
-        
         List<Room> allRoomAvailable = roomControllerLocal.retrieveAllRooms();
-        List<PublishedRate> allPublishedRateAvailable = roomRateControllerLocal.retrieveAllPublishedRate();
+        List<PublishedRate> allPublishedRateAvailable= roomRateControllerLocal.retrieveAllPublishedRate();
         List<String> validRoomTypes = new ArrayList<>();
         List<PublishedRate> validPublishedRates = new ArrayList<>();
         List<Room> validRooms = new ArrayList<>();
         reservationLineItems = new ArrayList<>();
         
-        //store the room types of published rates within check in and check out date
-        for(PublishedRate pubRate:allPublishedRateAvailable){
-            if(isWithinRange(pubRate.getValidity(), checkInDate, checkOutDate)){
-                String roomTypeName = pubRate.getRoomType().getName();
-                if(!validRoomTypes.contains(roomTypeName)){
+        String indicate="";
+        
+        for(PublishedRate publishedRate:allPublishedRateAvailable)
+        {
+            String roomTypeName = publishedRate.getRoomType().getName();
+            if(!validRoomTypes.contains(roomTypeName))
+            {
+                if(belongCalendar(publishedRate.getValidity(), checkInDate, checkOutDate))
+                {
                     validRoomTypes.add(roomTypeName);
-                    validPublishedRates.add(pubRate);
+                    validPublishedRates.add(publishedRate);
                 }
             }
         }
-        //create reservation line items belonging to valid room type
+        
         Integer counter = 0;
         for(Room room:allRoomAvailable){
             if(validRoomTypes.contains(room.getRoomType().getName())){
@@ -110,12 +118,15 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
                     validRooms.add(room);
                     totalAmount = (checkOutDate.getTime()-checkInDate.getTime())*validPublishedRates.get(counter).getRatePerNight().longValue();
                     reservationLineItems.add(reservationControllerLocal.createWalkInReservationLineItem(checkInDate, checkOutDate,
-                            room.getRoomType().getRoomTypeId(), validPublishedRates.get(counter).getRoomRateId()));
+                        room.getRoomType().getRoomTypeId(), validPublishedRates.get(counter).getRoomRateId()));
+                    
                 } catch (RoomTypeNotFoundException | RoomRateNotFoundException ex) {
                     System.out.println("An error has occured while creating reservation line item");
                 }
             }
         }
+        //store the room types of published rates within check in and check out date
+        //create reservation line items belonging to valid room type
         //calculate total amount for published rate within check in date and checkout date
         return reservationLineItems;
     }
@@ -150,7 +161,8 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
         return totalAmount;
     }
     
-    public boolean isWithinRange(Date testDate, Date checkInDate, Date checkOutDate) {
-        return !(testDate.before(checkInDate) || testDate.after(checkOutDate));
+    public boolean belongCalendar(Date date, Date startDate, Date endDate) 
+    {
+        return !(date.before(startDate) || date.after(endDate));
     }
 }
