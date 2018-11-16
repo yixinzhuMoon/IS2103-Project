@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ejb.entity.stateful;
+package ejb.session.stateful;
 
+import ejb.entity.stateful.WalkInReservationSessionBeanRemote;
 import ejb.session.stateless.ReservationController;
 import ejb.session.stateless.ReservationControllerLocal;
 import ejb.session.stateless.RoomControllerLocal;

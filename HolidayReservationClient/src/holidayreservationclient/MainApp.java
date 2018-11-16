@@ -118,11 +118,11 @@ class MainApp {
                 }
                 else if(response==2)
                 {
-                    viewMyReservationDetails();
+                    viewPartnerReservationDetails();
                 }
                 else if(response==3)
                 {
-                    viewAllMyReservations();
+                    viewAllPartnerReservations();
                 }
                 else if(response==4)
                 {
@@ -228,7 +228,7 @@ class MainApp {
 
 
 
-    private void viewMyReservationDetails() {
+    private void viewPartnerReservationDetails() {
         Scanner scanner=new Scanner(System.in);
         
         System.out.println("\n *** HoRS System :: View My Reservation Details ***\n");
@@ -241,17 +241,17 @@ class MainApp {
         
     }
 
-    private void viewAllMyReservations() {
+    private void viewAllPartnerReservations() {
         Scanner scanner=new Scanner(System.in);
         
         System.out.println("\n*** HoRS System :: View All My Reservations ***\n");
         
-        List<PartnerReservation> onlineReservations =retrieveAllPartnerReservations();
+        List<PartnerReservation> partnerReservations =retrieveAllPartnerReservations();
         System.out.printf("%8s%20s%\n", "Reservation Id", "Reservation Date");
 
-        for(PartnerReservation onlineReservation: onlineReservations)
+        for(PartnerReservation partnerReservation: partnerReservations)
         {
-            System.out.printf("%8s%20s%\n",onlineReservation.getReservationId(),onlineReservation.getReservationDate());
+            System.out.printf("%8s%20s%\n",partnerReservation.getReservationId(),partnerReservation.getReservationDate());
         }
         
         System.out.print("Press any key to continue...> ");

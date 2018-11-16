@@ -135,10 +135,9 @@ class MainApp {
             System.out.println("\n*** HoRS System ***\n");
             System.out.println("1: Register As Guest");
             System.out.println("2: Search Hotel Room");
-            System.out.println("3: Reserve Hotel Room");
-            System.out.println("4: View My Reservation Details");
-            System.out.println("5: View All My Reservations");
-            System.out.println("6: Exit\n");
+            System.out.println("3: View My Reservation Details");
+            System.out.println("4: View All My Reservations");
+            System.out.println("5: Exit\n");
             
             while(response<1 || response>6)
             {
@@ -155,15 +154,11 @@ class MainApp {
                 }
                 else if(response==3)
                 {
-                    viewMyReservationDetails();
+                    viewAllMyReservations();
                 }
                 else if(response==4)
                 {
                     viewAllMyReservations();
-                }
-                else if(response==5)
-                {
-                    break;
                 }
                 else
                 {
@@ -215,14 +210,14 @@ class MainApp {
             
             List<ReservationLineItem> reservationLineItems=roomReservationSessionBeanRemote.searchHotelRoom(checkInDate,checkOutDate);
             
-            System.out.printf("%8s%22s   %s\n", "No.","Room Type", "Check in Date", "Check out Date", "Total amount");
+            System.out.printf("%8s%15s%15s%15s%15s\n", "No.","Room Type", "Check in Date", "Check out Date", "Total amount");
             
             Integer number=0;
             for(ReservationLineItem reservationLineItem:reservationLineItems)
             {
                 number++;
                 totalAmount.add(roomReservationSessionBeanRemote.getTotalAmount(reservationLineItem));
-                System.out.printf("%8s%22s   %s\n",number, reservationLineItem.getRoomType(), outputDateFormat.format(checkInDate), outputDateFormat.format(checkOutDate),totalAmount);
+                System.out.printf("%8s%15s%15s%15s%15s\n",number, reservationLineItem.getRoomType(), outputDateFormat.format(checkInDate), outputDateFormat.format(checkOutDate),totalAmount);
             }
             
             System.out.println("------------------------");
@@ -277,8 +272,8 @@ class MainApp {
         Long reservationId=scanner.nextLong();
         
         OnlineReservation onlineReservation=reservationControllerRemote.retrieveOnlineReservationById(reservationId);
-        System.out.printf("%8s%22s%\n", "Reservation Id","Reservation Date");
-        System.out.printf("%8s%22s%\n", onlineReservation.getReservationId(),onlineReservation.getReservationDate());
+        System.out.printf("%15s%15s%15s\n", "Reservation Id","Reservation Date","Guest");
+        System.out.printf("%15s%15s%15s\n", onlineReservation.getReservationId(),onlineReservation.getReservationDate(),onlineReservation.getGuest());
         
     }
 
@@ -288,11 +283,11 @@ class MainApp {
         System.out.println("\n*** HoRS System :: View All My Reservations ***\n");
         
         List<OnlineReservation> onlineReservations = reservationControllerRemote.retrieveAllOnlineReservations();
-        System.out.printf("%8s%20s%\n", "Reservation Id", "Reservation Date");
+        System.out.printf("%15s%15s%15s\n", "Reservation Id", "Reservation Date","Guest");
 
         for(OnlineReservation onlineReservation: onlineReservations)
         {
-            System.out.printf("%8s%20s%\n",onlineReservation.getReservationId(),onlineReservation.getReservationDate());
+            System.out.printf("%15s%15s%15s\n",onlineReservation.getReservationId(),onlineReservation.getReservationDate(),onlineReservation.getGuest());
         }
         
         System.out.print("Press any key to continue...> ");
