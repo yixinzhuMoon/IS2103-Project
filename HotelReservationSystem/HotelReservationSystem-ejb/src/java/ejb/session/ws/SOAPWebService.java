@@ -5,7 +5,7 @@
  */
 package ejb.session.ws;
 
-import ejb.entity.stateful.RoomReservationSessionBeanLocal;
+import ejb.session.stateful.RoomReservationSessionBeanLocal;
 import ejb.session.stateless.PartnerControllerLocal;
 import ejb.session.stateless.ReservationControllerLocal;
 import entity.OnlineReservation;

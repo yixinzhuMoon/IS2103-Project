@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ejb.entity.stateful;
+package ejb.session.stateful;
 
+import ejb.entity.stateful.RoomReservationSessionBeanRemote;
 import ejb.session.stateless.ReservationControllerLocal;
 import ejb.session.stateless.RoomControllerLocal;
 import ejb.session.stateless.RoomRateControllerLocal;
@@ -165,8 +166,7 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
             roomRate="PeakRate";
         }
 
-        
-        //store the room types of published rates within check in and check out date
+
         if(roomRate.equals("NormalRate"))
         {
             for(NormalRate normalRate:allNormalRateAvailable)
@@ -203,8 +203,7 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
                 }
             }
         }
-        
-        //create reservation line items belonging to valid room type
+
         Integer counter = 0;
         for(Room room:allRoomAvailable){
             if(validRoomTypes.contains(room.getRoomType().getName())){
