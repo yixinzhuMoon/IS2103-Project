@@ -64,8 +64,9 @@ class MainApp {
         while(true)
         {
             System.out.println("\n*** Welcome to HoRS Hotel Reservation System ***\n");
-            System.out.println("1: Gust Login");
-            System.out.println("2: Exit\n");
+            System.out.println("1: Guest Login");
+            System.out.println("2: Register as Guest");
+            System.out.println("3: Exit\n");
             response=0;
             
             while(response<1 ||response>2)
@@ -87,6 +88,11 @@ class MainApp {
                 }
                 else if(response==2)
                 {
+                    registerAsGuest();
+                    menuMain();
+                }
+                else if(response==3)
+                {
                     break;
                 }
                 else
@@ -95,7 +101,7 @@ class MainApp {
                 }
             }
             
-            if(response==2)
+            if(response==3)
             {
                 break;
             }
@@ -133,24 +139,23 @@ class MainApp {
         while(true)
         {
             System.out.println("\n*** HoRS System ***\n");
-            System.out.println("1: Register As Guest");
-            System.out.println("2: Search Hotel Room");
-            System.out.println("3: View My Reservation Details");
-            System.out.println("4: View All My Reservations");
-            System.out.println("5: Exit\n");
+            System.out.println("1: Search Hotel Room");
+            System.out.println("2: View My Reservation Details");
+            System.out.println("3: View All My Reservations");
+            System.out.println("4: Exit\n");
             
-            while(response<1 || response>6)
+            while(response<1 || response>4)
             {
                 System.out.print("> ");
                 response=scanner.nextInt();
                 
                 if(response==1)
                 {
-                    registerAsGuest();
+                    searchHotelRoom();
                 }
                 else if(response==2)
                 {
-                    searchHotelRoom();
+                    viewAllMyReservations();
                 }
                 else if(response==3)
                 {
@@ -158,7 +163,7 @@ class MainApp {
                 }
                 else if(response==4)
                 {
-                    viewAllMyReservations();
+                    break;
                 }
                 else
                 {
@@ -166,7 +171,7 @@ class MainApp {
                 } 
             }
             
-            if(response==5)
+            if(response==4)
             {
                 break;
             }
@@ -179,7 +184,7 @@ class MainApp {
         Guest newGuest=new Guest();
         
         System.out.println("\n*** HoRS System :: Register As Guest ***\n");
-        System.out.print("Enter name > ");
+        System.out.print("ENter name >");
         newGuest.setName(scanner.nextLine().trim());
         System.out.print("Enter email > ");
         newGuest.setEmail(scanner.nextLine().trim());

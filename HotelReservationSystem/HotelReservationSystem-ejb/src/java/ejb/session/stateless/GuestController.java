@@ -92,7 +92,7 @@ public class GuestController implements GuestControllerRemote, GuestControllerLo
      public Guest retrieveGuestByEmail(String email) throws GuestNotFoundException
     {
         Query query = em.createQuery("SELECT g FROM Guest g WHERE g.email = :inEmail");
-        query.setParameter("inUsername", email);
+        query.setParameter("inEmail", email);
         
         try
         {
