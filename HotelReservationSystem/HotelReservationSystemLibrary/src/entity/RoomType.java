@@ -37,19 +37,21 @@ public class RoomType implements Serializable {
     private String amenities;
     private String status;
     private Integer roomRank; //1 is highest room rank
-    @OneToMany(mappedBy="roomType")
-    private List<RoomRate> roomRates; 
-    @OneToMany(mappedBy="roomType")
+    
+    @OneToMany(mappedBy = "roomType")
+    private List<RoomRate> roomRates;
+    @OneToMany(mappedBy = "roomType")
     private List<Room> rooms;
-    @OneToMany(mappedBy="roomType")
+    @OneToMany(mappedBy = "roomType")
     private List<ReservationLineItem> reservationLineItems;
+    
 
     public RoomType() {
-        roomRates = new ArrayList<>();
-        rooms = new ArrayList<>();
-        reservationLineItems = new ArrayList<>();
+        roomRates=new ArrayList<>();
+        rooms=new ArrayList<>();
+        reservationLineItems=new ArrayList<>();
     }
-
+        
     public RoomType(String name, String description, Integer roomSize, String bed, Integer capacity, String amenities, String status, Integer roomRank) {
         this();
         this.name = name;
@@ -134,6 +136,14 @@ public class RoomType implements Serializable {
         this.status = status;
     }
 
+    public List<ReservationLineItem> getReservationLineItems() {
+        return reservationLineItems;
+    }
+
+    public void setReservationLineItems(List<ReservationLineItem> reservationLineItems) {
+        this.reservationLineItems = reservationLineItems;
+    }
+
     public List<RoomRate> getRoomRates() {
         return roomRates;
     }
@@ -150,21 +160,6 @@ public class RoomType implements Serializable {
         this.rooms = rooms;
     }
 
-    public List<ReservationLineItem> getReservationLineItems() {
-        return reservationLineItems;
-    }
-
-    public void setReservationLineItems(List<ReservationLineItem> reservationLineItems) {
-        this.reservationLineItems = reservationLineItems;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (roomTypeId != null ? roomTypeId.hashCode() : 0);
-        return hash;
-    }
-
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the roomTypeId fields are not set
@@ -177,6 +172,7 @@ public class RoomType implements Serializable {
         }
         return true;
     }
+
 
     @Override
     public String toString() {

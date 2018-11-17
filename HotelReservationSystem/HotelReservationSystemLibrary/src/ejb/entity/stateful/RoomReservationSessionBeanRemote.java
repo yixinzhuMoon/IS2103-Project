@@ -14,15 +14,10 @@ import util.exception.GuestNotFoundException;
 
 public interface RoomReservationSessionBeanRemote {
 
-    public void remove();
 
-    public void preDestroy();
+    public void searchHotelRoom(Date checkInDate, Date checkOutDate);
 
-    public List<ReservationLineItem> searchHotelRoom(Date checkInDate, Date checkOutDate);
-
-    public Long getTotalAmount(ReservationLineItem reservationLineItem);
-
-    public OnlineReservation reserveRoom(String email, ReservationLineItem reservationRoom) throws GuestNotFoundException;
+    public Long totalAmount(String roomType, Integer roomNumber,Date checkInDate,Date checkOutDate);
 
     public PartnerReservation reservePartnerRoom(String email, ReservationLineItem reservationRoom);
 

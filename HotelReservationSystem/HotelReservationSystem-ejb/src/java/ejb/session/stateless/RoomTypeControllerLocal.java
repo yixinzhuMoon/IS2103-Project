@@ -24,5 +24,7 @@ public interface RoomTypeControllerLocal {
 
     public void updateRoomType(RoomType roomType) throws RoomTypeNotFoundException;
 
-//    public void deleteRoomType(Long roomTypeId) throws RoomTypeNotFoundException, DeleteRoomTypeException;
+    public void deleteRoomType(Long roomTypeId) throws RoomTypeNotFoundException, DeleteRoomTypeException;
+    
+    public List<RoomType> retrieveAllEnabledRoomTypes();
 }

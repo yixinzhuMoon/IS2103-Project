@@ -6,8 +6,11 @@
 package ejb.session.stateless;
 
 import entity.ExceptionReport;
+import entity.NormalRate;
 import entity.OnlineReservation;
 import entity.PartnerReservation;
+import entity.PeakRate;
+import entity.PromotionRate;
 import entity.PublishedRate;
 import entity.ReservationLineItem;
 import entity.Room;
@@ -56,6 +59,7 @@ public class ReservationController implements ReservationControllerRemote, Reser
         
     }
     
+    @Override
     public List<ReservationLineItem> retrieveReservationLineItemByCheckInDate(Date checkInDate)
     {
         Query query = em.createQuery("SELECT rli FROM ReservationLineItem rli WHERE rli.checkInDate = :inCheckInDate");
@@ -94,43 +98,115 @@ public class ReservationController implements ReservationControllerRemote, Reser
         }
     }
     @Override
-    public ReservationLineItem createReservationLineItem(Date checkInDate,Date checkOutDate,int roomType)
+    public ReservationLineItem createReservationLineItem(Date checkInDate,Date checkOutDate,String roomType)throws RoomTypeNotFoundException
     {
-        ReservationLineItem reservationLineItem=new ReservationLineItem();
-        reservationLineItem.setCheckInDate(checkInDate);
-        reservationLineItem.setCheckOutDate(checkOutDate);
-        
-        RoomType roomTypeItem=new RoomType();
-        if(roomType==1)
-        {
-            roomTypeItem.setName("Deluxe Room");
+        try {
+            ReservationLineItem reservationLineItem=new ReservationLineItem();
+            reservationLineItem.setCheckInDate(checkInDate);
+            reservationLineItem.setCheckOutDate(checkOutDate);
+            
+            
+            RoomType roomTypeItem=roomTypeControllerLocal.retrieveRoomTypeByName(roomType);
             reservationLineItem.setRoomType(roomTypeItem);
+            
+            Boolean normalRateInNeeded=false;
+            Boolean promotionRateInNeeded=false;
+            Boolean peakRateInNeeded=false;
+            for(RoomRate roomRate:roomTypeItem.getRoomRates())
+            {
+                if(roomRate instanceof PromotionRate)
+                {
+                    promotionRateInNeeded=true;
+                }
+                else if(roomRate instanceof NormalRate)
+                {
+                    normalRateInNeeded=true;
+                }
+                else if(roomRate instanceof PeakRate)
+                {
+                    peakRateInNeeded=true;
+                }
+            }
+            if(peakRateInNeeded&&promotionRateInNeeded&&normalRateInNeeded)
+            {
+                for(RoomRate roomRate: roomTypeItem.getRoomRates())
+                {
+                    if(roomRate instanceof PromotionRate)
+                    {
+                        reservationLineItem.setRoomRate(roomRate);
+                    }
+                }
+            }
+            else if(peakRateInNeeded&&promotionRateInNeeded)
+            {
+                for(RoomRate roomRate: roomTypeItem.getRoomRates())
+                {
+                    if(roomRate instanceof PeakRate)
+                    {
+                        reservationLineItem.setRoomRate(roomRate);
+                    }
+                }
+            }
+            else if(peakRateInNeeded&&normalRateInNeeded)
+            {
+                for(RoomRate roomRate: roomTypeItem.getRoomRates())
+                {
+                    if(roomRate instanceof PeakRate)
+                    {
+                        reservationLineItem.setRoomRate(roomRate);
+                    }
+                }
+            }
+            else if(normalRateInNeeded&&promotionRateInNeeded)
+            {
+                for(RoomRate roomRate: roomTypeItem.getRoomRates())
+                {
+                    if(roomRate instanceof PromotionRate)
+                    {
+                        reservationLineItem.setRoomRate(roomRate);
+                    }
+                }
+            }
+            else if(normalRateInNeeded)
+            {
+                for(RoomRate roomRate: roomTypeItem.getRoomRates())
+                {
+                    if(roomRate instanceof NormalRate)
+                    {
+                        reservationLineItem.setRoomRate(roomRate);
+                    }
+                }
+            }
+            else if(promotionRateInNeeded)
+            {
+                for(RoomRate roomRate: roomTypeItem.getRoomRates())
+                {
+                    if(roomRate instanceof PromotionRate)
+                    {
+                        reservationLineItem.setRoomRate(roomRate);
+                    }
+                }
+            }
+            else if(peakRateInNeeded)
+            {
+                for(RoomRate roomRate: roomTypeItem.getRoomRates())
+                {
+                    if(roomRate instanceof PeakRate)
+                    {
+                        reservationLineItem.setRoomRate(roomRate);
+                    }
+                }
+            }
+            
+            em.persist(reservationLineItem);
+            em.flush();
+            
+            return reservationLineItem;
+        } 
+        catch (RoomTypeNotFoundException ex) {
+            throw new RoomTypeNotFoundException("Unable to find the room type !");
         }
-        else if(roomType==2)
-        {
-            roomTypeItem.setName("Permier Room");
-            reservationLineItem.setRoomType(roomTypeItem);
-        }
-        else if(roomType==3)
-        {
-            roomTypeItem.setName("Family Room");
-            reservationLineItem.setRoomType(roomTypeItem);
-        }
-        else if(roomType==4)
-        {
-            roomTypeItem.setName("Junior Suite");
-            reservationLineItem.setRoomType(roomTypeItem);
-        }
-        else if(roomType==5)
-        {
-            roomTypeItem.setName("Grand Suite");
-            reservationLineItem.setRoomType(roomTypeItem);
-        }
-                
-        em.persist(reservationLineItem);
-        em.flush();
-        
-        return reservationLineItem;
+            
     }
     
     @Override
@@ -142,10 +218,12 @@ public class ReservationController implements ReservationControllerRemote, Reser
         return (OnlineReservation) query.getSingleResult();
     }
     
+   
+    
     @Override
     public List<OnlineReservation> retrieveAllOnlineReservations()
     {
-        Query query=em.createNamedQuery("SELECT o FROM OnlineReservation o");
+        Query query=em.createQuery("SELECT o FROM OnlineReservation o");
         
         return query.getResultList();
     }
@@ -312,5 +390,16 @@ public class ReservationController implements ReservationControllerRemote, Reser
         }
     }
     
+    @Override
+    public List<ReservationLineItem> retrieveAllReservationLineItem(OnlineReservation onlineReservation)
+    {
+        List<ReservationLineItem> reservationLineItems=new ArrayList<>();
+        for(ReservationLineItem reservationLineItem:onlineReservation.getReservationLineItems())
+        {
+            reservationLineItems.add(reservationLineItem);
+        }
+        
+        return reservationLineItems;
+    }
     
 }
