@@ -209,15 +209,26 @@ public class HotelOperationModule {
                 }
             }
             
-            if(response == 16)
+            if(response == 17)
             {
                 break;
             }
         }
     }
     
-    public void allocateRoom(){
-        reservationControllerRemote.allocateRoomToCurrentDayReservations();
+    public void allocateRoom()
+    {
+        System.out.println("*** HoRS :: Hotel Management System :: Allocate rooms to Current day Reservations ***\n");
+        List<Room> roomsReserved = reservationControllerRemote.allocateRoomToCurrentDayReservations();
+        if(!roomsReserved.isEmpty()){
+            System.out.println("The following rooms have been allocated: ");
+            for(Room room:roomsReserved){
+                System.out.println("Room Number: " + room.getRoomNumber()); 
+            }
+        }
+        else{
+            System.out.println("No rooms available for allocation, refer to exception reports for more informaiton.");
+        }
     }
     
     public void createRoomType() 
@@ -484,9 +495,9 @@ public class HotelOperationModule {
                     if(roomStatusInt == 1)
                     {
                         room.setRoomStatus("available");
-                        Long reslineItemId = null;
-                        roomControllerRemote.updateRoom(room, roomTypeName, reslineItemId);
-                        
+                        Long resLineItemId = null;
+                        Room roomUpdated = roomControllerRemote.updateRoom(room, roomTypeName, resLineItemId);
+                        roomControllerRemote.updateRoomListInRoomType(roomUpdated.getRoomId());
                         System.out.println("Room Type updated successfully!\n");
                         break;
                     }
@@ -498,7 +509,8 @@ public class HotelOperationModule {
                         if(resLineItemId != null)
                         {
                             room.setRoomStatus("occupied");
-                            roomControllerRemote.updateRoom(room, roomTypeName, resLineItemId);
+                            Room roomUpdated = roomControllerRemote.updateRoom(room, roomTypeName, resLineItemId);
+                            roomControllerRemote.updateRoomListInRoomType(roomUpdated.getRoomId());
                             System.out.println("Room Type updated successfully!\n");
                         }
                         else
@@ -554,17 +566,17 @@ public class HotelOperationModule {
         System.out.println("*** HoRS :: Hotel Management System :: View All Rooms ***\n");
         
         List<Room> rooms = roomControllerRemote.retrieveAllRooms();
-        System.out.printf("%12s%12s%20s%20s\n", "Room Number", "Room Status", "Room Type", "Room Reservation Id");
+        System.out.printf("%8s%12s%12s%20s%20s\n", "Room Id", "Room Number", "Room Status", "Room Type", "Room Reservation Id");
         try{
             for(Room room:rooms)
             {
                 if(room.getReservation() != null){
-                    System.out.printf("%12s%12s%20s%20s\n", room.getRoomId().toString(), room.getRoomStatus(),
+                    System.out.printf("%8s%12s%12s%20s%20s\n", room.getRoomId().toString(), room.getRoomNumber(), room.getRoomStatus(),
                             room.getRoomType().getName(), room.getReservation().getReservationLineItemId().toString());
                 }
                 else
                 {
-                    System.out.printf("%12s%12s%20s%20s\n", room.getRoomId().toString(), room.getRoomStatus(),
+                    System.out.printf("%8s%12s%12s%20s%20s\n", room.getRoomId().toString(), room.getRoomNumber(), room.getRoomStatus(),
                             room.getRoomType().getName(), "none");
                 }
             }
