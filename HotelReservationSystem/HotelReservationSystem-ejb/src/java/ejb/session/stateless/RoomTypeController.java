@@ -94,6 +94,14 @@ public class RoomTypeController implements RoomTypeControllerRemote, RoomTypeCon
     }
     
     @Override
+    public List<RoomType> retrieveAllEnabledRoomTypes()
+    {
+        Query query = em.createQuery("SELECT rt FROM RoomType rt WHERE rt.status = :inRoomTypeStatus");
+        query.setParameter("inRoomTypeStatus", "enabled");
+        return query.getResultList();
+    }
+    
+    @Override
     public void updateRoomType(RoomType roomType) throws RoomTypeNotFoundException
     {
         if(roomType.getRoomTypeId()!= null)
