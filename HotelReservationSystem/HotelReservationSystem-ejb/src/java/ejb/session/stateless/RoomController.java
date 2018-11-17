@@ -66,6 +66,7 @@ public class RoomController implements RoomControllerRemote, RoomControllerLocal
                 em.persist(newRoom);
                 
                 newRoom.setRoomType(roomType);
+                roomType.getRooms().add(newRoom);
                 
                 em.flush();
                 em.refresh(newRoom);
@@ -152,7 +153,7 @@ public class RoomController implements RoomControllerRemote, RoomControllerLocal
         return query.getResultList();
     }
     @Override
-    public void updateRoom(Room room, String roomTypeName, Long reservationLineItemId) throws RoomNotFoundException, RoomTypeNotFoundException, ReservationLineItemNotFoundException
+    public Room updateRoom(Room room, String roomTypeName, Long reservationLineItemId) throws RoomNotFoundException, RoomTypeNotFoundException, ReservationLineItemNotFoundException
     {
         if(room.getRoomId()!= null)
         { 
@@ -162,12 +163,15 @@ public class RoomController implements RoomControllerRemote, RoomControllerLocal
                 roomToUpdate.setRoomStatus(room.getRoomStatus());
                 if(!roomTypeName.equals("")){
                     RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeByName(roomTypeName);
+                    List<Room> oldRoomTypeRoomList = roomToUpdate.getRoomType().getRooms();
+                    oldRoomTypeRoomList.remove(roomToUpdate);
                     roomToUpdate.setRoomType(roomType); 
                 }
                 if(reservationLineItemId != null){
                     ReservationLineItem resLineitem = reservationControllerLocal.retrieveReservationLineItemById(reservationLineItemId);
                     roomToUpdate.setReservation(resLineitem);
                 }
+                return roomToUpdate;
             }
             else
             {
@@ -178,6 +182,13 @@ public class RoomController implements RoomControllerRemote, RoomControllerLocal
         {
             throw new RoomNotFoundException("Room number not provided for room to be updated");
         }
+    }
+    
+    @Override
+    public void updateRoomListInRoomType(Long roomId) throws RoomNotFoundException
+    {
+        Room room = retrieveRoomById(roomId, true, true);
+        room.getRoomType().getRooms().add(room);
     }
     
     @Override
