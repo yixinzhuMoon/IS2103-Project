@@ -137,7 +137,7 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
     }
     
     @Override
-    public void updateRoomRate(RoomRate roomRate, String roomTypeName) throws RoomTypeNotFoundException, RoomNotFoundException, RoomRateNotFoundException
+    public RoomRate updateRoomRate(RoomRate roomRate, String roomTypeName) throws RoomTypeNotFoundException, RoomNotFoundException, RoomRateNotFoundException
     {
         if(roomRate.getRoomRateId()!= null)
         {
@@ -148,12 +148,15 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
                     roomRateToUpdate.setName(roomRate.getName());
                     if(!roomTypeName.equals("")){
                         RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeByName(roomTypeName);
-                        roomRateToUpdate.setRoomType(roomType);
+                        List<RoomRate> oldRoomTypeRoomRateList = roomRateToUpdate.getRoomType().getRoomRates();
+                        oldRoomTypeRoomRateList.remove(roomRateToUpdate);
+                        roomRateToUpdate.setRoomType(roomType); 
                     }
                     roomRateToUpdate.setRatePerNight(roomRate.getRatePerNight());
                     roomRateToUpdate.setStartDate(((PromotionRate) roomRate).getStartDate());
                     roomRateToUpdate.setEndDate(((PromotionRate) roomRate).getEndDate());
                 }
+                return roomRateToUpdate;
             }
             else if(roomRate instanceof NormalRate)
             {
@@ -163,12 +166,15 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
                     roomRateToUpdate.setName(roomRate.getName());
                     if(!roomTypeName.equals("")){
                         RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeByName(roomTypeName);
+                        List<RoomRate> oldRoomTypeRoomRateList = roomRateToUpdate.getRoomType().getRoomRates();
+                        oldRoomTypeRoomRateList.remove(roomRateToUpdate);
                         roomRateToUpdate.setRoomType(roomType); 
                     }
                     roomRateToUpdate.setRatePerNight(roomRate.getRatePerNight());
                     roomRateToUpdate.setStartDate(((NormalRate) roomRate).getStartDate());
                     roomRateToUpdate.setEndDate(((NormalRate) roomRate).getEndDate());
                 }
+                return roomRateToUpdate;
             }
             else if(roomRate instanceof PeakRate)
             {
@@ -178,12 +184,15 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
                     roomRateToUpdate.setName(roomRate.getName());
                     if(!roomTypeName.equals("")){
                         RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeByName(roomTypeName);
+                        List<RoomRate> oldRoomTypeRoomRateList = roomRateToUpdate.getRoomType().getRoomRates();
+                        oldRoomTypeRoomRateList.remove(roomRateToUpdate);
                         roomRateToUpdate.setRoomType(roomType); 
                     }
                     roomRateToUpdate.setRatePerNight(roomRate.getRatePerNight());
                     roomRateToUpdate.setStartDate(((PeakRate) roomRate).getStartDate());
                     roomRateToUpdate.setEndDate(((PeakRate) roomRate).getEndDate());
                 }
+                return roomRateToUpdate;
             }
             else if(roomRate instanceof PublishedRate)
             {
@@ -193,11 +202,14 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
                     roomRateToUpdate.setName(roomRate.getName());
                     if(!roomTypeName.equals("")){
                         RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeByName(roomTypeName);
+                        List<RoomRate> oldRoomTypeRoomRateList = roomRateToUpdate.getRoomType().getRoomRates();
+                        oldRoomTypeRoomRateList.remove(roomRateToUpdate);
                         roomRateToUpdate.setRoomType(roomType); 
                     }
                     roomRateToUpdate.setRatePerNight(roomRate.getRatePerNight());
                     roomRateToUpdate.setValidity(((PublishedRate) roomRate).getValidity());
                 }
+                return roomRateToUpdate;
             }
             else
             {
@@ -211,12 +223,21 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
     }
     
     @Override
+    public void updateRoomRateListInRoomType(Long roomRateId) throws RoomRateNotFoundException
+    {
+        RoomRate roomRate = retrieveRoomRateById(roomRateId, true);
+        roomRate.getRoomType().getRoomRates().add(roomRate);
+    }
+    
+    @Override
     public void deleteRoomRate(Long roomRateId) throws RoomRateNotFoundException, DeleteRoomRateException
     {
         RoomRate roomRateToRemove = retrieveRoomRateById(roomRateId, false);
         
         if(roomRateToRemove.getRoomRateStatus().equals("enabled")) 
         {
+            List<RoomRate> removeRoomRateFromRoomType = roomRateToRemove.getRoomType().getRoomRates();
+            removeRoomRateFromRoomType.remove(roomRateToRemove);
             em.remove(roomRateToRemove); //enabled and not in use = delete
         }
         else if(roomRateToRemove.getRoomRateStatus().equals("enabled"))

@@ -10,6 +10,7 @@ import ejb.session.stateless.ReservationController;
 import ejb.session.stateless.ReservationControllerLocal;
 import ejb.session.stateless.RoomControllerLocal;
 import ejb.session.stateless.RoomRateControllerLocal;
+import ejb.session.stateless.RoomTypeControllerLocal;
 import entity.Employee;
 import entity.NormalRate;
 import entity.PeakRate;
@@ -17,6 +18,7 @@ import entity.PromotionRate;
 import entity.PublishedRate;
 import entity.ReservationLineItem;
 import entity.Room;
+import entity.RoomType;
 import entity.WalkInReservation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -61,6 +63,9 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @EJB 
     private ReservationControllerLocal reservationControllerLocal;
     
+    @EJB 
+    private RoomTypeControllerLocal roomTypeControllerLocal;
+    
     private PublishedRate publishedRate;
     private Date checkInDate;
     private Date checkOutDate;
@@ -88,46 +93,9 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     
     @Override
     public List<ReservationLineItem> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate){
-        List<Room> allRoomAvailable = roomControllerLocal.retrieveAllRooms();
-        List<PublishedRate> allPublishedRateAvailable= roomRateControllerLocal.retrieveAllPublishedRate();
-        List<String> validRoomTypes = new ArrayList<>();
-        List<PublishedRate> validPublishedRates = new ArrayList<>();
-        List<Room> validRooms = new ArrayList<>();
         reservationLineItems = new ArrayList<>();
+        List<RoomType> validRoomTypes = roomTypeControllerLocal.retrieveAllRoomTypes();
         
-        String indicate="";
-        
-        for(PublishedRate publishedRate:allPublishedRateAvailable)
-        {
-            String roomTypeName = publishedRate.getRoomType().getName();
-            if(!validRoomTypes.contains(roomTypeName))
-            {
-                if(belongCalendar(publishedRate.getValidity(), checkInDate, checkOutDate))
-                {
-                    validRoomTypes.add(roomTypeName);
-                    validPublishedRates.add(publishedRate);
-                }
-            }
-        }
-        
-        Integer counter = 0;
-        for(Room room:allRoomAvailable){
-            if(validRoomTypes.contains(room.getRoomType().getName())){
-                try {
-                    counter++;
-                    validRooms.add(room);
-                    totalAmount = (checkOutDate.getTime()-checkInDate.getTime())*validPublishedRates.get(counter).getRatePerNight().longValue();
-                    reservationLineItems.add(reservationControllerLocal.createWalkInReservationLineItem(checkInDate, checkOutDate,
-                        room.getRoomType().getRoomTypeId(), validPublishedRates.get(counter).getRoomRateId()));
-                    
-                } catch (RoomTypeNotFoundException | RoomRateNotFoundException ex) {
-                    System.out.println("An error has occured while creating reservation line item");
-                }
-            }
-        }
-        //store the room types of published rates within check in and check out date
-        //create reservation line items belonging to valid room type
-        //calculate total amount for published rate within check in date and checkout date
         return reservationLineItems;
     }
     

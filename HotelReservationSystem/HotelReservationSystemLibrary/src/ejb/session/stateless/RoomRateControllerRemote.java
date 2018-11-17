@@ -30,7 +30,7 @@ public interface RoomRateControllerRemote {
 
     public List<RoomRate> retrieveAllRoomRates();
 
-    public void updateRoomRate(RoomRate roomRate, String roomTypeName) throws RoomTypeNotFoundException, RoomNotFoundException, RoomRateNotFoundException;
+    public RoomRate updateRoomRate(RoomRate roomRate, String roomTypeName) throws RoomTypeNotFoundException, RoomNotFoundException, RoomRateNotFoundException;
 
     public void deleteRoomRate(Long roomRateId) throws RoomRateNotFoundException, DeleteRoomRateException;
 
@@ -43,5 +43,7 @@ public interface RoomRateControllerRemote {
     public List<PeakRate> retrieveAllPeakRate();
 
     public List<PeakRate> retrieveAllRoomRate();
+
+    public void updateRoomRateListInRoomType(Long roomRateId) throws RoomRateNotFoundException;
     
 }

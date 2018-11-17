@@ -24,4 +24,5 @@ public interface RoomTypeControllerRemote {
 
     public void deleteRoomType(Long roomTypeId) throws RoomTypeNotFoundException, DeleteRoomTypeException;
     
+    public List<RoomType> retrieveAllEnabledRoomTypes();
 }

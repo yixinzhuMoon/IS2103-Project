@@ -45,6 +45,7 @@ public class FrontOfficeModule {
     
     private Employee currentEmployee;
     private List<Long> totalAmount;
+    private List<ReservationLineItem> searchResults;
     
     public FrontOfficeModule(){
         
@@ -92,11 +93,11 @@ public class FrontOfficeModule {
 
                 if(response == 1)
                 {
-                    walkInSearchAndReserveRoom();
+                    walkInSearchRoom();
                 }
                 else if(response == 2)
                 {
-                    reserveRoom();
+//                    reserveRoom();
                 }
                 else if(response == 3)
                 {
@@ -123,7 +124,7 @@ public class FrontOfficeModule {
         }
     }
     
-    public void walkInSearchAndReserveRoom() 
+    public void walkInSearchRoom() 
     {
         totalAmount=new ArrayList<>();
         try {
@@ -141,7 +142,7 @@ public class FrontOfficeModule {
             System.out.print("Enter check out Date (dd/mm/yyyy)> ");  
             checkOutDate = inputDateFormat.parse(scanner.nextLine().trim());
             
-            List<ReservationLineItem> searchResults = walkInReservationSessionBeanRemote.walkInSearchHotelRoom(checkInDate, checkOutDate);    
+            searchResults = walkInReservationSessionBeanRemote.walkInSearchHotelRoom(checkInDate, checkOutDate);    
             System.out.println("Showing rooms available for Walk-in Reservation");
             System.out.printf("%11s%20s%15%15s%14s%\n", "Room Number","Room Type", "Check in Date", "Check out Date", "Total amount");
 
@@ -161,55 +162,57 @@ public class FrontOfficeModule {
             
             if(response == 1)
             {
-                if(currentEmployee != null)
-                {
-                    while(true)
-                    {
-                        System.out.print("Select room number(press 0 to exit)> ");
-                        Integer roomNumber=scanner.nextInt();
-                        
-                        if(roomNumber>=1&&roomNumber<=number)
-                        {
-                            System.out.println("\nTotal Amount is " + totalAmount.get(roomNumber));
-                            WalkInReservation walkInReservation = walkInReservationSessionBeanRemote.reserveRoom(currentEmployee.getEmail(), searchResults.get(roomNumber));
-                            System.out.println("Reservation of room completed successfully!: " + walkInReservation.getReservationId() + "\n");
-                        }
-                        else if(roomNumber==0)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            System.out.println("Invalid option, please try again!");
-                        }
-                    }                       
-                }
-                else
-                {
-                    System.out.println("Please login first before making a reservation!\n");
-                }
+                reserveRoom(number, searchResults);
             }
         } catch (ParseException ex) {
             System.out.println("Invalid Date Format entered!" + "\n");
-        } catch (EmployeeNotFoundException ex) {
-            System.out.println("An error has occurred while searching/reserving Rooms: " + ex.getMessage() + "\n");
         }
     }
 
-    public void reserveRoom()
+    public void reserveRoom(Integer numberOfRoomsInSearchResult, List<ReservationLineItem> searchResults)
     {
+        this.searchResults = searchResults;
+        
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** HoRS :: Hotel Management System :: Walk-in Reserve Room ***\n");
-        while(true)
-        {
-            System.out.print("Enter Room Number> ");
-            Integer roomNumber = scanner.nextInt();
-            scanner.nextLine();
-            System.out.print("Would you like to reserve another room? (Enter 'Y' to continue)> ");
-            String choice = scanner.nextLine().trim();
-            if(!choice.equals("Y")){
-                break;
+        if(!searchResults.isEmpty()){
+            try{
+                while(true)
+                {
+                    System.out.print("Select room number(press 0 to exit)> ");
+                    Integer roomNumber=scanner.nextInt();
+                    scanner.nextLine();
+                    if(roomNumber>=1&&roomNumber<=numberOfRoomsInSearchResult)
+                    {
+                        System.out.println("\nTotal Amount is " + totalAmount.get(roomNumber));
+                        WalkInReservation walkInReservation = walkInReservationSessionBeanRemote.reserveRoom(currentEmployee.getEmail(), searchResults.get(roomNumber));
+                        System.out.println("Reservation of room completed successfully!: " + walkInReservation.getReservationId() + "\n");
+
+                    }
+                    else if(roomNumber==0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        System.out.println("Invalid option, please try again!");
+                    }
+
+                    System.out.print("Would you like to reserve another room? (Enter 'Y' to continue)> ");
+                    String choice = scanner.nextLine().trim();
+                    if(!choice.equals("Y")){
+                        break;
+                    }
+                }                       
+            } 
+            catch (EmployeeNotFoundException ex) 
+            {
+                System.out.println("Please login first before making a reservation!\n");
             }
+        }
+        else
+        {
+            System.out.println("No Rooms available for reservation.");
         }
     }
     

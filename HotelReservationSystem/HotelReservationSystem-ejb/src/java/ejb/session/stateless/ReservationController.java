@@ -339,12 +339,16 @@ public class ReservationController implements ReservationControllerRemote, Reser
             reservationLineItem.setCheckInDate(checkInDate);
             reservationLineItem.setCheckOutDate(checkOutDate);
             RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeById(roomTypeId);
-            reservationLineItem.setRoomType(roomType);
             RoomRate roomRate = roomRateControllerLocal.retrieveRoomRateById(roomRateId, false);
-            reservationLineItem.setRoomRate(roomRate);
 
             em.persist(reservationLineItem);
+            
+            reservationLineItem.setRoomRate(roomRate);
+            reservationLineItem.setRoomType(roomType);
+            roomType.getReservationLineItems().add(reservationLineItem);
+            
             em.flush();
+            em.refresh(reservationLineItem);
 
             return reservationLineItem;
         }
