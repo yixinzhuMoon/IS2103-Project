@@ -66,6 +66,7 @@ public class RoomController implements RoomControllerRemote, RoomControllerLocal
                 em.persist(newRoom);
                 
                 newRoom.setRoomType(roomType);
+                roomType.getRooms().add(newRoom);
                 
                 em.flush();
                 em.refresh(newRoom);

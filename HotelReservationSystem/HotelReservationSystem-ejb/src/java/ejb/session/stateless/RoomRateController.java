@@ -70,6 +70,10 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
                 
                 newRoomRate.setRoomType(roomType);
                 
+
+                roomType.getRoomRates().add(newRoomRate);
+
+                
                 em.flush();
                 em.refresh(newRoomRate);
 
@@ -144,7 +148,7 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
                     roomRateToUpdate.setName(roomRate.getName());
                     if(!roomTypeName.equals("")){
                         RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeByName(roomTypeName);
-                        roomRateToUpdate.setRoomType(roomType); 
+                        roomRateToUpdate.setRoomType(roomType);
                     }
                     roomRateToUpdate.setRatePerNight(roomRate.getRatePerNight());
                     roomRateToUpdate.setStartDate(((PromotionRate) roomRate).getStartDate());

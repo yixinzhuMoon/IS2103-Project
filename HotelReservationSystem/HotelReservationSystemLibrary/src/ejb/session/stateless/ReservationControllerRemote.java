@@ -26,8 +26,8 @@ public interface ReservationControllerRemote {
 
     public List<OnlineReservation> retrieveAllOnlineReservations();
     
-    public ReservationLineItem createReservationLineItem(Date checkInDate, Date checkOutDate, int roomType);
-
+    public ReservationLineItem createReservationLineItem(Date checkInDate,Date checkOutDate,String roomType)throws RoomTypeNotFoundException;
+    
     public ReservationLineItem createWalkInReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException;
 
     public void allocateRoomToCurrentDayReservations();
@@ -39,5 +39,9 @@ public interface ReservationControllerRemote {
     public ExceptionReport createExceptionReport(ExceptionReport exceptionReport);
 
     public ReservationLineItem createRoomReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException;
+
+    public List<ReservationLineItem> retrieveReservationLineItemByCheckInDate(Date checkInDate);
+
+    public List<ReservationLineItem> retrieveAllReservationLineItem(OnlineReservation onlineReservation);
 
 }

@@ -6,11 +6,14 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -34,8 +37,19 @@ public class RoomType implements Serializable {
     private String amenities;
     private String status;
     private Integer roomRank; //1 is highest room rank
+    
+    @OneToMany(mappedBy = "roomType")
+    private List<RoomRate> roomRates;
+    @OneToMany(mappedBy = "roomType")
+    private List<Room> rooms;
+    @OneToMany(mappedBy = "roomType")
+    private List<ReservationLineItem> reservationLineItems;
+    
 
     public RoomType() {
+        roomRates=new ArrayList<>();
+        rooms=new ArrayList<>();
+        reservationLineItems=new ArrayList<>();
     }
 
     public RoomType(String name, String description, Integer roomSize, String bed, Integer capacity, String amenities, String status, Integer roomRank) {
@@ -122,11 +136,27 @@ public class RoomType implements Serializable {
         this.status = status;
     }
 
+    public List<ReservationLineItem> getReservationLineItems() {
+        return reservationLineItems;
+    }
+
+    public void setReservationLineItems(List<ReservationLineItem> reservationLineItems) {
+        this.reservationLineItems = reservationLineItems;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (roomTypeId != null ? roomTypeId.hashCode() : 0);
         return hash;
+    }
+
+    public List<RoomRate> getRoomRates() {
+        return roomRates;
+    }
+
+    public void setRoomRates(List<RoomRate> roomRates) {
+        this.roomRates = roomRates;
     }
 
     @Override
@@ -141,6 +171,16 @@ public class RoomType implements Serializable {
         }
         return true;
     }
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
+    
+    
 
     @Override
     public String toString() {
