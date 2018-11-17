@@ -66,7 +66,7 @@ public class ReservationController implements ReservationControllerRemote, Reser
     public List<ReservationLineItem> retrieveReservationLineItemByCheckOutDate(Date checkOutDate)
     {
         Query query = em.createQuery("SELECT rli FROM ReservationLineItem rli WHERE rli.checkOutDate = :inCheckOutDate");
-        query.setParameter("inCheckOutDate", checkOutDate);
+        query.setParameter("inCheckOutDate", checkOutDate); //reservationlineitem is due for check out today
         return query.getResultList();
     }
     
@@ -186,12 +186,15 @@ public class ReservationController implements ReservationControllerRemote, Reser
         //get reservation list for check in today
         for(ReservationLineItem reservationLineItem:reservationLineItemsCheckInToday)
         {
-            //get rooms available by room type reserved
+            //get rooms available
             List<Room> roomsFiltered = roomControllerLocal.retrieveAvailableRoomsByRoomType(reservationLineItem.getRoomType().getRoomTypeId());
             for(Room room: roomsFiltered){
                 roomsAvailableForCheckIn.add(room);
             }
             //get rooms that are due for check out today
+            if(!reservationLineItemsCheckOutToday.isEmpty()){
+                
+            }
             for(ReservationLineItem reservations:reservationLineItemsCheckOutToday){
                 for(Room room:reservations.getRoomList()){
                     if(room.getRoomStatus().equals("occupied") && reservations.getRoomType() == reservationLineItem.getRoomType()){

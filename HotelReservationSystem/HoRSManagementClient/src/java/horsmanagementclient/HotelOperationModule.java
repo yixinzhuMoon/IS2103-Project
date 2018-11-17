@@ -223,7 +223,7 @@ public class HotelOperationModule {
         if(!roomsReserved.isEmpty()){
             System.out.println("The following rooms have been allocated: ");
             for(Room room:roomsReserved){
-                System.out.println("Room Number: " + room.getRoomNumber());
+                System.out.println("Room Number: " + room.getRoomNumber()); 
             }
         }
         else{
