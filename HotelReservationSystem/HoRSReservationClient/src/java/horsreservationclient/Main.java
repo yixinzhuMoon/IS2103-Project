@@ -11,8 +11,11 @@ import ejb.session.stateless.ReservationControllerRemote;
 import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
+import java.text.ParseException;
 import util.exception.GuestNotFoundException;
 import javax.ejb.EJB;
+import util.exception.ReservationLineItemNotFoundException;
+import util.exception.RoomTypeNotFoundException;
 
 /**
  *
@@ -41,7 +44,7 @@ public class Main {
     
 
     
-    public static void main(String[] args) throws GuestNotFoundException {
+    public static void main(String[] args) throws GuestNotFoundException, ParseException, RoomTypeNotFoundException, ReservationLineItemNotFoundException {
         MainApp mainApp=new MainApp(guestControllerRemote,roomControllerRemote,roomRateControllerRemote,roomTypeControllerRemote,roomReservationSessionBeanRemote,reservationControllerRemote);
         mainApp.runApp();
     }

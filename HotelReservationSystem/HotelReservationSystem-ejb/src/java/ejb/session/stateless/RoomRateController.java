@@ -70,6 +70,10 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
                 
                 newRoomRate.setRoomType(roomType);
                 
+
+                roomType.getRoomRates().add(newRoomRate);
+
+                
                 em.flush();
                 em.refresh(newRoomRate);
 
