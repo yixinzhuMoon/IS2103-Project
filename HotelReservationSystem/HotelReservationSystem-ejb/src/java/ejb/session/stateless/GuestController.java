@@ -14,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -123,30 +124,62 @@ public class GuestController implements GuestControllerRemote, GuestControllerLo
     }
     
     @Override
-    public void checkOutGuest(Long guestId) throws GuestNotFoundException
+    public List<Room> checkOutGuest(Long guestId) throws GuestNotFoundException, TimeException
     {
         Date todayDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm") ;
-        List<OnlineReservation> guestList = retrieveOnlineReservationListByGuest(guestId);
-        for(OnlineReservation guestReservation:guestList){
-            for(ReservationLineItem reservationLineItem:guestReservation.getReservationLineItems())
-            {
-                try {
-                    //today's date is reservation line item check out date && time is 12pm
-                    if(sdf.format(todayDate).equals(sdf.format(reservationLineItem.getCheckOutDate())) &&
-                            dateFormat.parse(dateFormat.format(todayDate)).equals(dateFormat.parse("12:00"))){
-                        for(Room roomToCheckOut:reservationLineItem.getRoomList()){
-                            roomToCheckOut.setRoomStatus("available");
-                            roomToCheckOut.setReservation(null);
+        Guest guest = retrieveGuestById(guestId);
+        if(guest!=null)
+        {
+            List<OnlineReservation> guestList = retrieveOnlineReservationListByGuest(guestId);
+            List<Room> roomsCheckedOut = new ArrayList<>();
+            for(OnlineReservation guestReservation:guestList){
+                for(ReservationLineItem reservationLineItem:guestReservation.getReservationLineItems())
+                {
+                    try {
+                        //today's date is reservation line item check out date && time is 12pm
+                        if(sdf.format(todayDate).equals(sdf.format(reservationLineItem.getCheckOutDate())) &&
+                                dateFormat.parse(dateFormat.format(todayDate)).equals(dateFormat.parse("12:00"))){
+                            for(Room roomToCheckOut:reservationLineItem.getRoomList()){
+                                if(roomToCheckOut.getRoomStatus().equals("occupied")){
+                                    roomToCheckOut.setRoomStatus("available"); 
+                                }
+                                else if(roomToCheckOut.getRoomStatus().equals("occupied reserved")){
+                                    roomToCheckOut.setRoomStatus("reserved");
+                                }
+                                roomToCheckOut.setReservation(null);
+                                reservationLineItem.getRoomList().remove(roomToCheckOut);
+                                roomsCheckedOut.add(roomToCheckOut);
+                            }
                         }
-                    }else{
-                        System.out.println("Check out of guest only happens at 12pm on the day of departure.");
+                        else if(!dateFormat.parse(dateFormat.format(todayDate)).equals(dateFormat.parse("12:00")))
+                        {
+                            Iterator<Room> roomListIterator = reservationLineItem.getRoomList().iterator();
+                            //if guest checks out late and room is not reserved by another incoming guest
+                            while(roomListIterator.hasNext()){
+                                Room room = roomListIterator.next();
+                                if(room.getRoomStatus().equals("occupied")){
+                                    room.setRoomStatus("available"); 
+                                    room.setReservation(null);
+                                    roomListIterator.remove(); //reservationLineItem.getRoomList().remove(room)
+                                    roomsCheckedOut.add(room);
+                                }
+                            }
+                        }
+                        else{
+                            throw new TimeException("Check out of guest only happens at 12pm on the day of departure.");
+                        }
+                    } catch (ParseException ex) {
+                        System.out.println("Invalid Date Format entered!" + "\n");
                     }
-                } catch (ParseException ex) {
-                    System.out.println("Invalid Date Format entered!" + "\n");
                 }
-            }
+            } 
+            return roomsCheckedOut;
+        }
+        else
+        {
+            throw new GuestNotFoundException("Guest " + guestId + " does not exist! \n");
         }
     }
     
@@ -164,13 +197,12 @@ public class GuestController implements GuestControllerRemote, GuestControllerLo
                 for(ReservationLineItem reservationLineItem:guestReservation.getReservationLineItems())
                 {
                     try{
-                        //today's date is reservation line item check out date && time is 12pm
+                        //today's date is reservation line item check in date && time is 2pm
                         if(sdf.format(todayDate).equals(sdf.format(reservationLineItem.getCheckInDate())) &&
                                 dateFormat.parse(dateFormat.format(todayDate)).equals(dateFormat.parse("14:00")))
                         {
-                            for(Room roomToCheckIn:roomControllerLocal.retrieveRoomByRoomType(reservationLineItem.getRoomType().getRoomTypeId()))
+                            for(Room roomToCheckIn:reservationLineItem.getRoomList()) //list of reserved rooms in reservation line item
                             {
-                                reservationLineItem.getRoomList().add(roomToCheckIn);
                                 roomToCheckIn.setRoomStatus("occupied");
                                 roomToCheckIn.setReservation(reservationLineItem);
                                 roomsCheckedIn.add(roomToCheckIn);
@@ -178,11 +210,10 @@ public class GuestController implements GuestControllerRemote, GuestControllerLo
                         }
                         else if(!dateFormat.parse(dateFormat.format(todayDate)).equals(dateFormat.parse("14:00")))
                         {
-                            //current time before 12pm and room is available
-                            for(Room roomToCheckIn:roomControllerLocal.retrieveRoomByRoomType(reservationLineItem.getRoomType().getRoomTypeId()))
+                            //current time before 2pm and room is available
+                            for(Room roomToCheckIn:reservationLineItem.getRoomList())
                             {
-                                if(roomToCheckIn.getRoomStatus().equals("available")){
-                                    reservationLineItem.getRoomList().add(roomToCheckIn);
+                                if(roomToCheckIn.getRoomStatus().equals("reserved")){
                                     roomToCheckIn.setRoomStatus("occupied");
                                     roomToCheckIn.setReservation(reservationLineItem);
                                     roomsCheckedIn.add(roomToCheckIn);

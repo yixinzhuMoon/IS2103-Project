@@ -32,8 +32,14 @@ public class Room implements Serializable {
     private Long roomId; 
     @Column(length = 4, unique = true)
     private Integer roomNumber;// room floor + room number
+    
     @Column(nullable = false)
-    private String roomStatus;
+    private String roomStatus; 
+    //occupied = guest checked in
+    //occupied reserved = guest checking out today and another guest checking in today
+    //reserved = no guest staying in room currently, room due for guest check in today
+    //available = no guest reservation or occupation in room 
+    
     @ManyToOne
     private RoomType roomType;
     @ManyToOne(optional=true)

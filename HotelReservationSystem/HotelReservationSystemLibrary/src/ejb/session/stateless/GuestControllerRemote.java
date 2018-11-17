@@ -25,7 +25,7 @@ public interface GuestControllerRemote {
 
     public List<OnlineReservation> retrieveOnlineReservationListByGuest(Long guestId) throws GuestNotFoundException;
 
-    public void checkOutGuest(Long guestId) throws GuestNotFoundException;
+    public List<Room> checkOutGuest(Long guestId) throws GuestNotFoundException, TimeException;
 
     public List<Room> checkInGuest(Long guestId) throws GuestNotFoundException, TimeException;
     

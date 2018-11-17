@@ -209,15 +209,26 @@ public class HotelOperationModule {
                 }
             }
             
-            if(response == 16)
+            if(response == 17)
             {
                 break;
             }
         }
     }
     
-    public void allocateRoom(){
-        reservationControllerRemote.allocateRoomToCurrentDayReservations();
+    public void allocateRoom()
+    {
+        System.out.println("*** HoRS :: Hotel Management System :: Allocate rooms to Current day Reservations ***\n");
+        List<Room> roomsReserved = reservationControllerRemote.allocateRoomToCurrentDayReservations();
+        if(!roomsReserved.isEmpty()){
+            System.out.println("The following rooms have been allocated: ");
+            for(Room room:roomsReserved){
+                System.out.println("Room Number: " + room.getRoomNumber());
+            }
+        }
+        else{
+            System.out.println("No rooms available for allocation, refer to exception reports for more informaiton.");
+        }
     }
     
     public void createRoomType() 

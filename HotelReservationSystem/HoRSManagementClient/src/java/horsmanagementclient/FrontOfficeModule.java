@@ -211,7 +211,6 @@ public class FrontOfficeModule {
                 break;
             }
         }
-        
     }
     
     public void checkInGuest() 
@@ -245,10 +244,15 @@ public class FrontOfficeModule {
             System.out.println("*** HoRS :: Hotel Management System :: Check-out Guest ***\n");
             System.out.print("Enter Guest id>");
             Long guestId = scanner.nextLong();
-            guestControllerRemote.checkOutGuest(guestId);
-            System.out.println("Guest checked out successfully!");
+            List<Room> roomsCheckedOut = guestControllerRemote.checkOutGuest(guestId);
+            System.out.println("Guest " + guestId.toString() + " checked out successfully from the following rooms: ");
+            for(Room room:roomsCheckedOut)
+            {
+                System.out.println("Room Number: " + room.getRoomNumber());
+            }
+            scanner.nextLine();
         } 
-        catch (GuestNotFoundException ex) 
+        catch (GuestNotFoundException | TimeException ex) 
         {
             System.out.println("An error has occurred while checking out guest: " + ex.getMessage() + "\n");
         }
