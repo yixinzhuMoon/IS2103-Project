@@ -198,6 +198,8 @@ public class RoomController implements RoomControllerRemote, RoomControllerLocal
         
         if(roomToRemove.getRoomStatus().equals("available"))
         {
+            List<Room> removeRoomFromRoomType = roomToRemove.getRoomType().getRooms();
+            removeRoomFromRoomType.remove(roomToRemove);
             em.remove(roomToRemove); //available = not in use
         }
         else if(roomToRemove.getRoomStatus().equals("occupied"))
