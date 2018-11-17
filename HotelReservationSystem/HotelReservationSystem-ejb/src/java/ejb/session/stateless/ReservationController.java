@@ -264,8 +264,10 @@ public class ReservationController implements ReservationControllerRemote, Reser
             RoomRate roomRate = roomRateControllerLocal.retrieveRoomRateById(roomRateId, false);
 
             em.persist(reservationLineItem);
-            reservationLineItem.setRoomType(roomType);
+            
             reservationLineItem.setRoomRate(roomRate);
+            reservationLineItem.setRoomType(roomType);
+            roomType.getReservationLineItems().add(reservationLineItem);
             
             em.flush();
             em.refresh(reservationLineItem);
