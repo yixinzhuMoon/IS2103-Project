@@ -67,6 +67,13 @@ public class ReservationController implements ReservationControllerRemote, Reser
         return query.getResultList();
     }
     
+    public List<ReservationLineItem> retrieveReservationLineItemByCheckOutDate(Date checkOutDate)
+    {
+        Query query = em.createQuery("SELECT rli FROM ReservationLineItem rli WHERE rli.checkOutDate = :inCheckOutDate");
+        query.setParameter("inCheckOutDate", checkOutDate); //reservationlineitem is due for check out today
+        return query.getResultList();
+    }
+    
     @Override
     public List<ReservationLineItem> retrieveReservationLineItemByRoomType(Long roomTypeId)
     {
@@ -246,43 +253,72 @@ public class ReservationController implements ReservationControllerRemote, Reser
     }
     
     @Override
-    public void allocateRoomToCurrentDayReservations(){
+    public List<Room> allocateRoomToCurrentDayReservations(){
         Date todayDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        List<ReservationLineItem> reservationLineItems = retrieveReservationLineItemByCheckInDate(todayDate);
-        List<Room> rooms = new ArrayList<>();
+        List<ReservationLineItem> reservationLineItemsCheckInToday = retrieveReservationLineItemByCheckInDate(todayDate);
+        List<ReservationLineItem> reservationLineItemsCheckOutToday = retrieveReservationLineItemByCheckOutDate(todayDate);
         ExceptionReport exReport = new ExceptionReport();
+        List<Room> roomsReserved = new ArrayList<>();
+        List<Room> roomsAvailableForCheckIn = new ArrayList<>();
         
-        for(ReservationLineItem reservationLineItem:reservationLineItems)
+        //get reservation list for check in today
+        for(ReservationLineItem reservationLineItem:reservationLineItemsCheckInToday)
         {
-            //allocate an available room for reserved room type
+            //get rooms available
             List<Room> roomsFiltered = roomControllerLocal.retrieveAvailableRoomsByRoomType(reservationLineItem.getRoomType().getRoomTypeId());
+            for(Room room: roomsFiltered){
+                roomsAvailableForCheckIn.add(room);
+            }
+            //get rooms that are due for check out today
+            if(!reservationLineItemsCheckOutToday.isEmpty()){
+                
+            }
+            for(ReservationLineItem reservations:reservationLineItemsCheckOutToday){
+                for(Room room:reservations.getRoomList()){
+                    if(room.getRoomStatus().equals("occupied") && reservations.getRoomType() == reservationLineItem.getRoomType()){
+                        roomsAvailableForCheckIn.add(room);
+                    }
+                }
+            }
             List<Room> otherRooms = roomControllerLocal.retrieveAllAvailableRooms();
             
-            if(roomsFiltered!=null){
-                for(Room room:roomsFiltered){
-                    room.setRoomStatus("occupied");
-                    room.setReservation(reservationLineItem);
+            //room available for reserved room type
+            if(!roomsAvailableForCheckIn.isEmpty()){
+                for(Room room:roomsAvailableForCheckIn){
+                    if(room.getRoomStatus().equals("occupied")){
+                        room.setRoomStatus("occupied reserved");
+                    }else if(room.getRoomStatus().equals("available")){
+                        room.setRoomStatus("reserved");
+                    }
                     reservationLineItem.getRoomList().add(room);
+                    roomsReserved.add(room);
                 }
             }
             else if(otherRooms != null)
             {
                 //no room of room type, upgrade available
-                for(Room room:roomsFiltered){
-                    if(room.getRoomStatus().equals("available"))
+                for(Room room:otherRooms){
+                    if(room.getRoomStatus().equals("available") 
+                            && room.getRoomType().getRoomRank() < reservationLineItem.getRoomType().getRoomRank())
                     {
-                        room.setRoomStatus("occupied");
-                        room.setReservation(reservationLineItem);
+                        room.setRoomStatus("reserved");
                         reservationLineItem.getRoomList().add(room);
+                        roomsReserved.add(room);
+                        //raise exception report
+                        exReport.setDescription("No available room for reserved room type, upgrade to next higher room type available. Room " + room.getRoomId() + " allocated.");
+                        createExceptionReport(exReport);
+                    }
+                    else 
+                    {
+                        //no room no upgrade
                         if(reservationLineItem.getRoomList() == null){
-                            exReport.setDescription("No available room for reserved room type, upgrade to next higher room type available. Room " + room.getRoomId() + " allocated.");
+                            exReport.setDescription("No available room for reserved room type, no upgrade to next higher room type available. No room allocated.");
                             createExceptionReport(exReport);
                         }
                     }
                 }
             }
-            else
+            else 
             {
                 //no room no upgrade
                 if(reservationLineItem.getRoomList() == null){
@@ -291,6 +327,7 @@ public class ReservationController implements ReservationControllerRemote, Reser
                 }
             }
         }
+        return roomsReserved;
     }
     
     @Override

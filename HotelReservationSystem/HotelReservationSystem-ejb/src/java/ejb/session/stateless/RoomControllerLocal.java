@@ -23,7 +23,7 @@ public interface RoomControllerLocal {
 
     public Room retrieveRoomById(Long roomId, Boolean fetchRoomType, Boolean fetchReservation) throws RoomNotFoundException;
 
-    public void updateRoom(Room room, String roomTypeName, Long reservationLineItemId) throws RoomNotFoundException, RoomTypeNotFoundException, ReservationLineItemNotFoundException;
+    public Room updateRoom(Room room, String roomTypeName, Long reservationLineItemId) throws RoomNotFoundException, RoomTypeNotFoundException, ReservationLineItemNotFoundException;
 
     public void deleteRoom(Long roomId) throws RoomNotFoundException, DeleteRoomException;
 
@@ -34,4 +34,6 @@ public interface RoomControllerLocal {
     public List<Room> retrieveAllAvailableRooms();
     
     public List<Room> retrieveAvailableRoomsByRoomType(Long roomTypeId);
+    
+    public void updateRoomListInRoomType(Long roomId) throws RoomNotFoundException;
 }

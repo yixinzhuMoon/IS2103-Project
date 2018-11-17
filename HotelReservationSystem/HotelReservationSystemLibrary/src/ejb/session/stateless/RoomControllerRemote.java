@@ -21,7 +21,7 @@ public interface RoomControllerRemote {
 
     public List<Room> retrieveAllRooms();
 
-    public void updateRoom(Room room, String roomTypeName, Long reservationLineItemId) throws RoomNotFoundException, RoomTypeNotFoundException, ReservationLineItemNotFoundException;
+    public Room updateRoom(Room room, String roomTypeName, Long reservationLineItemId) throws RoomNotFoundException, RoomTypeNotFoundException, ReservationLineItemNotFoundException;
 
     public List<Room> retrieveRoomByRoomType(Long roomTypeId);
 
@@ -34,4 +34,6 @@ public interface RoomControllerRemote {
     public Room retrieveRoomById(Long roomId, Boolean fetchRoomType, Boolean fetchReservation) throws RoomNotFoundException;
 
     public void deleteRoom(Long roomId) throws RoomNotFoundException, DeleteRoomException;
+
+    public void updateRoomListInRoomType(Long roomId) throws RoomNotFoundException;
 }

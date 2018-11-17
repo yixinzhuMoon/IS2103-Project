@@ -51,7 +51,7 @@ public class RoomType implements Serializable {
         rooms=new ArrayList<>();
         reservationLineItems=new ArrayList<>();
     }
-
+        
     public RoomType(String name, String description, Integer roomSize, String bed, Integer capacity, String amenities, String status, Integer roomRank) {
         this();
         this.name = name;
@@ -144,19 +144,20 @@ public class RoomType implements Serializable {
         this.reservationLineItems = reservationLineItems;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (roomTypeId != null ? roomTypeId.hashCode() : 0);
-        return hash;
-    }
-
     public List<RoomRate> getRoomRates() {
         return roomRates;
     }
 
     public void setRoomRates(List<RoomRate> roomRates) {
         this.roomRates = roomRates;
+    }
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
     }
 
     @Override
@@ -172,15 +173,6 @@ public class RoomType implements Serializable {
         return true;
     }
 
-    public List<Room> getRooms() {
-        return rooms;
-    }
-
-    public void setRooms(List<Room> rooms) {
-        this.rooms = rooms;
-    }
-    
-    
 
     @Override
     public String toString() {
