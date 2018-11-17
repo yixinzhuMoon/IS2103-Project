@@ -31,7 +31,7 @@ public interface RoomRateControllerRemote {
     public List<RoomRate> retrieveAllRoomRates();
 
     public RoomRate updateRoomRate(RoomRate roomRate, String roomTypeName) throws RoomTypeNotFoundException, RoomNotFoundException, RoomRateNotFoundException;
-
+    
     public void deleteRoomRate(Long roomRateId) throws RoomRateNotFoundException, DeleteRoomRateException;
 
     public List<PublishedRate> retrieveAllPublishedRate();
