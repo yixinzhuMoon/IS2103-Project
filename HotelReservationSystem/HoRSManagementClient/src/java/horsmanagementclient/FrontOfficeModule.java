@@ -75,11 +75,12 @@ public class FrontOfficeModule {
         {
             System.out.println("*** HoRS :: Front Office ***\n");
             System.out.println("1: Walk-in Search Room");
+            System.out.println("2: Walk-in Reserve Room");
             System.out.println("-----------------------");
-            System.out.println("2: Check-in Guest");
-            System.out.println("3: Check-out Guest");
+            System.out.println("3: Check-in Guest");
+            System.out.println("4: Check-out Guest");
             System.out.println("-----------------------");
-            System.out.println("4: Back\n");
+            System.out.println("5: Back\n");
             response = 0;
             
             while(response < 1 || response > 5)
@@ -94,13 +95,17 @@ public class FrontOfficeModule {
                 }
                 else if(response == 2)
                 {
-                    checkInGuest();
+                    reserveRoom();
                 }
                 else if(response == 3)
                 {
-                    checkOutGuest();
+                    checkInGuest();
                 }
                 else if(response == 4)
+                {
+                    checkOutGuest();
+                }
+                else if(response == 5)
                 {
                     break;
                 }
@@ -110,7 +115,7 @@ public class FrontOfficeModule {
                 }
             }
             
-            if(response == 4)
+            if(response == 5)
             {
                 break;
             }
@@ -159,7 +164,6 @@ public class FrontOfficeModule {
                 {
                     while(true)
                     {
-                    
                         System.out.print("Select room number(press 0 to exit)> ");
                         Integer roomNumber=scanner.nextInt();
                         
@@ -191,20 +195,31 @@ public class FrontOfficeModule {
         }
     }
 
+    public void reserveRoom()
+    {
+        System.out.println("*** HoRS :: Hotel Management System :: Walk-in Reserve Room ***\n");
+        System.out.print("Enter Room Type Id> ");
+        System.out.print("Enter check in date (dd/mm/yyyy)> ");
+        System.out.print("Enter check in date (dd/mm/yyyy)> ");
+        System.out.print("Enter Number of Rooms> ");
+    }
+    
     public void checkInGuest() 
     {
+        Long guest = null;
         try 
         {
             Scanner scanner = new Scanner(System.in);
             System.out.println("*** HoRS :: Hotel Management System :: Check-in Guest ***\n");
             System.out.print("Enter Guest id>");
             Long guestId = scanner.nextLong();
-            guestControllerRemote.checkInGuest(guestId);
-            System.out.println("Guest checked in successfully!");
+            guest = guestControllerRemote.checkInGuest(guestId);
+            System.out.println("Guest " + guest + " checked in successfully!");
+            scanner.nextLine();
         }   
         catch (GuestNotFoundException ex) 
         {
-            System.out.println("An error has occurred while checking in guest: " + ex.getMessage() + "\n");
+            System.out.println("An error has occurred while checking in guest: " + guest.toString() + ex.getMessage() + "\n");
         }
     }
 

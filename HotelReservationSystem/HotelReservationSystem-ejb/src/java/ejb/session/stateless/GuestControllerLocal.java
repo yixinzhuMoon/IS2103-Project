@@ -18,5 +18,5 @@ public interface GuestControllerLocal {
 
     public void checkOutGuest(Long guestId) throws GuestNotFoundException;
     
-    public void checkInGuest(Long guestId) throws GuestNotFoundException;
+    public Long checkInGuest(Long guestId) throws GuestNotFoundException;
 }

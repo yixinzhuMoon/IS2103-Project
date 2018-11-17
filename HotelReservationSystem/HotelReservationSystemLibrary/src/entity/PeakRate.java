@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,8 +25,10 @@ public class PeakRate extends RoomRate implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Temporal(TemporalType.DATE)
+    @Column(nullable=true)
     private Date startDate; ;
     @Temporal(TemporalType.DATE)
+    @Column(nullable=true)
     private Date endDate; 
 
     public PeakRate() {
