@@ -853,7 +853,8 @@ public class HotelOperationModule {
                     roomRate.setRoomRateStatus("enabled");
                 }
             }
-            roomRateControllerRemote.updateRoomRate(roomRate, roomTypeName);
+            RoomRate roomRateUpdated = roomRateControllerRemote.updateRoomRate(roomRate, roomTypeName);
+            roomRateControllerRemote.updateRoomRateListInRoomType(roomRateUpdated.getRoomRateId());
             System.out.println("Room Rate updated successfully!\n");
             
         } catch (ParseException ex) {
