@@ -7,8 +7,10 @@ package ejb.session.stateless;
 
 import entity.Guest;
 import entity.OnlineReservation;
+import entity.Room;
 import java.util.List;
 import util.exception.GuestNotFoundException;
+import util.exception.TimeException;
 
 public interface GuestControllerLocal {
     
@@ -18,5 +20,5 @@ public interface GuestControllerLocal {
 
     public void checkOutGuest(Long guestId) throws GuestNotFoundException;
     
-    public Long checkInGuest(Long guestId) throws GuestNotFoundException;
+    public List<Room> checkInGuest(Long guestId) throws GuestNotFoundException, TimeException;
 }

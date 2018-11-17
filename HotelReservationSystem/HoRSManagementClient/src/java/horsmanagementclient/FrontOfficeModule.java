@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.exception.EmployeeNotFoundException;
 import util.exception.GuestNotFoundException;
+import util.exception.TimeException;
 
 /**
  *
@@ -197,29 +198,42 @@ public class FrontOfficeModule {
 
     public void reserveRoom()
     {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("*** HoRS :: Hotel Management System :: Walk-in Reserve Room ***\n");
-        System.out.print("Enter Room Type Id> ");
-        System.out.print("Enter check in date (dd/mm/yyyy)> ");
-        System.out.print("Enter check in date (dd/mm/yyyy)> ");
-        System.out.print("Enter Number of Rooms> ");
+        while(true)
+        {
+            System.out.print("Enter Room Number> ");
+            Integer roomNumber = scanner.nextInt();
+            scanner.nextLine();
+            System.out.print("Would you like to reserve another room? (Enter 'Y' to continue)> ");
+            String choice = scanner.nextLine().trim();
+            if(!choice.equals("Y")){
+                break;
+            }
+        }
+        
     }
     
     public void checkInGuest() 
     {
-        Long guest = null;
+        Long guestId = null;
         try 
         {
             Scanner scanner = new Scanner(System.in);
             System.out.println("*** HoRS :: Hotel Management System :: Check-in Guest ***\n");
             System.out.print("Enter Guest id>");
-            Long guestId = scanner.nextLong();
-            guest = guestControllerRemote.checkInGuest(guestId);
-            System.out.println("Guest " + guest + " checked in successfully!");
+            guestId = scanner.nextLong();
+            List<Room> roomsCheckedIn = guestControllerRemote.checkInGuest(guestId);
+            System.out.println("Guest " + guestId.toString() + " checked in successfully to the following rooms: ");
+            for(Room room:roomsCheckedIn)
+            {
+                System.out.println("Room Number: " + room.getRoomNumber());
+            }
             scanner.nextLine();
         }   
-        catch (GuestNotFoundException ex) 
+        catch (GuestNotFoundException | TimeException ex) 
         {
-            System.out.println("An error has occurred while checking in guest: " + guest.toString() + ex.getMessage() + "\n");
+            System.out.println("An error has occurred while checking in guest: " + guestId.toString() + ex.getMessage() + "\n");
         }
     }
 
