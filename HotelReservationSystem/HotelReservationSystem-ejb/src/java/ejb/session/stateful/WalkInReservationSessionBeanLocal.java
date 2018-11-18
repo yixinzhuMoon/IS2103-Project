@@ -14,14 +14,9 @@ import javax.ejb.Local;
 import util.exception.EmployeeNotFoundException;
 
 public interface WalkInReservationSessionBeanLocal {
-
-    public List<ReservationLineItem> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate);
-
-    public void preDestroy();
-
-    public void remove();
-
-    public Long getTotalAmount();
     
-    public WalkInReservation reserveRoom(String email, ReservationLineItem reservationRoom) throws EmployeeNotFoundException;
+    public Long totalAmount(String roomType, Integer numberOfRooms, Date checkInDate, Date checkOutDate);
+
+    public String chooseRoomRate(String roomType, Date checkInDate, Date checkOutDate);
+    
 }

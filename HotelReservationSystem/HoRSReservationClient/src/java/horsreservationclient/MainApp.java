@@ -247,11 +247,11 @@ class MainApp {
             
             if(roomLeft>0)
             {
-                System.out.print(roomType.getName()+"has "+roomLeft+" rooms left");
+                System.out.print(roomType.getName()+" has "+roomLeft+" rooms left");
             }
             else
             {
-                System.out.println(roomType.getName()+"has no rooms left ");
+                System.out.println(roomType.getName()+" has no rooms left ");
             }   
         }
         }
@@ -286,12 +286,12 @@ class MainApp {
         }
         else
         {
-            System.out.println("Reserve successful! totalAMount is"+totalAmount);
+            System.out.println("Reserve successful! total amount is"+totalAmount);
         
-        for(int i=0;i<roomNumber;i++)
-        {
-           onlineReservation.getReservationLineItems().add(reservationControllerRemote.createReservationLineItem(checkInDate, checkOutDate, roomType));
-        }
+            for(int i=0;i<roomNumber;i++)
+            {
+               onlineReservation.getReservationLineItems().add(reservationControllerRemote.createReservationLineItem(checkInDate, checkOutDate, roomType));
+            }
         }
         
     }

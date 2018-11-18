@@ -10,8 +10,10 @@ import entity.OnlineReservation;
 import entity.PartnerReservation;
 import entity.ReservationLineItem;
 import entity.Room;
+import entity.WalkInReservation;
 import java.util.Date;
 import java.util.List;
+import util.exception.EmployeeNotFoundException;
 import util.exception.ReservationLineItemNotFoundException;
 import util.exception.RoomRateNotFoundException;
 import util.exception.RoomTypeNotFoundException;
@@ -28,8 +30,8 @@ public interface ReservationControllerLocal {
     
     public ReservationLineItem createReservationLineItem(Date checkInDate,Date checkOutDate,String roomType)throws RoomTypeNotFoundException;
     
-    public ReservationLineItem createWalkInReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException;
-
+    public ReservationLineItem createWalkInReservationLineItem(Date checkInDate,Date checkOutDate,String roomType)throws RoomTypeNotFoundException;
+    
     public List<Room> allocateRoomToCurrentDayReservations();
 
     public PartnerReservation retrievePartnerReservationById(Long reservationId);
@@ -39,5 +41,11 @@ public interface ReservationControllerLocal {
     public ExceptionReport createExceptionReport(ExceptionReport exceptionReport);
 
     public ReservationLineItem createRoomReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException;
+
+    public List<ReservationLineItem> retrieveReservationLineItemByCheckInDate(Date checkInDate);
+
+    public List<ReservationLineItem> retrieveAllReservationLineItem(OnlineReservation onlineReservation);
+    
+    public WalkInReservation createWalkInReservation(WalkInReservation newWalkInReservation, Long employeeId) throws EmployeeNotFoundException;
 
 }

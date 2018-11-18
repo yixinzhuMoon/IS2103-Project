@@ -440,7 +440,7 @@ public class HotelOperationModule {
             
             System.out.println("*** HoRS :: Hotel Management System :: Create New Room ***\n");
             System.out.print("Enter Room Number (room floor + room number)> ");
-            newRoom.setRoomId(scanner.nextLong());
+            newRoom.setRoomNumber(scanner.nextInt());
             scanner.nextLine();
             System.out.print("Enter Room Type Id> ");
             Long roomTypeId = scanner.nextLong();
@@ -448,7 +448,7 @@ public class HotelOperationModule {
             System.out.println("Open room for room type: " + roomType.getName()+ "\n");
             newRoom.setRoomStatus("available");
             newRoom = roomControllerRemote.createRoom(newRoom, roomTypeId);
-            System.out.println("New room created successfully!: " + newRoom.getRoomId()+ "\n");
+            System.out.println("New room created successfully!: " + newRoom.getRoomNumber()+ "\n");
         } 
         catch (RoomTypeNotFoundException ex) 
         {
@@ -467,16 +467,10 @@ public class HotelOperationModule {
             String input;
             
             System.out.println("*** HoRS :: Hotel Management System :: Update Room ***\n");
-            System.out.print("Enter Room Id> ");
-            Long roomId = scanner.nextLong();
+            System.out.print("Enter Room Number> ");
+            Integer roomNumber = scanner.nextInt();
             scanner.nextLine();
-            Room room = roomControllerRemote.retrieveRoomById(roomId, true, true);
-            System.out.print("Enter Room Number (blank if no change)> ");
-            input = scanner.nextLine().trim();
-            if(input.length() > 0)
-            {
-                room.setRoomNumber(Integer.parseInt(input));
-            }
+            Room room = roomControllerRemote.retrieveRoomById(roomNumber, true, true);
             System.out.print("Enter Room Type name (blank if no change)> ");
             input = scanner.nextLine();
             String roomTypeName = "";
@@ -496,7 +490,7 @@ public class HotelOperationModule {
                         room.setRoomStatus("available");
                         Long resLineItemId = null;
                         Room roomUpdated = roomControllerRemote.updateRoom(room, roomTypeName, resLineItemId);
-                        roomControllerRemote.updateRoomListInRoomType(roomUpdated.getRoomId());
+                        roomControllerRemote.updateRoomListInRoomType(roomUpdated.getRoomNumber());
                         System.out.println("Room Type updated successfully!\n");
                         break;
                     }
@@ -509,7 +503,7 @@ public class HotelOperationModule {
                         {
                             room.setRoomStatus("occupied");
                             Room roomUpdated = roomControllerRemote.updateRoom(room, roomTypeName, resLineItemId);
-                            roomControllerRemote.updateRoomListInRoomType(roomUpdated.getRoomId());
+                            roomControllerRemote.updateRoomListInRoomType(roomUpdated.getRoomNumber());
                             System.out.println("Room Type updated successfully!\n");
                         }
                         else
@@ -537,16 +531,16 @@ public class HotelOperationModule {
             String input;
             
             System.out.println("*** HoRS :: Hotel Management System :: Delete Room ***\n");
-            System.out.print("Enter Room Id> ");
-            Long roomId = scanner.nextLong();
+            System.out.print("Enter Room Number> ");
+            Integer roomNumber = scanner.nextInt();
             scanner.nextLine();
-            Room room = roomControllerRemote.retrieveRoomById(roomId, false, false);
-            System.out.printf("Confirm Delete Room Number %d (Enter 'Y' to Delete)> ", room.getRoomId());
+            Room room = roomControllerRemote.retrieveRoomById(roomNumber, false, false);
+            System.out.printf("Confirm Delete Room Number %d (Enter 'Y' to Delete)> ", room.getRoomNumber());
             input = scanner.nextLine().trim();
             
             if(input.equals("Y")) 
             {
-                roomControllerRemote.deleteRoom(room.getRoomId());
+                roomControllerRemote.deleteRoom(room.getRoomNumber());
                 System.out.println("Room deleted successfully!\n");
             }
             else 
@@ -565,17 +559,17 @@ public class HotelOperationModule {
         System.out.println("*** HoRS :: Hotel Management System :: View All Rooms ***\n");
         
         List<Room> rooms = roomControllerRemote.retrieveAllRooms();
-        System.out.printf("%8s%12s%12s%20s%20s\n", "Room Id", "Room Number", "Room Status", "Room Type", "Room Reservation Id");
+        System.out.printf("%12s%12s%20s%20s\n", "Room Number", "Room Status", "Room Type", "Room Reservation Id");
         try{
             for(Room room:rooms)
             {
                 if(room.getReservation() != null){
-                    System.out.printf("%8s%12s%12s%20s%20s\n", room.getRoomId().toString(), room.getRoomNumber(), room.getRoomStatus(),
+                    System.out.printf("%12s%12s%20s%20s\n", room.getRoomNumber().toString(), room.getRoomStatus(),
                             room.getRoomType().getName(), room.getReservation().getReservationLineItemId().toString());
                 }
                 else
                 {
-                    System.out.printf("%8s%12s%12s%20s%20s\n", room.getRoomId().toString(), room.getRoomNumber(), room.getRoomStatus(),
+                    System.out.printf("%12s%12s%20s%20s\n", room.getRoomNumber().toString(), room.getRoomStatus(),
                             room.getRoomType().getName(), "none");
                 }
             }
