@@ -14,6 +14,8 @@ import ejb.session.stateless.RoomTypeControllerRemote;
 import entity.Guest;
 import entity.OnlineReservation;
 import entity.ReservationLineItem;
+import entity.Room;
+import entity.RoomType;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -209,19 +211,49 @@ class MainApp {
         try
         {
             Scanner scanner = new Scanner(System.in);
-            SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
             Date checkInDate;
             Date checkOutDate;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             System.out.println("\n*** HoRS System :: Search Hotel Room ***\n");
-            System.out.print("Enter check in date (dd/mm/yyyy)> ");
-            checkInDate = inputDateFormat.parse(scanner.nextLine().trim());
-            System.out.print("Enter check out Date (dd/mm/yyyy)> ");
-            checkOutDate = inputDateFormat.parse(scanner.nextLine().trim());            
+            System.out.print("Enter check in date (yyyy-MM-dd)> ");
+            checkInDate = sdf.parse(scanner.nextLine());
+            System.out.print("Enter check out Date (yyyy-MM-dd)> ");
+            checkOutDate = sdf.parse(scanner.nextLine()); 
             
-            roomReservationSessionBeanRemote.searchHotelRoom(checkInDate,checkOutDate);
+            int roomLeft=0;
             
+            for(RoomType roomType:roomTypeControllerRemote.retrieveAllEnabledRoomTypes())
+            {
+                if(!roomType.getRooms().isEmpty())
+                {
+                    roomLeft=roomType.getRooms().size();
+                }
+                for(Room room:roomType.getRooms())
+                {
+                    if(!room.getRoomStatus().equals("available"))
+                    {
+                        roomLeft--;
+                    }
+            }
+            
+            for(ReservationLineItem reservationLineItem:roomType.getReservationLineItems())
+            {
+                if(!isWithinRange(reservationLineItem.getCheckInDate(), reservationLineItem.getCheckOutDate(), checkInDate, checkOutDate))
+                {
+                    roomLeft--;
+                }
+            }
+            
+            if(roomLeft>0)
+            {
+                System.out.print(roomType.getName()+"has "+roomLeft+" rooms left");
+            }
+            else
+            {
+                System.out.println(roomType.getName()+"has no rooms left ");
+            }   
+        }
         }
         catch(ParseException ex)
         {
@@ -232,19 +264,20 @@ class MainApp {
     private void reserveHotelRoom() throws ParseException, RoomTypeNotFoundException
     {
          Scanner scanner = new Scanner(System.in);
-         SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
          Date checkInDate;
          Date checkOutDate;
         
         System.out.println("\n*** HoRS System :: Reserve Hotel Room ***\n");
+        System.out.print("Enter check in date (yyyy-MM-dd)> ");
+        checkInDate = sdf.parse(scanner.nextLine());
+        System.out.print("Enter check out Date (yyyy-MM-dd)> ");
+        checkOutDate = sdf.parse(scanner.nextLine());
         System.out.print("Enter Room Type> ");
         String roomType= scanner.nextLine().trim();
         System.out.print("Enter Number of Room> ");
         Integer roomNumber=scanner.nextInt();
-        System.out.print("Enter check in date (dd/mm/yyyy)> ");
-        checkInDate = inputDateFormat.parse(scanner.nextLine().trim());
-        System.out.print("Enter check out Date (dd/mm/yyyy)> ");
-        checkOutDate = inputDateFormat.parse(scanner.nextLine().trim());
+        
         
         Long totalAmount=roomReservationSessionBeanRemote.totalAmount(roomType,roomNumber,checkInDate,checkOutDate);
         if(totalAmount.equals(new Long(0)))
@@ -254,11 +287,11 @@ class MainApp {
         else
         {
             System.out.println("Reserve successful! totalAMount is"+totalAmount);
-        }
         
         for(int i=0;i<roomNumber;i++)
         {
            onlineReservation.getReservationLineItems().add(reservationControllerRemote.createReservationLineItem(checkInDate, checkOutDate, roomType));
+        }
         }
         
     }
@@ -292,6 +325,10 @@ class MainApp {
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
         
+    }
+    
+    public boolean isWithinRange(Date startDate, Date endDate,Date checkInDate, Date checkOutDate) {
+        return !(startDate.after(checkInDate) || endDate.before(checkOutDate));
     }
     
 }
