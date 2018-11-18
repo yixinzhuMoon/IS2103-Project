@@ -73,143 +73,118 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
     
 
     private List<ReservationLineItem> reservationLineItems;
-    private HashMap<RoomType,BigDecimal> typeAndPrice=new HashMap<>();
-    private HashMap<RoomType,Integer> typeAndroomLeft=new HashMap<>();
-    
 
+
+   
+    
     @Override
-    public void searchHotelRoom(Date checkInDate,Date checkOutDate)
+    public String chooseRoomRate(String roomType, Date checkInDate,Date checkOutDate)
     {
-        List<RoomType> allRoomTypeAvailable= new ArrayList<>();
-        Integer roomLeft=0;
         
-        for(RoomType roomType: roomTypeControllerLocal.retrieveAllRoomTypes())
+        Query query=em.createQuery("SELECT rt FROM RoomType rt WHERE rt.name=:inName");
+        query.setParameter("inName", roomType);
+        RoomType reserveRoomType=(RoomType) query.getSingleResult();
+        
+        Boolean normalRateInNeeded=false;
+        Boolean promotionRateInNeeded=false;
+        Boolean peakRateInNeeded=false;
+        
+        for(RoomRate roomRate:reserveRoomType.getRoomRates())
         {
-           if(roomType.getStatus().equals("enabled"))
-           {
-               allRoomTypeAvailable.add(roomType);
-           }   
+            if(roomRate instanceof PromotionRate)
+            {
+                promotionRateInNeeded=true;
+            }
+            else if(roomRate instanceof NormalRate)
+            {
+                normalRateInNeeded=true;
+            }
+            else if(roomRate instanceof PeakRate)
+            {
+                peakRateInNeeded=true;
+            }
         }
         
-        for(RoomType roomType: allRoomTypeAvailable)
-        {
-            roomLeft=roomType.getRooms().size();
-            for(ReservationLineItem reservationLineItem:roomType.getReservationLineItems())
-            {
-                if(!isWithinRange(reservationLineItem.getCheckInDate(), reservationLineItem.getCheckOutDate(), checkInDate, checkOutDate))
+        String chooseRomeRate="";
+        if(peakRateInNeeded&&promotionRateInNeeded&&normalRateInNeeded)
                 {
-                    roomLeft--;
-                }
-            }
-            
-            for(Room room: roomType.getRooms())
-            {
-                if(!room.getRoomStatus().equals("available"))
-                {
-                    roomLeft--;
-                }
-            }
-            
-            if(roomLeft>0)
-            {
-                Boolean normalRateInNeeded=false;
-                Boolean promotionRateInNeeded=false;
-                Boolean peakRateInNeeded=false;
-                
-                for(RoomRate roomRate: roomType.getRoomRates())
-                {
-                    if(roomRate instanceof PromotionRate)
-                    {
-                        promotionRateInNeeded=true;
-                    }
-                    else if(roomRate instanceof NormalRate)
-                    {
-                        normalRateInNeeded=true;
-                    }
-                    else if(roomRate instanceof PeakRate)
-                    {
-                        peakRateInNeeded=true;
-                    }
-                }
-                
-                BigDecimal price=BigDecimal.ZERO;
-                
-                if(peakRateInNeeded&&promotionRateInNeeded&&normalRateInNeeded)
-                {
-                    for(RoomRate roomRate: roomType.getRoomRates())
+                    for(RoomRate roomRate: reserveRoomType.getRoomRates())
                     {
                         if(roomRate instanceof PromotionRate)
                         {
-                            price=roomRate.getRatePerNight();
+                            chooseRomeRate="PromotionRate";
                         }
+                        break;
                     }
                 }
                 else if(peakRateInNeeded&&promotionRateInNeeded)
                 {
-                    for(RoomRate roomRate: roomType.getRoomRates())
+                    for(RoomRate roomRate: reserveRoomType.getRoomRates())
                     {
                         if(roomRate instanceof PeakRate)
                         {
-                            price=roomRate.getRatePerNight();
+                            chooseRomeRate="PeakRate";
                         }
+                        break;
                     }
                 }
                 else if(peakRateInNeeded&&normalRateInNeeded)
                 {
-                    for(RoomRate roomRate: roomType.getRoomRates())
+                    for(RoomRate roomRate: reserveRoomType.getRoomRates())
                     {
                         if(roomRate instanceof PeakRate)
                         {
-                            price=roomRate.getRatePerNight();
+                            chooseRomeRate="PeakRate";
                         }
+                        break;
                     }
                 }
                 else if(normalRateInNeeded&&promotionRateInNeeded)
                 {
-                    for(RoomRate roomRate: roomType.getRoomRates())
+                    for(RoomRate roomRate: reserveRoomType.getRoomRates())
                     {
                         if(roomRate instanceof PromotionRate)
                         {
-                            price=roomRate.getRatePerNight();
+                            chooseRomeRate="PromotionRate";
                         }
+                        break;
                     }
                 }
                     else if(normalRateInNeeded)
                 {
-                    for(RoomRate roomRate: roomType.getRoomRates())
+                    for(RoomRate roomRate: reserveRoomType.getRoomRates())
                     {
                         if(roomRate instanceof NormalRate)
                         {
-                            price=roomRate.getRatePerNight();
+                            chooseRomeRate="NormalRate";
                         }
+                        break;
                     }
                 }
                 else if(promotionRateInNeeded)
                 {
-                    for(RoomRate roomRate: roomType.getRoomRates())
+                    for(RoomRate roomRate: reserveRoomType.getRoomRates())
                     {
                         if(roomRate instanceof PromotionRate)
                         {
-                            price=roomRate.getRatePerNight();
+                            chooseRomeRate="PromotionRate";
                         }
+                        break;
                     }
                 }
                 else if(peakRateInNeeded)
                 {
-                    for(RoomRate roomRate: roomType.getRoomRates())
+                    for(RoomRate roomRate: reserveRoomType.getRoomRates())
                     {
                         if(roomRate instanceof PeakRate)
                         {
-                            price=roomRate.getRatePerNight();
+                            chooseRomeRate="PeakRate";
                         }
+                        break;
                     }
                 }
-                typeAndPrice.put(roomType, price);
-                typeAndroomLeft.put(roomType, roomLeft);
-             
-                System.out.println(roomType.getName()+ "has "+roomLeft+"rooms left");
-            }
-        }   
+        
+        return chooseRomeRate;
     }
         
      
@@ -222,18 +197,60 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
             query.setParameter("inName", roomType);
             RoomType reserveRoomType=(RoomType) query.getSingleResult();
             Long totalAmount=new Long(0);
+            BigDecimal price=BigDecimal.ZERO;
             
-            if(roomNumber>typeAndroomLeft.get(roomType))
+            String chooseRoomRate=chooseRoomRate(roomType, checkInDate, checkOutDate);
+            if(chooseRoomRate.equals("PromotionRate"))
+            {
+                for(RoomRate roomRate:reserveRoomType.getRoomRates())
+                {
+                    if(roomRate instanceof PromotionRate)
+                    {
+                        price=roomRate.getRatePerNight();
+                    }
+                    break;
+                }
+            }
+            else if(chooseRoomRate.equals("PeakRate"))
+            {
+                for(RoomRate roomRate:reserveRoomType.getRoomRates())
+                {
+                    if(roomRate instanceof PeakRate)
+                    {
+                        price=roomRate.getRatePerNight();
+                    }
+                    break;
+                }
+            }
+            else if(chooseRoomRate.equals("NormalRate"))
+            {
+                for(RoomRate roomRate:reserveRoomType.getRoomRates())
+                {
+                    if(roomRate instanceof NormalRate)
+                    {
+                        price=roomRate.getRatePerNight();
+                    }
+                    break;
+                }
+            }
+            
+            if(roomNumber>reserveRoomType.getRooms().size())
             {
                 totalAmount=new Long(0);
             }
             else
             {
-                totalAmount=((checkOutDate.getTime()-checkInDate.getTime())*typeAndPrice.get(roomType).longValue()*roomNumber);
+                if(checkOutDate.getTime()==checkInDate.getTime())
+                {
+                    totalAmount=price.longValue()*roomNumber;
+                }
+                else
+                {
+                totalAmount=((checkOutDate.getTime()-checkInDate.getTime())*price.longValue()*roomNumber);
+                }
             }  
             
-            return totalAmount;
-  
+            return totalAmount;  
     }
     
     @Override
@@ -262,8 +279,5 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
         em.persist(object);
     }
     
-    public boolean isWithinRange(Date startDate, Date endDate,Date checkInDate, Date checkOutDate) {
-        return !(startDate.after(checkInDate) || endDate.before(checkOutDate));
-    }
 
 }
