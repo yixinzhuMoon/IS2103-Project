@@ -111,7 +111,8 @@ public class RoomRateController implements RoomRateControllerRemote, RoomRateCon
     }
     
     @Override
-    public RoomRate retrieveRoomRateById(Long roomRateId, Boolean fetchRoomType) throws RoomRateNotFoundException{
+    public RoomRate retrieveRoomRateById(Long roomRateId, Boolean fetchRoomType) throws RoomRateNotFoundException
+    {
         RoomRate roomRate = em.find(RoomRate.class, roomRateId);
         
         if(roomRate != null)

@@ -14,8 +14,11 @@ import util.exception.GuestNotFoundException;
 
 public interface RoomReservationSessionBeanLocal {
 
+   
     public Long totalAmount(String roomType, Integer roomNumber,Date checkInDate,Date checkOutDate);
 
     public PartnerReservation reservePartnerRoom(String email, ReservationLineItem reservationRoom);
+
+    public String chooseRoomRate(String roomType, Date checkInDate, Date checkOutDate);
 
 }

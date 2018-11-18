@@ -6,8 +6,10 @@
 package ejb.session.stateless;
 
 import entity.ExceptionReport;
+import entity.Guest;
 import entity.NormalRate;
 import entity.OnlineReservation;
+import entity.Partner;
 import entity.PartnerReservation;
 import entity.PeakRate;
 import entity.PromotionRate;
@@ -97,6 +99,30 @@ public class ReservationController implements ReservationControllerRemote, Reser
             throw new ReservationLineItemNotFoundException("Reservation Line Item " + resLineItem + " does not exist!");
         }
     }
+    
+    @Override
+    public OnlineReservation createOnlineReservation(Guest guest)
+    {
+       OnlineReservation onlineReservation=new OnlineReservation();
+       em.persist(onlineReservation);
+       guest.getOnlineReservations().add(onlineReservation);
+       em.flush();;
+       
+       return onlineReservation;
+    }
+    
+    @Override
+     public PartnerReservation createPartnerReservation(Partner partner)
+    {
+       PartnerReservation partnerReservation=new PartnerReservation();
+       em.persist(partnerReservation);
+       partner.getPartnerReservations().add(partnerReservation);
+       em.flush();
+       
+       return partnerReservation;
+    }
+
+    
     @Override
     public ReservationLineItem createReservationLineItem(Date checkInDate,Date checkOutDate,String roomType)throws RoomTypeNotFoundException
     {
@@ -400,6 +426,14 @@ public class ReservationController implements ReservationControllerRemote, Reser
         }
         
         return reservationLineItems;
+    }
+    
+    @Override
+    public List<ReservationLineItem> retrieveAllReservationLineItems()
+    {
+        Query query=em.createQuery("SELECT rl FROM ReservationLineItem rl");
+        
+        return query.getResultList();
     }
     
 }
