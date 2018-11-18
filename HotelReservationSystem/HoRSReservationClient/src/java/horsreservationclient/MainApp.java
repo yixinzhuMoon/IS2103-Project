@@ -242,7 +242,7 @@ class MainApp {
             
             if(roomLeft>0)
             {
-                System.out.print(roomType.getName()+" has "+roomLeft+" rooms left");
+                System.out.println(roomType.getName()+" has "+roomLeft+" rooms left");
             }
             else
             {

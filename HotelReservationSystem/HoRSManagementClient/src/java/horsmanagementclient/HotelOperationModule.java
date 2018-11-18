@@ -431,7 +431,7 @@ public class HotelOperationModule {
         scanner.nextLine();
     }
 
-    public void createRoom()  //solve error with Room number primary key
+    public void createRoom()  
     {
         try 
         {

@@ -218,7 +218,8 @@ public class FrontOfficeModule {
             for(int i=0;i<numberOfRooms;i++)
             {
                 walkInReservation = reservationControllerRemote.createWalkInReservation(walkInReservation, currentEmployee.getEmployeeId());
-                walkInReservation.getReservationLineItems().add(reservationControllerRemote.createWalkInReservationLineItem(checkInDate, checkOutDate, roomType));
+                ReservationLineItem reservationLineItem = reservationControllerRemote.createWalkInReservationLineItem(checkInDate, checkOutDate, roomType);
+                walkInReservation.getReservationLineItems().add(reservationLineItem);
             }
             }
         }  catch (ParseException ex) {
