@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="Multi-file class diagram">
+  <ClassDiagramComponents>
+    <Class name="Employee" package="entity" visibility="public" xPosition="20.0" yPosition="20.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="employeeId" type="Long" visibility="private"/>
+        <Field name="email" type="String" visibility="private"/>
+        <Field name="name" type="String" visibility="private"/>
+        <Field name="password" type="String" visibility="private"/>
+        <Field name="accessRight" type="EmployeeAccessRight" visibility="private"/>
+        <Field name="walkInReservations" type="List&lt;WalkInReservation&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="email"/>
+          <Argument type="String" name="name"/>
+          <Argument type="String" name="password"/>
+          <Argument type="EmployeeAccessRight" name="role"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getWalkInReservations" returnType="List&lt;WalkInReservation&gt;" visibility="public"/>
+        <Method name="setWalkInReservations" returnType="void" visibility="public">
+          <Argument type="List&lt;WalkInReservation&gt;" name="walkInReservations"/>
+        </Method>
+        <Method name="getEmail" returnType="String" visibility="public"/>
+        <Method name="setEmail" returnType="void" visibility="public">
+          <Argument type="String" name="email"/>
+        </Method>
+        <Method name="getName" returnType="String" visibility="public"/>
+        <Method name="setName" returnType="void" visibility="public">
+          <Argument type="String" name="name"/>
+        </Method>
+        <Method name="getPassword" returnType="String" visibility="public"/>
+        <Method name="setPassword" returnType="void" visibility="public">
+          <Argument type="String" name="password"/>
+        </Method>
+        <Method name="getAccessRight" returnType="EmployeeAccessRight" visibility="public"/>
+        <Method name="setAccessRight" returnType="void" visibility="public">
+          <Argument type="EmployeeAccessRight" name="accessRight"/>
+        </Method>
+        <Method name="getEmployeeId" returnType="Long" visibility="public"/>
+        <Method name="setEmployeeId" returnType="void" visibility="public">
+          <Argument type="Long" name="employeeId"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="ExceptionReport" package="entity" visibility="public" xPosition="320.0" yPosition="20.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="exceptionReportId" type="Long" visibility="private"/>
+        <Field name="description" type="String" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="description"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getExceptionReportId" returnType="Long" visibility="public"/>
+        <Method name="setExceptionReportId" returnType="void" visibility="public">
+          <Argument type="Long" name="exceptionReportId"/>
+        </Method>
+        <Method name="getDescription" returnType="String" visibility="public"/>
+        <Method name="setDescription" returnType="void" visibility="public">
+          <Argument type="String" name="description"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Guest" package="entity" visibility="public" xPosition="620.0" yPosition="20.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="guestId" type="Long" visibility="private"/>
+        <Field name="email" type="String" visibility="private"/>
+        <Field name="name" type="String" visibility="private"/>
+        <Field name="password" type="String" visibility="private"/>
+        <Field name="onlineReservations" type="List&lt;OnlineReservation&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="email"/>
+          <Argument type="String" name="name"/>
+          <Argument type="String" name="password"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getOnlineReservations" returnType="List&lt;OnlineReservation&gt;" visibility="public"/>
+        <Method name="setOnlineReservations" returnType="void" visibility="public">
+          <Argument type="List&lt;OnlineReservation&gt;" name="onlineReservations"/>
+        </Method>
+        <Method name="getName" returnType="String" visibility="public"/>
+        <Method name="setName" returnType="void" visibility="public">
+          <Argument type="String" name="name"/>
+        </Method>
+        <Method name="getPassword" returnType="String" visibility="public"/>
+        <Method name="setPassword" returnType="void" visibility="public">
+          <Argument type="String" name="password"/>
+        </Method>
+        <Method name="getEmail" returnType="String" visibility="public"/>
+        <Method name="setEmail" returnType="void" visibility="public">
+          <Argument type="String" name="email"/>
+        </Method>
+        <Method name="getGuestId" returnType="Long" visibility="public"/>
+        <Method name="setGuestId" returnType="void" visibility="public">
+          <Argument type="Long" name="guestId"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="NormalRate" package="entity" visibility="public" xPosition="920.0" yPosition="20.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="startDate" type="Date" visibility="private"/>
+        <Field name="endDate" type="Date" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="name"/>
+          <Argument type="BigDecimal" name="ratePerNight"/>
+          <Argument type="RoomType" name="roomType"/>
+          <Argument type="Date" name="startDate"/>
+          <Argument type="Date" name="endDate"/>
+          <Argument type="String" name="roomRateStatus"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getStartDate" returnType="Date" visibility="public"/>
+        <Method name="setStartDate" returnType="void" visibility="public">
+          <Argument type="Date" name="startDate"/>
+        </Method>
+        <Method name="getEndDate" returnType="Date" visibility="public"/>
+        <Method name="setEndDate" returnType="void" visibility="public">
+          <Argument type="Date" name="endDate"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="OnlineReservation" package="entity" visibility="public" xPosition="1220.0" yPosition="20.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="guest" type="Guest" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="Guest" name="guest"/>
+          <Argument type="Date" name="reservationDate"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getGuest" returnType="Guest" visibility="public"/>
+        <Method name="setGuest" returnType="void" visibility="public">
+          <Argument type="Guest" name="guest"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Partner" package="entity" visibility="public" xPosition="1520.0" yPosition="20.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="partnerId" type="Long" visibility="private"/>
+        <Field name="email" type="String" visibility="private"/>
+        <Field name="name" type="String" visibility="private"/>
+        <Field name="password" type="String" visibility="private"/>
+        <Field name="partnerReservations" type="List&lt;PartnerReservation&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="email"/>
+          <Argument type="String" name="name"/>
+          <Argument type="String" name="password"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getPartnerReservations" returnType="List&lt;PartnerReservation&gt;" visibility="public"/>
+        <Method name="setPartnerReservations" returnType="void" visibility="public">
+          <Argument type="List&lt;PartnerReservation&gt;" name="partnerReservations"/>
+        </Method>
+        <Method name="getEmail" returnType="String" visibility="public"/>
+        <Method name="setEmail" returnType="void" visibility="public">
+          <Argument type="String" name="email"/>
+        </Method>
+        <Method name="getName" returnType="String" visibility="public"/>
+        <Method name="setName" returnType="void" visibility="public">
+          <Argument type="String" name="name"/>
+        </Method>
+        <Method name="getPassword" returnType="String" visibility="public"/>
+        <Method name="setPassword" returnType="void" visibility="public">
+          <Argument type="String" name="password"/>
+        </Method>
+        <Method name="getPartnerId" returnType="Long" visibility="public"/>
+        <Method name="setPartnerId" returnType="void" visibility="public">
+          <Argument type="Long" name="partnerId"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="PartnerReservation" package="entity" visibility="public" xPosition="1820.0" yPosition="20.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="partner" type="Partner" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="Partner" name="partner"/>
+          <Argument type="Date" name="reservationDate"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getPartner" returnType="Partner" visibility="public"/>
+        <Method name="setPartner" returnType="void" visibility="public">
+          <Argument type="Partner" name="partner"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="PeakRate" package="entity" visibility="public" xPosition="2120.0" yPosition="20.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="startDate" type="Date" visibility="private"/>
+        <Field name="endDate" type="Date" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="name"/>
+          <Argument type="BigDecimal" name="ratePerNight"/>
+          <Argument type="RoomType" name="roomType"/>
+          <Argument type="Date" name="startDate"/>
+          <Argument type="Date" name="endDate"/>
+          <Argument type="String" name="roomRateStatus"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getStartDate" returnType="Date" visibility="public"/>
+        <Method name="setStartDate" returnType="void" visibility="public">
+          <Argument type="Date" name="startDate"/>
+        </Method>
+        <Method name="getEndDate" returnType="Date" visibility="public"/>
+        <Method name="setEndDate" returnType="void" visibility="public">
+          <Argument type="Date" name="endDate"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="PromotionRate" package="entity" visibility="public" xPosition="20.0" yPosition="420.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="startDate" type="Date" visibility="private"/>
+        <Field name="endDate" type="Date" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="name"/>
+          <Argument type="BigDecimal" name="ratePerNight"/>
+          <Argument type="RoomType" name="roomType"/>
+          <Argument type="Date" name="startDate"/>
+          <Argument type="Date" name="endDate"/>
+          <Argument type="String" name="roomRateStatus"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getStartDate" returnType="Date" visibility="public"/>
+        <Method name="setStartDate" returnType="void" visibility="public">
+          <Argument type="Date" name="startDate"/>
+        </Method>
+        <Method name="getEndDate" returnType="Date" visibility="public"/>
+        <Method name="setEndDate" returnType="void" visibility="public">
+          <Argument type="Date" name="endDate"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="PublishedRate" package="entity" visibility="public" xPosition="447.0" yPosition="977.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="validity" type="Date" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="name"/>
+          <Argument type="BigDecimal" name="ratePerNight"/>
+          <Argument type="RoomType" name="roomType"/>
+          <Argument type="Date" name="validity"/>
+          <Argument type="String" name="roomRateStatus"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getValidity" returnType="Date" visibility="public"/>
+        <Method name="setValidity" returnType="void" visibility="public">
+          <Argument type="Date" name="validity"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Reservation" package="entity" visibility="public" isAbstract="true" xPosition="620.0" yPosition="420.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="reservationId" type="Long" visibility="protected"/>
+        <Field name="reservationDate" type="Date" visibility="protected"/>
+        <Field name="reservationLineItems" type="List&lt;ReservationLineItem&gt;" visibility="protected"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="Date" name="reservationDate"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getReservationLineItems" returnType="List&lt;ReservationLineItem&gt;" visibility="public"/>
+        <Method name="setReservationLineItems" returnType="void" visibility="public">
+          <Argument type="List&lt;ReservationLineItem&gt;" name="reservationLineItems"/>
+        </Method>
+        <Method name="getReservationId" returnType="Long" visibility="public"/>
+        <Method name="setReservationId" returnType="void" visibility="public">
+          <Argument type="Long" name="reservationId"/>
+        </Method>
+        <Method name="getReservationDate" returnType="Date" visibility="public"/>
+        <Method name="setReservationDate" returnType="void" visibility="public">
+          <Argument type="Date" name="reservationDate"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="ReservationLineItem" package="entity" visibility="public" xPosition="920.0" yPosition="420.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="reservationLineItemId" type="Long" visibility="private"/>
+        <Field name="checkInDate" type="Date" visibility="private"/>
+        <Field name="checkOutDate" type="Date" visibility="private"/>
+        <Field name="roomList" type="List&lt;Room&gt;" visibility="private"/>
+        <Field name="roomType" type="RoomType" visibility="private"/>
+        <Field name="roomRate" type="RoomRate" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="RoomType" name="roomType"/>
+          <Argument type="RoomRate" name="roomRate"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getRoomList" returnType="List&lt;Room&gt;" visibility="public"/>
+        <Method name="setRoomList" returnType="void" visibility="public">
+          <Argument type="List&lt;Room&gt;" name="roomList"/>
+        </Method>
+        <Method name="getRoomType" returnType="RoomType" visibility="public"/>
+        <Method name="setRoomType" returnType="void" visibility="public">
+          <Argument type="RoomType" name="roomType"/>
+        </Method>
+        <Method name="getRoomRate" returnType="RoomRate" visibility="public"/>
+        <Method name="setRoomRate" returnType="void" visibility="public">
+          <Argument type="RoomRate" name="roomRate"/>
+        </Method>
+        <Method name="getCheckInDate" returnType="Date" visibility="public"/>
+        <Method name="setCheckInDate" returnType="void" visibility="public">
+          <Argument type="Date" name="checkInDate"/>
+        </Method>
+        <Method name="getCheckOutDate" returnType="Date" visibility="public"/>
+        <Method name="setCheckOutDate" returnType="void" visibility="public">
+          <Argument type="Date" name="checkOutDate"/>
+        </Method>
+        <Method name="getReservationLineItemId" returnType="Long" visibility="public"/>
+        <Method name="setReservationLineItemId" returnType="void" visibility="public">
+          <Argument type="Long" name="reservationLineItemId"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Room" package="entity" visibility="public" xPosition="1220.0" yPosition="420.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="roomNumber" type="Integer" visibility="private"/>
+        <Field name="roomStatus" type="String" visibility="private"/>
+        <Field name="roomType" type="RoomType" visibility="private"/>
+        <Field name="reservation" type="ReservationLineItem" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="Integer" name="roomNumber"/>
+          <Argument type="String" name="roomStatus"/>
+          <Argument type="RoomType" name="roomType"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getRoomType" returnType="RoomType" visibility="public"/>
+        <Method name="setRoomType" returnType="void" visibility="public">
+          <Argument type="RoomType" name="roomType"/>
+        </Method>
+        <Method name="getReservation" returnType="ReservationLineItem" visibility="public"/>
+        <Method name="setReservation" returnType="void" visibility="public">
+          <Argument type="ReservationLineItem" name="reservation"/>
+        </Method>
+        <Method name="getRoomNumber" returnType="Integer" visibility="public"/>
+        <Method name="setRoomNumber" returnType="void" visibility="public">
+          <Argument type="Integer" name="roomNumber"/>
+        </Method>
+        <Method name="setRoomStatus" returnType="void" visibility="public">
+          <Argument type="String" name="roomStatus"/>
+        </Method>
+        <Method name="getRoomStatus" returnType="String" visibility="public"/>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="RoomNight" package="entity" visibility="public" xPosition="1520.0" yPosition="420.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="id" type="Long" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="getId" returnType="Long" visibility="public"/>
+        <Method name="setId" returnType="void" visibility="public">
+          <Argument type="Long" name="id"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="RoomRate" package="entity" visibility="public" isAbstract="true" xPosition="1820.0" yPosition="420.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="roomRateId" type="Long" visibility="protected"/>
+        <Field name="name" type="String" visibility="protected"/>
+        <Field name="ratePerNight" type="BigDecimal" visibility="protected"/>
+        <Field name="roomRateStatus" type="String" visibility="protected"/>
+        <Field name="roomType" type="RoomType" visibility="protected"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="name"/>
+          <Argument type="BigDecimal" name="ratePerNight"/>
+          <Argument type="RoomType" name="roomType"/>
+          <Argument type="String" name="roomRateStatus"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getRoomType" returnType="RoomType" visibility="public"/>
+        <Method name="setRoomType" returnType="void" visibility="public">
+          <Argument type="RoomType" name="roomType"/>
+        </Method>
+        <Method name="getRoomRateId" returnType="Long" visibility="public"/>
+        <Method name="setRoomRateId" returnType="void" visibility="public">
+          <Argument type="Long" name="roomRateId"/>
+        </Method>
+        <Method name="getName" returnType="String" visibility="public"/>
+        <Method name="setName" returnType="void" visibility="public">
+          <Argument type="String" name="name"/>
+        </Method>
+        <Method name="getRatePerNight" returnType="BigDecimal" visibility="public"/>
+        <Method name="setRatePerNight" returnType="void" visibility="public">
+          <Argument type="BigDecimal" name="ratePerNight"/>
+        </Method>
+        <Method name="getRoomRateStatus" returnType="String" visibility="public"/>
+        <Method name="setRoomRateStatus" returnType="void" visibility="public">
+          <Argument type="String" name="roomRateStatus"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="RoomType" package="entity" visibility="public" xPosition="2120.0" yPosition="420.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="roomTypeId" type="Long" visibility="private"/>
+        <Field name="name" type="String" visibility="private"/>
+        <Field name="description" type="String" visibility="private"/>
+        <Field name="roomSize" type="Integer" visibility="private"/>
+        <Field name="bed" type="String" visibility="private"/>
+        <Field name="capacity" type="Integer" visibility="private"/>
+        <Field name="amenities" type="String" visibility="private"/>
+        <Field name="status" type="String" visibility="private"/>
+        <Field name="roomRank" type="Integer" visibility="private"/>
+        <Field name="roomRates" type="List&lt;RoomRate&gt;" visibility="private"/>
+        <Field name="rooms" type="List&lt;Room&gt;" visibility="private"/>
+        <Field name="reservationLineItems" type="List&lt;ReservationLineItem&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="name"/>
+          <Argument type="String" name="description"/>
+          <Argument type="Integer" name="roomSize"/>
+          <Argument type="String" name="bed"/>
+          <Argument type="Integer" name="capacity"/>
+          <Argument type="String" name="amenities"/>
+          <Argument type="String" name="status"/>
+          <Argument type="Integer" name="roomRank"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getRoomRank" returnType="Integer" visibility="public"/>
+        <Method name="setRoomRank" returnType="void" visibility="public">
+          <Argument type="Integer" name="roomRank"/>
+        </Method>
+        <Method name="getRoomTypeId" returnType="Long" visibility="public"/>
+        <Method name="setRoomTypeId" returnType="void" visibility="public">
+          <Argument type="Long" name="roomTypeId"/>
+        </Method>
+        <Method name="getName" returnType="String" visibility="public"/>
+        <Method name="setName" returnType="void" visibility="public">
+          <Argument type="String" name="name"/>
+        </Method>
+        <Method name="getDescription" returnType="String" visibility="public"/>
+        <Method name="setDescription" returnType="void" visibility="public">
+          <Argument type="String" name="description"/>
+        </Method>
+        <Method name="getRoomSize" returnType="Integer" visibility="public"/>
+        <Method name="setRoomSize" returnType="void" visibility="public">
+          <Argument type="Integer" name="roomSize"/>
+        </Method>
+        <Method name="getBed" returnType="String" visibility="public"/>
+        <Method name="setBed" returnType="void" visibility="public">
+          <Argument type="String" name="bed"/>
+        </Method>
+        <Method name="getCapacity" returnType="Integer" visibility="public"/>
+        <Method name="setCapacity" returnType="void" visibility="public">
+          <Argument type="Integer" name="capacity"/>
+        </Method>
+        <Method name="getAmenities" returnType="String" visibility="public"/>
+        <Method name="setAmenities" returnType="void" visibility="public">
+          <Argument type="String" name="amenities"/>
+        </Method>
+        <Method name="getStatus" returnType="String" visibility="public"/>
+        <Method name="setStatus" returnType="void" visibility="public">
+          <Argument type="String" name="status"/>
+        </Method>
+        <Method name="getReservationLineItems" returnType="List&lt;ReservationLineItem&gt;" visibility="public"/>
+        <Method name="setReservationLineItems" returnType="void" visibility="public">
+          <Argument type="List&lt;ReservationLineItem&gt;" name="reservationLineItems"/>
+        </Method>
+        <Method name="getRoomRates" returnType="List&lt;RoomRate&gt;" visibility="public"/>
+        <Method name="setRoomRates" returnType="void" visibility="public">
+          <Argument type="List&lt;RoomRate&gt;" name="roomRates"/>
+        </Method>
+        <Method name="getRooms" returnType="List&lt;Room&gt;" visibility="public"/>
+        <Method name="setRooms" returnType="void" visibility="public">
+          <Argument type="List&lt;Room&gt;" name="rooms"/>
+        </Method>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="WalkInReservation" package="entity" visibility="public" xPosition="20.0" yPosition="820.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="employee" type="Employee" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="Employee" name="employee"/>
+          <Argument type="Date" name="reservationDate"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getEmployee" returnType="Employee" visibility="public"/>
+        <Method name="setEmployee" returnType="void" visibility="public">
+          <Argument type="Employee" name="employee"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="object"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <HasRelation name="rooms" source="entity.RoomType" target="entity.Room" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Room&gt;"/>
+    <HasRelation name="reservationLineItems" source="entity.Reservation" target="entity.ReservationLineItem" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;ReservationLineItem&gt;"/>
+    <UseRelation source="entity.PartnerReservation" target="entity.Partner" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.Employee" target="entity.WalkInReservation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.Employee" target="entity.Employee" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="entity.PromotionRate" target="entity.RoomRate"/>
+    <IsRelation name="is" source="entity.PartnerReservation" target="entity.Reservation"/>
+    <IsRelation name="is" source="entity.OnlineReservation" target="entity.Reservation"/>
+    <HasRelation name="guest" source="entity.OnlineReservation" target="entity.Guest" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.RoomType" target="entity.Room" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="reservation" source="entity.Room" target="entity.ReservationLineItem" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.Reservation" target="entity.ReservationLineItem" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.RoomType" target="entity.RoomRate" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.RoomType" target="entity.ReservationLineItem" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.ReservationLineItem" target="entity.RoomRate" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.Room" target="entity.ReservationLineItem" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="roomList" source="entity.ReservationLineItem" target="entity.Room" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Room&gt;"/>
+    <HasRelation name="walkInReservations" source="entity.Employee" target="entity.WalkInReservation" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;WalkInReservation&gt;"/>
+    <HasRelation name="employee" source="entity.WalkInReservation" target="entity.Employee" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="roomType" source="entity.RoomRate" target="entity.RoomType" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.Room" target="entity.RoomType" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="roomType" source="entity.ReservationLineItem" target="entity.RoomType" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="partner" source="entity.PartnerReservation" target="entity.Partner" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.OnlineReservation" target="entity.Guest" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="entity.PeakRate" target="entity.RoomRate"/>
+    <HasRelation name="roomType" source="entity.Room" target="entity.RoomType" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="entity.WalkInReservation" target="entity.Reservation"/>
+    <HasRelation name="onlineReservations" source="entity.Guest" target="entity.OnlineReservation" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;OnlineReservation&gt;"/>
+    <UseRelation source="entity.ReservationLineItem" target="entity.RoomType" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="reservationLineItems" source="entity.RoomType" target="entity.ReservationLineItem" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;ReservationLineItem&gt;"/>
+    <UseRelation source="entity.Guest" target="entity.Reservation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="roomRate" source="entity.ReservationLineItem" target="entity.RoomRate" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.ReservationLineItem" target="entity.Room" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.RoomRate" target="entity.RoomType" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.WalkInReservation" target="entity.Employee" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="entity.Partner" target="entity.Reservation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="entity.PublishedRate" target="entity.RoomRate"/>
+    <HasRelation name="roomRates" source="entity.RoomType" target="entity.RoomRate" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;RoomRate&gt;"/>
+    <IsRelation name="is" source="entity.NormalRate" target="entity.RoomRate"/>
+    <HasRelation name="partnerReservations" source="entity.Partner" target="entity.PartnerReservation" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;PartnerReservation&gt;"/>
+  </ClassDiagramRelations>
+</ClassDiagram>

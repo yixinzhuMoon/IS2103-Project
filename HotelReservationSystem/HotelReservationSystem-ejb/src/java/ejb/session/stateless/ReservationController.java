@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.Employee;
 import entity.ExceptionReport;
+import entity.Guest;
 import entity.NormalRate;
 import entity.OnlineReservation;
 import entity.PartnerReservation;
@@ -33,6 +34,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.EmployeeNotFoundException;
+import util.exception.GuestNotFoundException;
 import util.exception.ReservationLineItemNotFoundException;
 import util.exception.RoomRateNotFoundException;
 import util.exception.RoomTypeNotFoundException;
@@ -54,6 +56,8 @@ public class ReservationController implements ReservationControllerRemote, Reser
     private RoomRateControllerLocal roomRateControllerLocal;
     @EJB
     private EmployeeControllerLocal employeeControllerLocal;
+    @EJB
+    private GuestControllerLocal guestControllerLocal;
 
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
@@ -115,6 +119,20 @@ public class ReservationController implements ReservationControllerRemote, Reser
         em.flush();
 
         return newWalkInReservation;
+    }
+    
+    @Override
+    public OnlineReservation createOnlineReservation(OnlineReservation newOnlineReservation, Long guestId) throws GuestNotFoundException
+    {
+        Date todayDate = new Date();
+        Guest guest = guestControllerLocal.retrieveGuestById(guestId);
+        newOnlineReservation.setGuest(guest);
+        newOnlineReservation.setReservationDate(todayDate);
+        
+        em.persist(newOnlineReservation);
+        em.flush();
+
+        return newOnlineReservation;
     }
     
     @Override
@@ -238,7 +256,12 @@ public class ReservationController implements ReservationControllerRemote, Reser
         return (OnlineReservation) query.getSingleResult();
     }
     
-   
+    @Override
+    public List<OnlineReservation> retrieveAllOnlineReservationsByGuestId(Long guestId){
+        Query query=em.createQuery("SELECT o FROM OnlineReservation o WHERE o.guest = :inGuest");
+        query.setParameter("inGuest", guestId);
+        return query.getResultList();
+    }
     
     @Override
     public List<OnlineReservation> retrieveAllOnlineReservations()
