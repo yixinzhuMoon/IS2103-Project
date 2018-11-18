@@ -84,8 +84,11 @@ class MainApp {
         Scanner scanner=new Scanner(System.in);
         String email="";
         String password="";
+        String name="";
         
-        System.out.println("\n*** HoRS System :: PArtner Login ***\n");
+        System.out.println("\n*** Holiday Reservtation System :: Partner Login ***\n");
+        System.out.print("Enter name");
+        name=scanner.nextLine().trim();
         System.out.print("Enter email> ");
         email=scanner.nextLine().trim();
         System.out.print("Enter password> ");
@@ -94,6 +97,7 @@ class MainApp {
         if(email.length()>0 && password.length()>0)
         {
             currentPartner=partnerLogin(email,password);
+            currentPartner.setName(name);
             System.out.println("Partner Login successful !\n");
         }   
     }
