@@ -223,13 +223,10 @@ class MainApp {
             
             for(RoomType roomType:roomTypeControllerRemote.retrieveAllEnabledRoomTypes())
             {
-                if(!roomType.getRooms().isEmpty())
-                {
-                    roomLeft=roomType.getRooms().size();
-                }
+                roomLeft=roomType.getRooms().size();
                 for(Room room:roomType.getRooms())
                 {
-                    if(!room.getRoomStatus().equals("available"))
+                    if(!room.getRoomStatus().equalsIgnoreCase("available"))
                     {
                         roomLeft--;
                     }
@@ -286,14 +283,13 @@ class MainApp {
         else
         {
             System.out.println("Reserve successful! total amount is"+totalAmount);
-        
+            
             for(int i=0;i<roomNumber;i++)
             {
                 onlineReservation  = reservationControllerRemote.createOnlineReservation(onlineReservation,currentGuest.getGuestId());
                 onlineReservation.getReservationLineItems().add(reservationControllerRemote.createReservationLineItem(checkInDate, checkOutDate, roomType));
             }
         }
-        
     }
 
     private void viewMyReservationDetails() throws ReservationLineItemNotFoundException {
@@ -304,8 +300,8 @@ class MainApp {
         Long reservationId=scanner.nextLong();
         
         ReservationLineItem reservationLineItem=reservationControllerRemote.retrieveReservationLineItemById(reservationId);
-        System.out.printf("%15s%15s%15s%15s%15s\n", "Reservation Id","Reservation Check In Date","Reservation Check In Date","Room Type","Room Rate");
-        System.out.printf("%15s%15s%15s%15s%15s\n",reservationLineItem.getReservationLineItemId(), reservationLineItem.getCheckInDate(),reservationLineItem.getCheckOutDate(),reservationLineItem.getRoomType(),reservationLineItem.getRoomRate());
+        System.out.printf("%20s%20s%20s%20s%20s\n", "Reservation Id","Reservation Check In Date","Reservation Check In Date","Room Type","Room Rate");
+        System.out.printf("%20s%20s%20s%20s%20s\n",reservationLineItem.getReservationLineItemId(), reservationLineItem.getCheckInDate(),reservationLineItem.getCheckOutDate(),reservationLineItem.getRoomType().getName(),reservationLineItem.getRoomRate().getName());
         
     }
 
@@ -320,7 +316,7 @@ class MainApp {
         
         List<OnlineReservation> guestReservation = reservationControllerRemote.retrieveAllOnlineReservationsByGuestId(guestId);
         System.out.printf("%15s%15s%15s%15s%15s\n", "Reservation Id","Reservation Check In Date","Reservation Check In Date","Room Type","Room Rate");
-        
+
         for(OnlineReservation onlineRes:guestReservation)
         {
             List<ReservationLineItem> reservationLineItems = onlineRes.getReservationLineItems();
@@ -332,7 +328,6 @@ class MainApp {
             System.out.print("Press any key to continue...> ");
             scanner.nextLine();
         }
-        
     }
     
     public boolean isWithinRange(Date startDate, Date endDate,Date checkInDate, Date checkOutDate) {

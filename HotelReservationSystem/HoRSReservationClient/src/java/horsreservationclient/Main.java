@@ -14,6 +14,7 @@ import ejb.session.stateless.RoomTypeControllerRemote;
 import java.text.ParseException;
 import util.exception.GuestNotFoundException;
 import javax.ejb.EJB;
+import javax.xml.ws.WebServiceRef;
 import util.exception.ReservationLineItemNotFoundException;
 import util.exception.RoomTypeNotFoundException;
 
@@ -22,6 +23,7 @@ import util.exception.RoomTypeNotFoundException;
  * @author zhu yixin
  */
 public class Main {
+
 
     @EJB
     private static ReservationControllerRemote reservationControllerRemote;
@@ -48,5 +50,6 @@ public class Main {
         MainApp mainApp=new MainApp(guestControllerRemote,roomControllerRemote,roomRateControllerRemote,roomTypeControllerRemote,roomReservationSessionBeanRemote,reservationControllerRemote);
         mainApp.runApp();
     }
+
     
 }

@@ -6,7 +6,9 @@
 package ejb.session.stateless;
 
 import entity.ExceptionReport;
+import entity.Guest;
 import entity.OnlineReservation;
+import entity.Partner;
 import entity.PartnerReservation;
 import entity.ReservationLineItem;
 import entity.Room;
@@ -45,6 +47,10 @@ public interface ReservationControllerRemote {
 
     public List<ReservationLineItem> retrieveAllReservationLineItem(OnlineReservation onlineReservation);
 
+    public OnlineReservation createOnlineReservation(Guest guest);
+
+    public PartnerReservation createPartnerReservation(Partner partner);
+    
     public WalkInReservation createWalkInReservation(WalkInReservation newWalkInReservation, Long employeeId) throws EmployeeNotFoundException;
     
     public ReservationLineItem createReservationLineItem(Date checkInDate,Date checkOutDate,String roomType)throws RoomTypeNotFoundException;
@@ -53,4 +59,5 @@ public interface ReservationControllerRemote {
 
     public List<OnlineReservation> retrieveAllOnlineReservationsByGuestId(Long guestId);
 
+    public List<ReservationLineItem> retrieveAllReservationLineItems();
 }
