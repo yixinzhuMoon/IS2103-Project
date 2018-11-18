@@ -40,4 +40,9 @@ public interface ReservationControllerLocal {
 
     public ReservationLineItem createRoomReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException;
 
+    public List<ReservationLineItem> retrieveReservationLineItemByCheckInDate(Date checkInDate);
+
+    public List<ReservationLineItem> retrieveAllReservationLineItem(OnlineReservation onlineReservation);
+    
+    public List<Room> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate);
 }

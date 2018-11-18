@@ -44,4 +44,6 @@ public interface ReservationControllerRemote {
 
     public List<ReservationLineItem> retrieveAllReservationLineItem(OnlineReservation onlineReservation);
 
+    public List<Room> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate);
+
 }

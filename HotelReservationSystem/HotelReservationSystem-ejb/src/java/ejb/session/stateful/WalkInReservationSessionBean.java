@@ -6,7 +6,6 @@
 package ejb.session.stateful;
 
 import ejb.entity.stateful.WalkInReservationSessionBeanRemote;
-import ejb.session.stateless.ReservationController;
 import ejb.session.stateless.ReservationControllerLocal;
 import ejb.session.stateless.RoomControllerLocal;
 import ejb.session.stateless.RoomRateControllerLocal;
@@ -18,17 +17,14 @@ import entity.PromotionRate;
 import entity.PublishedRate;
 import entity.ReservationLineItem;
 import entity.Room;
+import entity.RoomRate;
 import entity.RoomType;
 import entity.WalkInReservation;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -39,8 +35,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.EmployeeNotFoundException;
-import util.exception.RoomRateNotFoundException;
-import util.exception.RoomTypeNotFoundException;
 
 /**
  *
@@ -66,12 +60,7 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @EJB 
     private RoomTypeControllerLocal roomTypeControllerLocal;
     
-    private PublishedRate publishedRate;
-    private Date checkInDate;
-    private Date checkOutDate;
-    private Long totalAmount;
-    
-    private List<ReservationLineItem> reservationLineItems;
+    private List<Long> ratePrices;
 
     @Remove
     @Override
@@ -84,19 +73,59 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @Override
     public void preDestroy()
     {
-        if(reservationLineItems != null)
+        if(ratePrices != null)
         {
-            reservationLineItems.clear();
-            reservationLineItems = null;
+            ratePrices.clear();
+            ratePrices = null;
         }
     }
     
     @Override
-    public List<ReservationLineItem> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate){
-        reservationLineItems = new ArrayList<>();
-        List<RoomType> validRoomTypes = roomTypeControllerLocal.retrieveAllRoomTypes();
+    public List<Room> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate)
+    {
+        List<RoomType> allRoomTypeAvailable= roomTypeControllerLocal.retrieveAllEnabledRoomTypes();
+        List<PublishedRate> publishedRateAvailable = new ArrayList<>();
+        List<PublishedRate> publishedRateWithinRange = new ArrayList<>();
+        List<RoomType> validRoomTypes = new ArrayList<>();
         
-        return reservationLineItems;
+        //get all room types enabled
+        for(RoomType roomType: allRoomTypeAvailable)
+        {
+            for(RoomRate roomRate:roomType.getRoomRates())
+            {
+                if(roomRate instanceof PublishedRate){
+                    publishedRateAvailable.add((PublishedRate) roomRate);
+                }
+            }
+        }
+        //get published rate within check in and check out date
+        for(PublishedRate publishedRate:publishedRateAvailable){
+            if(isWithinRange(publishedRate.getValidity(), checkInDate, checkOutDate))
+            {
+                if(!validRoomTypes.contains(publishedRate.getRoomType())){
+                    publishedRateWithinRange.add(publishedRate);
+                    validRoomTypes.add(publishedRate.getRoomType());
+                }
+            }
+        }
+        //get all available rooms for reservation
+        List<Room> roomsSearchResult = new ArrayList<>();
+        for(PublishedRate pubRate:publishedRateWithinRange){
+            Long totalAmount = checkOutDate.getTime()-checkInDate.getTime()*pubRate.getRatePerNight().longValue();
+            ratePrices.add(totalAmount);
+        }
+        for(RoomType roomType: validRoomTypes){
+            for(Room room: roomType.getRooms()){
+                roomsSearchResult.add(room);
+            }
+        }
+        return roomsSearchResult;
+    }
+    
+    @Override
+    public List<Long> totalAmount()  
+    {
+        return this.ratePrices;
     }
     
     @Override
@@ -121,16 +150,8 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
         
     }
     
-    
-     
-    @Override
-    public Long getTotalAmount() 
-    {
-        return totalAmount;
+    public boolean isWithinRange(Date testDate, Date checkInDate, Date checkOutDate) {
+        return !(testDate.after(checkInDate) || testDate.before(checkOutDate));
     }
-    
-    public boolean belongCalendar(Date date, Date startDate, Date endDate) 
-    {
-        return !(date.before(startDate) || date.after(endDate));
-    }
+
 }

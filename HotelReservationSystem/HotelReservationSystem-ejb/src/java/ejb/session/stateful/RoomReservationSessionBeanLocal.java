@@ -13,11 +13,8 @@ import java.util.List;
 import util.exception.GuestNotFoundException;
 
 public interface RoomReservationSessionBeanLocal {
-
-
-
+    
     public void searchHotelRoom(Date checkInDate, Date checkOutDate);
-
 
     public Long totalAmount(String roomType, Integer roomNumber,Date checkInDate,Date checkOutDate);
 

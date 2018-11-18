@@ -15,13 +15,13 @@ import util.exception.EmployeeNotFoundException;
 
 public interface WalkInReservationSessionBeanLocal {
 
-    public List<ReservationLineItem> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate);
+    public List<Room> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate);
 
     public void preDestroy();
 
     public void remove();
-
-    public Long getTotalAmount();
     
     public WalkInReservation reserveRoom(String email, ReservationLineItem reservationRoom) throws EmployeeNotFoundException;
+
+    public List<Long> totalAmount();
 }

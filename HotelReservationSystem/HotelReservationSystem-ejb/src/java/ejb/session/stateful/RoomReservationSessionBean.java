@@ -217,7 +217,6 @@ public class RoomReservationSessionBean implements RoomReservationSessionBeanRem
     @Override
     public Long totalAmount(String roomType, Integer roomNumber,Date checkInDate,Date checkOutDate)  
     {
-
             Query query=em.createQuery("SELECT rt FROM RoomType rt WHERE rt.name=:inName");
             query.setParameter("inName", roomType);
             RoomType reserveRoomType=(RoomType) query.getSingleResult();

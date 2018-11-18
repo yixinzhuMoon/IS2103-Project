@@ -402,4 +402,52 @@ public class ReservationController implements ReservationControllerRemote, Reser
         return reservationLineItems;
     }
     
+    
+    @Override
+    public List<Room> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate)
+    {
+        List<RoomType> allRoomTypeAvailable= roomTypeControllerLocal.retrieveAllEnabledRoomTypes();
+        List<PublishedRate> publishedRateAvailable = new ArrayList<>();
+        List<PublishedRate> publishedRateWithinRange = new ArrayList<>();
+        List<RoomType> validRoomTypes = new ArrayList<>();
+        
+        //get all room types enabled
+        for(RoomType roomType: allRoomTypeAvailable)
+        {
+            for(RoomRate roomRate:roomType.getRoomRates())
+            {
+                if(roomRate instanceof PublishedRate){
+                    publishedRateAvailable.add((PublishedRate) roomRate);
+                }
+            }
+        }
+        //get published rate within check in and check out date
+        for(PublishedRate publishedRate:publishedRateAvailable){
+            if(isWithinRange(publishedRate.getValidity(), checkInDate, checkOutDate))
+            {
+                if(!validRoomTypes.contains(publishedRate.getRoomType())){
+                    publishedRateWithinRange.add(publishedRate);
+                    validRoomTypes.add(publishedRate.getRoomType());
+                }
+            }
+        }
+        //get all available rooms for reservation
+        List<Room> roomsSearchResult = new ArrayList<>();
+        for(PublishedRate pubRate:publishedRateWithinRange){
+            Long totalAmount = checkOutDate.getTime()-checkInDate.getTime()*pubRate.getRatePerNight().longValue();
+//            ratePrices.add(totalAmount);
+        }
+        for(RoomType roomType: validRoomTypes){
+            for(Room room: roomType.getRooms()){
+                roomsSearchResult.add(room);
+            }
+        }
+        return roomsSearchResult;
+    }
+    
+    public boolean isWithinRange(Date testDate, Date checkInDate, Date checkOutDate) {
+        return !(testDate.after(checkInDate) || testDate.before(checkOutDate));
+    }
+    
+    
 }
