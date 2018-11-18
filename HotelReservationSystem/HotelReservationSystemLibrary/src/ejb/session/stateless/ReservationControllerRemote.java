@@ -12,8 +12,10 @@ import entity.Partner;
 import entity.PartnerReservation;
 import entity.ReservationLineItem;
 import entity.Room;
+import entity.WalkInReservation;
 import java.util.Date;
 import java.util.List;
+import util.exception.EmployeeNotFoundException;
 import util.exception.ReservationLineItemNotFoundException;
 import util.exception.RoomRateNotFoundException;
 import util.exception.RoomTypeNotFoundException;
@@ -30,8 +32,8 @@ public interface ReservationControllerRemote {
     
     public ReservationLineItem createReservationLineItem(Date checkInDate,Date checkOutDate,String roomType)throws RoomTypeNotFoundException;
     
-    public ReservationLineItem createWalkInReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException;
-
+    public ReservationLineItem createWalkInReservationLineItem(Date checkInDate,Date checkOutDate,String roomType)throws RoomTypeNotFoundException;
+    
     public List<Room> allocateRoomToCurrentDayReservations();
 
     public PartnerReservation retrievePartnerReservationById(Long reservationId);
@@ -48,8 +50,9 @@ public interface ReservationControllerRemote {
 
     public OnlineReservation createOnlineReservation(Guest guest);
 
-    public List<ReservationLineItem> retrieveAllReservationLineItems();
-
     public PartnerReservation createPartnerReservation(Partner partner);
+    
+    public WalkInReservation createWalkInReservation(WalkInReservation newWalkInReservation, Long employeeId) throws EmployeeNotFoundException;
 
+    public List<ReservationLineItem> retrieveAllReservationLineItems();
 }

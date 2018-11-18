@@ -243,11 +243,11 @@ class MainApp {
             
             if(roomLeft>0)
             {
-                System.out.print(roomType.getName()+"has "+roomLeft+" rooms left");
+                System.out.print(roomType.getName()+" has "+roomLeft+" rooms left");
             }
             else
             {
-                System.out.println(roomType.getName()+"has no rooms left ");
+                System.out.println(roomType.getName()+" has no rooms left ");
             }   
         }
         }
@@ -291,8 +291,7 @@ class MainApp {
            onlineReservation.getReservationLineItems().add(reservationControllerRemote.createReservationLineItem(checkInDate, checkOutDate, roomType));
         }
         
-        }
-        
+        } 
     }
 
     private void viewMyReservationDetails() throws ReservationLineItemNotFoundException {

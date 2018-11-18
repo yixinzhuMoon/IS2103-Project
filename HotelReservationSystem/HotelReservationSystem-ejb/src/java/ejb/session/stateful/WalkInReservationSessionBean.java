@@ -6,7 +6,6 @@
 package ejb.session.stateful;
 
 import ejb.entity.stateful.WalkInReservationSessionBeanRemote;
-import ejb.session.stateless.ReservationController;
 import ejb.session.stateless.ReservationControllerLocal;
 import ejb.session.stateless.RoomControllerLocal;
 import ejb.session.stateless.RoomRateControllerLocal;
@@ -18,17 +17,14 @@ import entity.PromotionRate;
 import entity.PublishedRate;
 import entity.ReservationLineItem;
 import entity.Room;
+import entity.RoomRate;
 import entity.RoomType;
 import entity.WalkInReservation;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -39,8 +35,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.EmployeeNotFoundException;
-import util.exception.RoomRateNotFoundException;
-import util.exception.RoomTypeNotFoundException;
 
 /**
  *
@@ -66,71 +60,82 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @EJB 
     private RoomTypeControllerLocal roomTypeControllerLocal;
     
-    private PublishedRate publishedRate;
-    private Date checkInDate;
-    private Date checkOutDate;
-    private Long totalAmount;
     
-    private List<ReservationLineItem> reservationLineItems;
-
-    @Remove
     @Override
-    public void remove()
+    public String chooseRoomRate(String roomType, Date checkInDate,Date checkOutDate)
     {
-        // Do nothing
-    }
-    
-    @PreDestroy
-    @Override
-    public void preDestroy()
-    {
-        if(reservationLineItems != null)
-        {
-            reservationLineItems.clear();
-            reservationLineItems = null;
-        }
-    }
-    
-    @Override
-    public List<ReservationLineItem> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate){
-        reservationLineItems = new ArrayList<>();
-        List<RoomType> validRoomTypes = roomTypeControllerLocal.retrieveAllRoomTypes();
+        Query query=em.createQuery("SELECT rt FROM RoomType rt WHERE rt.name=:inName");
+        query.setParameter("inName", roomType);
+        RoomType reserveRoomType=(RoomType) query.getSingleResult();
         
-        return reservationLineItems;
-    }
-    
-    @Override
-    public WalkInReservation reserveRoom(String email, ReservationLineItem reservationRoom) throws EmployeeNotFoundException
-    {
-        if(email!=null)
+        Boolean publishedRateInNeeded=false;
+        
+        for(RoomRate roomRate:reserveRoomType.getRoomRates())
         {
-            Query query=em.createQuery("SELECT e FROM Employee e WHERE e.email=:inEmail");
-            query.setParameter("inEmail", email);
-            Employee employee=(Employee) query.getSingleResult();
-            
-            WalkInReservation walkInReservation = new WalkInReservation();
-            walkInReservation.getReservationLineItems().add(reservationRoom);
-            employee.getWalkInReservations().add(walkInReservation);
-            
-            return walkInReservation;
-        }
-        else
-        {
-            throw new EmployeeNotFoundException("Employee data not found!");
+            if(roomRate instanceof PublishedRate)
+            {
+                publishedRateInNeeded=true;
+            }
         }
         
+        String chooseRomeRate="";
+        if(publishedRateInNeeded)
+        {
+            for(RoomRate roomRate: reserveRoomType.getRoomRates())
+            {
+                if(roomRate instanceof PublishedRate)
+                {
+                    chooseRomeRate="PublishedRate";
+                }
+                break;
+            }
+        }
+        
+        return chooseRomeRate;
     }
+        
     
     
-     
     @Override
-    public Long getTotalAmount() 
+    public Long totalAmount(String roomType, Integer numberOfRooms,Date checkInDate,Date checkOutDate)  
     {
-        return totalAmount;
+            Query query=em.createQuery("SELECT rt FROM RoomType rt WHERE rt.name=:inName");
+            query.setParameter("inName", roomType);
+            RoomType reserveRoomType=(RoomType) query.getSingleResult();
+            Long totalAmount=new Long(0);
+            BigDecimal price=BigDecimal.ZERO;
+            
+            String chooseRoomRate=chooseRoomRate(roomType, checkInDate, checkOutDate);
+            if(chooseRoomRate.equals("PublishedRate"))
+            {
+                for(RoomRate roomRate:reserveRoomType.getRoomRates())
+                {
+                    if(roomRate instanceof PublishedRate)
+                    {
+                        price=roomRate.getRatePerNight();
+                    }
+                    break;
+                }
+            }
+            
+            if(numberOfRooms>reserveRoomType.getRooms().size())
+            {
+                totalAmount=new Long(0);
+            }
+            else
+            {
+                if(checkOutDate.getTime()==checkInDate.getTime())
+                {
+                    totalAmount=price.longValue()*numberOfRooms;
+                }
+                else
+                {
+                totalAmount=((checkOutDate.getTime()-checkInDate.getTime())*price.longValue()*numberOfRooms);
+                }
+            }  
+            
+            return totalAmount;  
     }
     
-    public boolean belongCalendar(Date date, Date startDate, Date endDate) 
-    {
-        return !(date.before(startDate) || date.after(endDate));
-    }
+    
 }

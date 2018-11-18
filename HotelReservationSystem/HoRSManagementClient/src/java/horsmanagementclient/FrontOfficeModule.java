@@ -9,12 +9,15 @@ import ejb.entity.stateful.WalkInReservationSessionBeanRemote;
 import ejb.session.stateless.EmployeeControllerRemote;
 import ejb.session.stateless.GuestControllerRemote;
 import ejb.session.stateless.PartnerControllerRemote;
+import ejb.session.stateless.ReservationControllerRemote;
 import ejb.session.stateless.RoomControllerRemote;
 import ejb.session.stateless.RoomRateControllerRemote;
 import ejb.session.stateless.RoomTypeControllerRemote;
 import entity.Employee;
+import entity.OnlineReservation;
 import entity.ReservationLineItem;
 import entity.Room;
+import entity.RoomType;
 import entity.WalkInReservation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.exception.EmployeeNotFoundException;
 import util.exception.GuestNotFoundException;
+import util.exception.RoomTypeNotFoundException;
 import util.exception.TimeException;
 
 /**
@@ -40,12 +44,11 @@ public class FrontOfficeModule {
     private RoomControllerRemote roomControllerRemote;
     private RoomTypeControllerRemote roomTypeControllerRemote;
     private RoomRateControllerRemote roomRateControllerRemote;
+    private ReservationControllerRemote reservationControllerRemote;
     
     private WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote;
     
     private Employee currentEmployee;
-    private List<Long> totalAmount;
-    private List<ReservationLineItem> searchResults;
     
     public FrontOfficeModule(){
         
@@ -54,9 +57,11 @@ public class FrontOfficeModule {
     public FrontOfficeModule(EmployeeControllerRemote employeeControllerRemote, GuestControllerRemote guestControllerRemote, PartnerControllerRemote partnerControllerRemote, 
             RoomControllerRemote roomControllerRemote, RoomTypeControllerRemote roomTypeControllerRemote, 
             RoomRateControllerRemote roomRateControllerRemote, WalkInReservationSessionBeanRemote walkInReservationSessionBeanRemote,
+            ReservationControllerRemote reservationControllerRemote,
             Employee currentEmployee)
     {
         this();
+        this.reservationControllerRemote = reservationControllerRemote;
         this.employeeControllerRemote = employeeControllerRemote;
         this.guestControllerRemote = guestControllerRemote;
         this.partnerControllerRemote = partnerControllerRemote;
@@ -97,7 +102,7 @@ public class FrontOfficeModule {
                 }
                 else if(response == 2)
                 {
-//                    reserveRoom();
+                    reserveRoom();
                 }
                 else if(response == 3)
                 {
@@ -126,93 +131,100 @@ public class FrontOfficeModule {
     
     public void walkInSearchRoom() 
     {
-        totalAmount=new ArrayList<>();
-        try {
+        try
+        {
             Scanner scanner = new Scanner(System.in);
-            Integer response = 0;
-            SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
-            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
             Date checkInDate;
             Date checkOutDate;
-            String roomType;
-            
-            System.out.println("*** HoRS :: Hotel Management System :: Walk-in Search Room ***\n");
-            System.out.print("Enter check in date (dd/mm/yyyy)> ");
-            checkInDate = inputDateFormat.parse(scanner.nextLine().trim());
-            System.out.print("Enter check out Date (dd/mm/yyyy)> ");  
-            checkOutDate = inputDateFormat.parse(scanner.nextLine().trim());
-            
-            searchResults = walkInReservationSessionBeanRemote.walkInSearchHotelRoom(checkInDate, checkOutDate);    
-            System.out.println("Showing rooms available for Walk-in Reservation");
-            System.out.printf("%11s%20s%15%15s%14s%\n", "Room Number","Room Type", "Check in Date", "Check out Date", "Total amount");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-            Integer number=0;
-            for(ReservationLineItem reservationLineItem: searchResults){
-                number++;
-                totalAmount.add(walkInReservationSessionBeanRemote.getTotalAmount());
-                System.out.printf("%11s%20s%15%15s%14s%\n", number, reservationLineItem.getRoomType().getName(), outputDateFormat.format(checkInDate), 
-                        outputDateFormat.format(checkOutDate), walkInReservationSessionBeanRemote.getTotalAmount());
-            }
+            System.out.println("\n*** HoRS System :: Walk-in Search Room ***\n");
+            System.out.print("Enter check in date (yyyy-MM-dd)> ");
+            checkInDate = sdf.parse(scanner.nextLine());
+            System.out.print("Enter check out Date (yyyy-MM-dd)> ");
+            checkOutDate = sdf.parse(scanner.nextLine()); 
             
-            System.out.println("------------------------");
-            System.out.println("1: Reserve Hotel Room");
-            System.out.println("2: Back\n");
-            System.out.print("> ");
-            response = scanner.nextInt();
+            int roomLeft=0;
             
-            if(response == 1)
+            for(RoomType roomType:roomTypeControllerRemote.retrieveAllEnabledRoomTypes())
             {
-                reserveRoom(number, searchResults);
+                if(!roomType.getRooms().isEmpty())
+                {
+                    roomLeft=roomType.getRooms().size();
+                }
+                for(Room room:roomType.getRooms())
+                {
+                    if(!room.getRoomStatus().equals("available"))
+                    {
+                        roomLeft--;
+                    }
             }
-        } catch (ParseException ex) {
-            System.out.println("Invalid Date Format entered!" + "\n");
+            
+            for(ReservationLineItem reservationLineItem:roomType.getReservationLineItems())
+            {
+                if(!isWithinRange(reservationLineItem.getCheckInDate(), reservationLineItem.getCheckOutDate(), checkInDate, checkOutDate))
+                {
+                    roomLeft--;
+                }
+            }
+            
+            if(roomLeft>0)
+            {
+                System.out.println(roomType.getName()+" has "+roomLeft+" rooms left");
+            }
+            else
+            {
+                System.out.println(roomType.getName()+" has no rooms left ");
+            }   
+        }
+        }
+        catch(ParseException ex)
+        {
+            System.out.println("Invalid date input!\n");
         }
     }
 
-    public void reserveRoom(Integer numberOfRoomsInSearchResult, List<ReservationLineItem> searchResults)
+    public void reserveRoom()
     {
-        this.searchResults = searchResults;
-        
+    
+        WalkInReservation walkInReservation = new WalkInReservation();
         Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date checkInDate;
+        Date checkOutDate;
+        
         System.out.println("*** HoRS :: Hotel Management System :: Walk-in Reserve Room ***\n");
-        if(!searchResults.isEmpty()){
-            try{
-                while(true)
-                {
-                    System.out.print("Select room number(press 0 to exit)> ");
-                    Integer roomNumber=scanner.nextInt();
-                    scanner.nextLine();
-                    if(roomNumber>=1&&roomNumber<=numberOfRoomsInSearchResult)
-                    {
-                        System.out.println("\nTotal Amount is " + totalAmount.get(roomNumber));
-                        WalkInReservation walkInReservation = walkInReservationSessionBeanRemote.reserveRoom(currentEmployee.getEmail(), searchResults.get(roomNumber));
-                        System.out.println("Reservation of room completed successfully!: " + walkInReservation.getReservationId() + "\n");
+        try{
+            System.out.print("Enter check in date (yyyy-MM-dd)> ");
+            checkInDate = sdf.parse(scanner.nextLine()); 
+            System.out.print("Enter check out date (yyyy-MM-dd)> ");
+            checkOutDate = sdf.parse(scanner.nextLine());
+            System.out.print("Enter Room Type> ");
+            String roomType= scanner.nextLine().trim();
+            System.out.print("Enter Number of Room> ");
+            Integer numberOfRooms=scanner.nextInt();
 
-                    }
-                    else if(roomNumber==0)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        System.out.println("Invalid option, please try again!");
-                    }
 
-                    System.out.print("Would you like to reserve another room? (Enter 'Y' to continue)> ");
-                    String choice = scanner.nextLine().trim();
-                    if(!choice.equals("Y")){
-                        break;
-                    }
-                }                       
-            } 
-            catch (EmployeeNotFoundException ex) 
+            Long totalAmount=walkInReservationSessionBeanRemote.totalAmount(roomType,numberOfRooms,checkInDate,checkOutDate);
+            if(totalAmount.equals(new Long(0)))
             {
-                System.out.println("Please login first before making a reservation!\n");
+                System.out.println("Not enough room to reserve");
             }
-        }
-        else
-        {
-            System.out.println("No Rooms available for reservation.");
+            else
+            {
+                System.out.println("Reserve successful! total amount is "+totalAmount);
+
+            for(int i=0;i<numberOfRooms;i++)
+            {
+                walkInReservation = reservationControllerRemote.createWalkInReservation(walkInReservation, currentEmployee.getEmployeeId());
+                walkInReservation.getReservationLineItems().add(reservationControllerRemote.createWalkInReservationLineItem(checkInDate, checkOutDate, roomType));
+            }
+            }
+        }  catch (ParseException ex) {
+            System.out.println("Invalid Date Format entered!" + "\n");
+        } catch (RoomTypeNotFoundException | EmployeeNotFoundException ex) {
+            System.out.println("An error ocurred when reserving room: " + ex.getMessage() + "\n");
         }
     }
     
@@ -260,5 +272,10 @@ public class FrontOfficeModule {
             System.out.println("An error has occurred while checking out guest: " + ex.getMessage() + "\n");
         }
     }
+    
+    public boolean isWithinRange(Date startDate, Date endDate,Date checkInDate, Date checkOutDate) {
+        return !(startDate.after(checkInDate) || endDate.before(checkOutDate));
+    }
+    
 }
  
