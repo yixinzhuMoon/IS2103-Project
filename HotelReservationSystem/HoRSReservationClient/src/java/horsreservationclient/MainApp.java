@@ -42,7 +42,6 @@ class MainApp {
     
     private RoomReservationSessionBeanRemote roomReservationSessionBeanRemote;
     
-    
     private Guest currentGuest;
 
     public MainApp() {
@@ -257,8 +256,9 @@ class MainApp {
         }
     }
      
-    private void reserveHotelRoom() throws ParseException, RoomTypeNotFoundException
+    private void reserveHotelRoom() throws ParseException, RoomTypeNotFoundException, GuestNotFoundException
     {
+         OnlineReservation onlineReservation=new OnlineReservation();
          Scanner scanner = new Scanner(System.in);
          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
          Date checkInDate;
@@ -282,16 +282,14 @@ class MainApp {
         }
         else
         {
-            System.out.println("Reserve successful! totalAMount is"+totalAmount);
-            OnlineReservation onlineReservation=reservationControllerRemote.createOnlineReservation(currentGuest);
-        
-        for(int i=0;i<roomNumber;i++)
-        {
-          
-           onlineReservation.getReservationLineItems().add(reservationControllerRemote.createReservationLineItem(checkInDate, checkOutDate, roomType));
+            System.out.println("Reserve successful! total amount is"+totalAmount);
+            
+            for(int i=0;i<roomNumber;i++)
+            {
+                onlineReservation  = reservationControllerRemote.createOnlineReservation(onlineReservation,currentGuest.getGuestId());
+                onlineReservation.getReservationLineItems().add(reservationControllerRemote.createReservationLineItem(checkInDate, checkOutDate, roomType));
+            }
         }
-        
-        } 
     }
 
     private void viewMyReservationDetails() throws ReservationLineItemNotFoundException {
@@ -312,18 +310,24 @@ class MainApp {
         
         System.out.println("\n*** HoRS System :: View All My Reservations ***\n");
         
-        System.out.printf("%20s%20s%20s%20s%20s\n", "Reservation Id","Reservation Check In Date","Reservation Check Out Date","Room Type","Room Rate");
-        List<ReservationLineItem> reservationLineItems=reservationControllerRemote.retrieveAllReservationLineItems();
-        
-        for(ReservationLineItem reservationLineItem: reservationLineItems)
-        {
-            System.out.printf("%20s%20s%20s%20s%20s\n",reservationLineItem.getReservationLineItemId(), reservationLineItem.getCheckInDate(),reservationLineItem.getCheckOutDate(),reservationLineItem.getRoomType().getName(),reservationLineItem.getRoomRate().getName());
-        } 
-        
-        
-        System.out.print("Press any key to continue...> ");
+        System.out.println("Enter Guest Id> ");
+        Long guestId=scanner.nextLong();
         scanner.nextLine();
         
+        List<OnlineReservation> guestReservation = reservationControllerRemote.retrieveAllOnlineReservationsByGuestId(guestId);
+        System.out.printf("%15s%15s%15s%15s%15s\n", "Reservation Id","Reservation Check In Date","Reservation Check In Date","Room Type","Room Rate");
+
+        for(OnlineReservation onlineRes:guestReservation)
+        {
+            List<ReservationLineItem> reservationLineItems = onlineRes.getReservationLineItems();
+            for(ReservationLineItem reservationLineItem: reservationLineItems)
+            {
+                System.out.printf("%15s%15s%15s%15s%15s\n",reservationLineItem.getReservationLineItemId(), reservationLineItem.getCheckInDate(),reservationLineItem.getCheckOutDate(),reservationLineItem.getRoomType(),reservationLineItem.getRoomRate());
+            }
+
+            System.out.print("Press any key to continue...> ");
+            scanner.nextLine();
+        }
     }
     
     public boolean isWithinRange(Date startDate, Date endDate,Date checkInDate, Date checkOutDate) {

@@ -16,6 +16,7 @@ import entity.WalkInReservation;
 import java.util.Date;
 import java.util.List;
 import util.exception.EmployeeNotFoundException;
+import util.exception.GuestNotFoundException;
 import util.exception.ReservationLineItemNotFoundException;
 import util.exception.RoomRateNotFoundException;
 import util.exception.RoomTypeNotFoundException;
@@ -54,5 +55,9 @@ public interface ReservationControllerLocal {
     
     public WalkInReservation createWalkInReservation(WalkInReservation newWalkInReservation, Long employeeId) throws EmployeeNotFoundException;
 
+    public OnlineReservation createOnlineReservation(OnlineReservation newOnlineReservation, Long guestId) throws GuestNotFoundException;
+
+    public List<OnlineReservation> retrieveAllOnlineReservationsByGuestId(Long guestId);
+    
     public List<ReservationLineItem> retrieveAllReservationLineItems();
 }
