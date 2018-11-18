@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.Employee;
 import entity.ExceptionReport;
 import entity.NormalRate;
 import entity.OnlineReservation;
@@ -16,6 +17,7 @@ import entity.ReservationLineItem;
 import entity.Room;
 import entity.RoomRate;
 import entity.RoomType;
+import entity.WalkInReservation;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.EmployeeNotFoundException;
 import util.exception.ReservationLineItemNotFoundException;
 import util.exception.RoomRateNotFoundException;
 import util.exception.RoomTypeNotFoundException;
@@ -49,6 +52,8 @@ public class ReservationController implements ReservationControllerRemote, Reser
     private RoomTypeControllerLocal roomTypeControllerLocal;
     @EJB
     private RoomRateControllerLocal roomRateControllerLocal;
+    @EJB
+    private EmployeeControllerLocal employeeControllerLocal;
 
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
@@ -97,6 +102,21 @@ public class ReservationController implements ReservationControllerRemote, Reser
             throw new ReservationLineItemNotFoundException("Reservation Line Item " + resLineItem + " does not exist!");
         }
     }
+    
+    @Override
+    public WalkInReservation createWalkInReservation(WalkInReservation newWalkInReservation, Long employeeId) throws EmployeeNotFoundException
+    {
+        Date todayDate = new Date();
+        Employee employee = employeeControllerLocal.retrieveEmployeeByEmployeeId(employeeId);
+        newWalkInReservation.setEmployee(employee);
+        newWalkInReservation.setReservationDate(todayDate);
+        
+        em.persist(newWalkInReservation);
+        em.flush();
+
+        return newWalkInReservation;
+    }
+    
     @Override
     public ReservationLineItem createReservationLineItem(Date checkInDate,Date checkOutDate,String roomType)throws RoomTypeNotFoundException
     {
@@ -305,7 +325,7 @@ public class ReservationController implements ReservationControllerRemote, Reser
                         reservationLineItem.getRoomList().add(room);
                         roomsReserved.add(room);
                         //raise exception report
-                        exReport.setDescription("No available room for reserved room type, upgrade to next higher room type available. Room " + room.getRoomId() + " allocated.");
+                        exReport.setDescription("No available room for reserved room type, upgrade to next higher room type available. Room " + room.getRoomNumber() + " allocated.");
                         createExceptionReport(exReport);
                     }
                     else 
@@ -331,34 +351,43 @@ public class ReservationController implements ReservationControllerRemote, Reser
     }
     
     @Override
-    public ReservationLineItem createWalkInReservationLineItem(Date checkInDate, Date checkOutDate, Long roomTypeId, Long roomRateId) throws RoomTypeNotFoundException, RoomRateNotFoundException
+    public ReservationLineItem createWalkInReservationLineItem(Date checkInDate,Date checkOutDate,String roomType)throws RoomTypeNotFoundException
     {
-        try 
-        {
+        try {
             ReservationLineItem reservationLineItem=new ReservationLineItem();
             reservationLineItem.setCheckInDate(checkInDate);
             reservationLineItem.setCheckOutDate(checkOutDate);
-            RoomType roomType = roomTypeControllerLocal.retrieveRoomTypeById(roomTypeId);
-            RoomRate roomRate = roomRateControllerLocal.retrieveRoomRateById(roomRateId, false);
-
+            
+            
+            RoomType roomTypeItem=roomTypeControllerLocal.retrieveRoomTypeByName(roomType);
+            reservationLineItem.setRoomType(roomTypeItem);
+            
+            Boolean publishedRateInNeeded=false;
+            for(RoomRate roomRate:roomTypeItem.getRoomRates())
+            {
+                if(roomRate instanceof PublishedRate)
+                {
+                    publishedRateInNeeded=true;
+                }
+            }
+            if(publishedRateInNeeded)
+            {
+                for(RoomRate roomRate: roomTypeItem.getRoomRates())
+                {
+                    if(roomRate instanceof PublishedRate)
+                    {
+                        reservationLineItem.setRoomRate(roomRate);
+                    }
+                }
+            }
+            
             em.persist(reservationLineItem);
-            
-            reservationLineItem.setRoomRate(roomRate);
-            reservationLineItem.setRoomType(roomType);
-            roomType.getReservationLineItems().add(reservationLineItem);
-            
             em.flush();
-            em.refresh(reservationLineItem);
-
+            
             return reservationLineItem;
-        }
-        catch(RoomTypeNotFoundException ex)
-        {
-            throw new RoomTypeNotFoundException("Unable to create new reservation line item as the room type record does not exist");
         } 
-        catch (RoomRateNotFoundException ex) 
-        {
-            throw new RoomRateNotFoundException("Unable to create new reservation line item as the room rate record does not exist");
+        catch (RoomTypeNotFoundException ex) {
+            throw new RoomTypeNotFoundException("Unable to find the room type !");
         }
     }
     
@@ -401,53 +430,4 @@ public class ReservationController implements ReservationControllerRemote, Reser
         
         return reservationLineItems;
     }
-    
-    
-    @Override
-    public List<Room> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate)
-    {
-        List<RoomType> allRoomTypeAvailable= roomTypeControllerLocal.retrieveAllEnabledRoomTypes();
-        List<PublishedRate> publishedRateAvailable = new ArrayList<>();
-        List<PublishedRate> publishedRateWithinRange = new ArrayList<>();
-        List<RoomType> validRoomTypes = new ArrayList<>();
-        
-        //get all room types enabled
-        for(RoomType roomType: allRoomTypeAvailable)
-        {
-            for(RoomRate roomRate:roomType.getRoomRates())
-            {
-                if(roomRate instanceof PublishedRate){
-                    publishedRateAvailable.add((PublishedRate) roomRate);
-                }
-            }
-        }
-        //get published rate within check in and check out date
-        for(PublishedRate publishedRate:publishedRateAvailable){
-            if(isWithinRange(publishedRate.getValidity(), checkInDate, checkOutDate))
-            {
-                if(!validRoomTypes.contains(publishedRate.getRoomType())){
-                    publishedRateWithinRange.add(publishedRate);
-                    validRoomTypes.add(publishedRate.getRoomType());
-                }
-            }
-        }
-        //get all available rooms for reservation
-        List<Room> roomsSearchResult = new ArrayList<>();
-        for(PublishedRate pubRate:publishedRateWithinRange){
-            Long totalAmount = checkOutDate.getTime()-checkInDate.getTime()*pubRate.getRatePerNight().longValue();
-//            ratePrices.add(totalAmount);
-        }
-        for(RoomType roomType: validRoomTypes){
-            for(Room room: roomType.getRooms()){
-                roomsSearchResult.add(room);
-            }
-        }
-        return roomsSearchResult;
-    }
-    
-    public boolean isWithinRange(Date testDate, Date checkInDate, Date checkOutDate) {
-        return !(testDate.after(checkInDate) || testDate.before(checkOutDate));
-    }
-    
-    
 }

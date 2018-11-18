@@ -14,15 +14,9 @@ import javax.ejb.Remote;
 import util.exception.EmployeeNotFoundException;
 
 public interface WalkInReservationSessionBeanRemote {
-    
-    public List<Room> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate);
 
-    public void preDestroy();
+    public Long totalAmount(String roomType, Integer numberOfRooms, Date checkInDate, Date checkOutDate);
 
-    public void remove();
-
-    public WalkInReservation reserveRoom(String email, ReservationLineItem reservationRoom) throws EmployeeNotFoundException;
-
-    public List<Long> totalAmount();
+    public String chooseRoomRate(String roomType, Date checkInDate, Date checkOutDate);
     
 }

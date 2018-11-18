@@ -60,98 +60,82 @@ public class WalkInReservationSessionBean implements WalkInReservationSessionBea
     @EJB 
     private RoomTypeControllerLocal roomTypeControllerLocal;
     
-    private List<Long> ratePrices;
-
-    @Remove
-    @Override
-    public void remove()
-    {
-        // Do nothing
-    }
-    
-    @PreDestroy
-    @Override
-    public void preDestroy()
-    {
-        if(ratePrices != null)
-        {
-            ratePrices.clear();
-            ratePrices = null;
-        }
-    }
     
     @Override
-    public List<Room> walkInSearchHotelRoom(Date checkInDate, Date checkOutDate)
+    public String chooseRoomRate(String roomType, Date checkInDate,Date checkOutDate)
     {
-        List<RoomType> allRoomTypeAvailable= roomTypeControllerLocal.retrieveAllEnabledRoomTypes();
-        List<PublishedRate> publishedRateAvailable = new ArrayList<>();
-        List<PublishedRate> publishedRateWithinRange = new ArrayList<>();
-        List<RoomType> validRoomTypes = new ArrayList<>();
+        Query query=em.createQuery("SELECT rt FROM RoomType rt WHERE rt.name=:inName");
+        query.setParameter("inName", roomType);
+        RoomType reserveRoomType=(RoomType) query.getSingleResult();
         
-        //get all room types enabled
-        for(RoomType roomType: allRoomTypeAvailable)
+        Boolean publishedRateInNeeded=false;
+        
+        for(RoomRate roomRate:reserveRoomType.getRoomRates())
         {
-            for(RoomRate roomRate:roomType.getRoomRates())
+            if(roomRate instanceof PublishedRate)
             {
-                if(roomRate instanceof PublishedRate){
-                    publishedRateAvailable.add((PublishedRate) roomRate);
-                }
+                publishedRateInNeeded=true;
             }
-        }
-        //get published rate within check in and check out date
-        for(PublishedRate publishedRate:publishedRateAvailable){
-            if(isWithinRange(publishedRate.getValidity(), checkInDate, checkOutDate))
-            {
-                if(!validRoomTypes.contains(publishedRate.getRoomType())){
-                    publishedRateWithinRange.add(publishedRate);
-                    validRoomTypes.add(publishedRate.getRoomType());
-                }
-            }
-        }
-        //get all available rooms for reservation
-        List<Room> roomsSearchResult = new ArrayList<>();
-        for(PublishedRate pubRate:publishedRateWithinRange){
-            Long totalAmount = checkOutDate.getTime()-checkInDate.getTime()*pubRate.getRatePerNight().longValue();
-            ratePrices.add(totalAmount);
-        }
-        for(RoomType roomType: validRoomTypes){
-            for(Room room: roomType.getRooms()){
-                roomsSearchResult.add(room);
-            }
-        }
-        return roomsSearchResult;
-    }
-    
-    @Override
-    public List<Long> totalAmount()  
-    {
-        return this.ratePrices;
-    }
-    
-    @Override
-    public WalkInReservation reserveRoom(String email, ReservationLineItem reservationRoom) throws EmployeeNotFoundException
-    {
-        if(email!=null)
-        {
-            Query query=em.createQuery("SELECT e FROM Employee e WHERE e.email=:inEmail");
-            query.setParameter("inEmail", email);
-            Employee employee=(Employee) query.getSingleResult();
-            
-            WalkInReservation walkInReservation = new WalkInReservation();
-            walkInReservation.getReservationLineItems().add(reservationRoom);
-            employee.getWalkInReservations().add(walkInReservation);
-            
-            return walkInReservation;
-        }
-        else
-        {
-            throw new EmployeeNotFoundException("Employee data not found!");
         }
         
+        String chooseRomeRate="";
+        if(publishedRateInNeeded)
+        {
+            for(RoomRate roomRate: reserveRoomType.getRoomRates())
+            {
+                if(roomRate instanceof PublishedRate)
+                {
+                    chooseRomeRate="PublishedRate";
+                }
+                break;
+            }
+        }
+        
+        return chooseRomeRate;
+    }
+        
+    
+    
+    @Override
+    public Long totalAmount(String roomType, Integer numberOfRooms,Date checkInDate,Date checkOutDate)  
+    {
+            Query query=em.createQuery("SELECT rt FROM RoomType rt WHERE rt.name=:inName");
+            query.setParameter("inName", roomType);
+            RoomType reserveRoomType=(RoomType) query.getSingleResult();
+            Long totalAmount=new Long(0);
+            BigDecimal price=BigDecimal.ZERO;
+            
+            String chooseRoomRate=chooseRoomRate(roomType, checkInDate, checkOutDate);
+            if(chooseRoomRate.equals("PublishedRate"))
+            {
+                for(RoomRate roomRate:reserveRoomType.getRoomRates())
+                {
+                    if(roomRate instanceof PublishedRate)
+                    {
+                        price=roomRate.getRatePerNight();
+                    }
+                    break;
+                }
+            }
+            
+            if(numberOfRooms>reserveRoomType.getRooms().size())
+            {
+                totalAmount=new Long(0);
+            }
+            else
+            {
+                if(checkOutDate.getTime()==checkInDate.getTime())
+                {
+                    totalAmount=price.longValue()*numberOfRooms;
+                }
+                else
+                {
+                totalAmount=((checkOutDate.getTime()-checkInDate.getTime())*price.longValue()*numberOfRooms);
+                }
+            }  
+            
+            return totalAmount;  
     }
     
-    public boolean isWithinRange(Date testDate, Date checkInDate, Date checkOutDate) {
-        return !(testDate.after(checkInDate) || testDate.before(checkOutDate));
-    }
-
+    
 }
